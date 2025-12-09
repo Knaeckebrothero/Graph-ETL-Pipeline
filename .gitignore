@@ -1,5 +1,6 @@
 # Projecspecific contents go here
 
+data/*
 
 # Local environment
 .env
