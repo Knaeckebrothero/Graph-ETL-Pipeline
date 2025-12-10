@@ -12,7 +12,58 @@ import sys
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from pathlib import Path
+
 from db import Neo4jDatabase
+
+# Path to schema file
+SCHEMA_FILE = Path(__file__).parent.parent / "db" / "schema.cql"
+
+
+def apply_schema(db: Neo4jDatabase, logger: logging.Logger) -> dict:
+    """
+    Apply schema constraints and indexes from schema.cql.
+
+    Returns dict with counts of applied constraints and indexes.
+    """
+    if not SCHEMA_FILE.exists():
+        raise FileNotFoundError(f"Schema file not found: {SCHEMA_FILE}")
+
+    schema_content = SCHEMA_FILE.read_text()
+
+    # Parse and execute each statement
+    statements = []
+    for line in schema_content.splitlines():
+        line = line.strip()
+        # Skip empty lines and comments
+        if not line or line.startswith("//"):
+            continue
+        # Only process CREATE statements (constraints and indexes)
+        if line.startswith("CREATE "):
+            statements.append(line)
+
+    results = {"constraints": 0, "indexes": 0, "skipped": 0, "errors": []}
+
+    for stmt in statements:
+        try:
+            db.query(stmt)
+            if "CONSTRAINT" in stmt:
+                results["constraints"] += 1
+                logger.debug(f"Applied: {stmt[:60]}...")
+            elif "INDEX" in stmt:
+                results["indexes"] += 1
+                logger.debug(f"Applied: {stmt[:60]}...")
+        except Exception as e:
+            error_msg = str(e)
+            # "IF NOT EXISTS" should prevent errors, but handle edge cases
+            if "already exists" in error_msg.lower():
+                results["skipped"] += 1
+                logger.debug(f"Skipped (already exists): {stmt[:40]}...")
+            else:
+                results["errors"].append((stmt[:50], error_msg))
+                logger.warning(f"Failed: {stmt[:40]}... - {error_msg}")
+
+    return results
 
 
 def setup_logging(verbose: bool = False) -> logging.Logger:
@@ -50,6 +101,11 @@ def parse_args() -> argparse.Namespace:
         '--reset',
         action='store_true',
         help='Clear all data from the database'
+    )
+    parser.add_argument(
+        '--schema',
+        action='store_true',
+        help='Apply schema constraints and indexes from schema.cql'
     )
     parser.add_argument(
         '--stats',
@@ -97,6 +153,22 @@ def main():
             logger.info("Database cleared successfully")
         else:
             logger.info("Reset cancelled")
+
+    # Apply schema
+    if args.schema:
+        logger.info(f"Applying schema from {SCHEMA_FILE}")
+        try:
+            results = apply_schema(db, logger)
+            logger.info(f"Schema applied: {results['constraints']} constraints, {results['indexes']} indexes")
+            if results['skipped']:
+                logger.info(f"  Skipped {results['skipped']} (already existed)")
+            if results['errors']:
+                logger.warning(f"  {len(results['errors'])} errors occurred")
+                for stmt, err in results['errors']:
+                    logger.warning(f"    {stmt}: {err}")
+        except Exception as e:
+            logger.error(f"Failed to apply schema: {e}")
+            sys.exit(1)
 
     # Show stats
     if args.stats or not args.reset:
