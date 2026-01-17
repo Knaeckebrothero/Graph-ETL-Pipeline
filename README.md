@@ -1,8 +1,22 @@
 # Fessi Graph ETL Pipeline
 
-ETL pipeline for constructing a Neo4j knowledge graph to power the "Fessi" university waste disposal chatbot.
+ETL pipeline for constructing a Neo4j knowledge graph to power the "Fessi" university waste disposal chatbot. Uses Graph-RAG to model decision logic rather than just retrieving text segments.
 
-## Why Graph-RAG?
+## Table of Contents
+
+- [Overview](#overview)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Schema](#schema)
+- [Data Sources](#data-sources)
+- [License](#license)
+- [Contact](#contact)
+
+## Overview
+
+### Why Graph-RAG?
 
 Standard vector search retrieves conflicting documents without understanding context. For example, asking "How do I dispose of a paint can?" might return:
 
@@ -16,63 +30,99 @@ WasteItem(Paint) → Condition(Form?) → [Liquid] → Chemical Waste
                                     → [Dry]    → Regular Trash
 ```
 
-## Quick Start
+### Current Status
 
-### 1. Start Neo4j Container
+| Metric | Count |
+|--------|-------|
+| Facility nodes | 38 |
+| WasteItem nodes | 548 |
+| WasteStream nodes | 5 |
+| Relationships | 1,067 |
+| **Total nodes** | **591** |
 
-```bash
-podman-compose -f docker/podman-compose.yml up -d
-```
+## Installation
 
-The Neo4j browser will be available at http://localhost:7474
+### Prerequisites
 
-### 2. Configure Environment
+- Python 3.12+
+- Podman (or Docker)
+- Neo4j 5 Community (via container)
 
-```bash
-cp .env.example .env
-# Edit .env if using different credentials
-```
+### Setup
 
-### 3. Install Dependencies
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Knaeckebrothero/Graph-ETL-Pipeline.git
+   cd Graph-ETL-Pipeline
+   ```
 
-```bash
-pip install -r requirements.txt
-```
+2. **Start Neo4j container**
+   ```bash
+   podman-compose -f docker/podman-compose.yml up -d
+   ```
+   The Neo4j browser will be available at http://localhost:7474
 
-### 4. Verify Connection
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-python src/scripts/init_db.py
-```
+4. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Verify connection**
+   ```bash
+   python src/scripts/init_db.py
+   ```
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `NEO4J_URI` | `bolt://localhost:7687` | Neo4j Bolt protocol URI |
+| `NEO4J_USER` | `neo4j` | Database username |
+| `NEO4J_PASSWORD` | `neo4j_dev` | Database password |
+
+### Default Credentials
+
+- **URI**: `bolt://localhost:7687`
+- **User**: `neo4j`
+- **Password**: `neo4j_dev`
 
 ## Usage
 
-### Database Class
+### ETL Pipeline
 
-```python
-from src.db import neo4j_db
+Import order matters: facilities must be imported before waste items.
 
-# Check connection
-if neo4j_db.is_connected():
-    print("Connected!")
+| Phase | Module | Status | Description |
+|-------|--------|--------|-------------|
+| 1 | `facilities.py` | Done | Import Facility nodes from JSON |
+| 2 | `waste_items.py` | Done | Import WasteItem nodes and relationships |
+| 3A | `waste_streams.py` | Pending | Enrich WasteStream nodes with metadata |
+| 3B | `facilities.py --enrich` | Pending | Enrich Facility nodes with addresses/hours |
 
-# Run queries
-results = neo4j_db.query("MATCH (n) RETURN n LIMIT 10")
+```bash
+# Phase 1: Import facilities (creates nodes with name + uid)
+python -m src.etl.facilities
 
-# Use session context manager
-with neo4j_db.session() as session:
-    result = session.run("CREATE (n:Test {name: 'test'}) RETURN n")
+# Phase 2: Import waste items (requires Phase 1)
+python -m src.etl.waste_items
 
-# Get database stats
-stats = neo4j_db.get_stats()
-print(f"Nodes: {stats['total_nodes']}")
-print(f"Relationships: {stats['relationship_count']}")
+# Dry-run mode (no database changes)
+python -m src.etl.facilities --dry-run
+python -m src.etl.waste_items --dry-run
 
-# Cleanup
-neo4j_db.close()
+# Verbose output
+python -m src.etl.facilities -v
+python -m src.etl.waste_items -v
 ```
 
-### Initialization Script
+### Database Management
 
 ```bash
 # Check connection and show stats
@@ -84,52 +134,83 @@ python src/scripts/init_db.py --reset
 # Show stats only
 python src/scripts/init_db.py --stats
 
-# Use custom credentials
-python src/scripts/init_db.py --uri bolt://remote:7687 --user admin --password secret
-
 # Verbose output
 python src/scripts/init_db.py -v
 ```
 
-## Schema Overview
+### Programmatic Access
 
-Three-layer ontology (v4.0):
+```python
+from src.db import neo4j_db
 
-| Layer | Nodes | Purpose |
-|-------|-------|---------|
-| Concept | `WasteItem`, `AVVCode` | What is the item? |
-| Rule | `DisposalRule`, `Condition`, `Instruction` | How do we decide? |
-| Infrastructure | `Container`, `Room`, `Building` | Where is the bin? |
+# Run queries
+results = neo4j_db.query("MATCH (n:WasteItem) RETURN n.name LIMIT 10")
+
+# Use session context manager
+with neo4j_db.session() as session:
+    session.run("MERGE (w:WasteItem {uid: $uid})", uid="item-001")
+
+# Get database stats
+stats = neo4j_db.get_stats()
+print(f"Nodes: {stats['total_nodes']}, Relationships: {stats['relationship_count']}")
+```
 
 ## Project Structure
 
 ```
 .
 ├── src/
-│   ├── config.py              # Environment configuration
+│   ├── config.py                 # Environment configuration
 │   ├── db/
 │   │   ├── __init__.py
-│   │   └── neo4j_db.py        # Neo4j database class
+│   │   ├── neo4j_db.py           # Neo4j database singleton
+│   │   └── schema.cql            # Graph schema (constraints, indexes)
+│   ├── etl/
+│   │   ├── __init__.py
+│   │   ├── facilities.py         # Phase 1: Facility import
+│   │   ├── waste_items.py        # Phase 2: WasteItem import
+│   │   └── waste_streams.py      # Phase 3A: WasteStream enrichment (pending)
 │   └── scripts/
-│       └── init_db.py         # Database initialization CLI
+│       └── init_db.py            # Database initialization CLI
+├── data/
+│   ├── disposal_map_db.json      # Facility names, addresses, hours
+│   ├── Abfall-ABC_new.csv        # Waste items and disposal routes
+│   ├── *.docx                    # Bin type documentation (future)
+│   └── *.pdf                     # Legal rules (future)
 ├── docker/
-│   └── podman-compose.yml     # Container setup
-├── data/                      # Data sources (not tracked)
-├── requirements.txt           # Python dependencies
-└── .env.example               # Environment template
+│   └── podman-compose.yml        # Container setup
+├── requirements.txt
+├── .env.example
+└── etl_implementation.md         # Detailed ETL documentation
+```
+
+## Schema
+
+Three-layer ontology (v4.0) defined in `src/db/schema.cql`:
+
+| Layer | Nodes | Purpose |
+|-------|-------|---------|
+| Core | `WasteItem`, `WasteStream`, `AVVCode` | What is the item? What bin type? |
+| Rules | `DisposalRule`, `Condition`, `Instruction`, `Tip` | How do we decide? |
+| Infrastructure | `Container`, `Room`, `Building`, `Facility`, `Source` | Where is the bin? Data provenance? |
+
+### Key Relationships
+
+```
+(WasteItem)-[:DISPOSED_AT]->(Facility)       # Direct disposal location
+(WasteItem)-[:DISPOSED_IN]->(WasteStream)    # Bin type routing
+(WasteItem)-[:HAS_RULE]->(DisposalRule)      # Conditional logic
+(Condition)-[:IF_TRUE|IF_FALSE]->(...)       # Decision trees
 ```
 
 ## Data Sources
 
-- `Abfall_ABC.xlsx` - Waste items, synonyms, disposal notes
-- `AVV_Katalog.xlsx` - Official legal codes and hazard levels
-- `Campus_Master.csv` - Building/room/container locations
-
-## Default Credentials
-
-- **URI**: bolt://localhost:7687
-- **User**: neo4j
-- **Password**: neo4j_dev
+| File | Description | Status |
+|------|-------------|--------|
+| `disposal_map_db.json` | Facility names, addresses, opening hours | Imported |
+| `Abfall-ABC_new.csv` | Waste items and disposal routes | Imported |
+| `*.docx` (bin guides) | Bin type metadata (colors, sizes) | Planned |
+| `*.pdf` (Abfallsatzung) | Legal disposal rules | Planned |
 
 ## License
 

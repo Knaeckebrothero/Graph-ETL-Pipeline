@@ -114,68 +114,6 @@ python -m src.etl.waste_items [--dry-run] [-v]
 
 ---
 
-## Phase 3: Waste Streams & Containers (PENDING)
-
-**Source:** Container description documents + schema knowledge
-**Target:** Enhanced `WasteStream` nodes, `Container` nodes
-**Status:** 🔲 Pending
-
-### Standard Bin Types (from Frankfurt FES)
-| Stream Name | Container Color | German Name |
-|-------------|-----------------|-------------|
-| Residual Waste | Gray lid | Restabfalltonne |
-| Packaging | Yellow lid | Verpackungstonne |
-| Paper | Green lid | Altpapiertonne |
-| Bio Waste | Brown lid | Biotonne |
-| Glass | Various | Altglascontainer |
-
-### Implementation Steps
-1. Create `src/etl/waste_streams.py`
-2. Enhance existing `WasteStream` nodes with properties (color, description)
-3. Create `Container` nodes with physical attributes
-4. Link `(WasteStream)-[:COLLECTED_IN]->(Container)`
-
-### Cypher Pattern
-```cypher
-// Enhance WasteStream with properties
-MATCH (s:WasteStream {name: $name})
-SET s.color = $color,
-    s.description = $description,
-    s.english_name = $english_name
-
-// Create Container and link
-MERGE (c:Container {uid: $container_uid})
-SET c.type = $type,
-    c.lid_color = $lid_color
-MERGE (s)-[:COLLECTED_IN]->(c)
-```
-
----
-
-## Phase 4: Source Provenance (PENDING)
-
-**Target:** `Source` nodes for data lineage
-**Status:** 🔲 Pending
-
-### Implementation Steps
-1. Create `Source` nodes for each imported file
-2. Link imported nodes via `[:DERIVED_FROM]` relationships
-
-### Cypher Pattern
-```cypher
-MERGE (s:Source {uid: $source_uid})
-SET s.name = $filename,
-    s.type = $file_type,
-    s.file_path = $path,
-    s.import_date = datetime()
-
-// Link to imported data
-MATCH (w:WasteItem {uid: $item_uid})
-MERGE (w)-[:DERIVED_FROM]->(s)
-```
-
----
-
 ## Current Database State
 
 ```
@@ -197,8 +135,7 @@ Relationship Count: 1,067
 src/etl/
 ├── __init__.py      # Exports: import_facilities, import_waste_items
 ├── facilities.py    # ✅ Phase 1: Facility import
-├── waste_items.py   # ✅ Phase 2: WasteItem import
-└── waste_streams.py # 🔲 Phase 3: WasteStream/Container setup
+└── waste_items.py   # ✅ Phase 2: WasteItem import
 ```
 
 ---
@@ -206,14 +143,11 @@ src/etl/
 ## Running the ETL
 
 ```bash
-# Phase 1: Import facilities
+# Phase 1: Import facilities (creates nodes with name + uid only)
 python -m src.etl.facilities
 
 # Phase 2: Import waste items (requires Phase 1)
 python -m src.etl.waste_items
-
-# Phase 3: Setup waste streams (pending)
-python -m src.etl.waste_streams
 
 # Dry-run mode (no database changes)
 python -m src.etl.facilities --dry-run
@@ -255,19 +189,397 @@ MATCH (f:Facility)<-[:DISPOSED_AT]-(w:WasteItem)
 RETURN f.name AS facility, count(w) AS items
 ORDER BY items DESC
 LIMIT 10;
+
+// Check WasteStream enrichment (after LLM ETL)
+MATCH (s:WasteStream)
+RETURN s.name, s.lid_color, s.english_name, s.emptying_frequency;
+
+// Check Facility enrichment (after LLM ETL)
+MATCH (f:Facility)
+WHERE f.address IS NOT NULL
+RETURN f.name, f.address, f.opening_hours
+LIMIT 10;
+
+// Facilities still missing addresses
+MATCH (f:Facility)
+WHERE f.address IS NULL
+RETURN f.name;
+
+// Check provenance tracking (after LLM ETL)
+MATCH (n)-[:DERIVED_FROM]->(s:Source)
+RETURN s.name AS source, labels(n)[0] AS node_type, count(*) AS count
+ORDER BY count DESC;
 ```
 
 ---
 
-## Future Enhancements (LLM-based)
+## Phase 5: LLM-based ETL Pipeline
 
-These require LLM processing and are planned for later phases:
+**Status:** ✅ Complete (Phases 5A-5D implemented)
+**Rationale:** Remaining data sources (PDFs, DOCX, web-scraped content) are unstructured and require intelligent extraction. Traditional parsing is fragile. With 96GB VRAM and a 120B thinking model available, an LLM-based approach is more effective than complex rule-based parsers.
 
-| Data Source | Purpose | LLM Task |
-|-------------|---------|----------|
-| PDF documents (Abfallsatzung) | Extract disposal rules | Rule extraction, condition parsing |
-| DOCX container guides | "What goes in" lists | Yes/No classification |
-| Waste item synonyms | Better RAG matching | Synonym generation |
-| Entity normalization | Clean facility names | Named entity recognition |
+### Implementation Status
+| Phase | Component | Status |
+|-------|-----------|--------|
+| 5A | Extraction Chain | ✅ Complete |
+| 5B | Pydantic Schemas | ✅ Complete |
+| 5C | Orchestrator Agent | ✅ Complete |
+| 5D | Database Loader | ✅ Complete |
 
-**Note:** User has 96GB VRAM homelab with OpenAI OSS 120B model available.
+### Architecture Overview
+
+Two-tier extraction system: a reusable **Extraction Chain** (workhorse) and an **Orchestrator Agent** (intelligence layer).
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ORCHESTRATOR AGENT                           │
+│  (Planning, schema awareness, task delegation, gap analysis)    │
+│                                                                 │
+│  • Analyzes full documents                                      │
+│  • Creates extraction plan                                      │
+│  • Identifies entity types present                              │
+│  • Delegates to extraction chains                               │
+│  • Cross-references with existing DB                            │
+│  • Optional: web search for enrichment                          │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ delegates
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    EXTRACTION CHAIN                             │
+│  (Stateless, reusable, schema-driven structured output)         │
+│                                                                 │
+│  Input:                                                         │
+│    • text_chunk: str                                            │
+│    • output_schema: Pydantic model (dynamic)                    │
+│    • context: Optional[str] (related entities, hints)           │
+│                                                                 │
+│  Output:                                                        │
+│    • List[Entity] matching the provided schema                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Model Configuration
+
+- **Endpoint:** OpenAI-compatible (llama.cpp server on port 443)
+- **Model:** OpenAI OSS 120B thinking model (agentic tasks)
+- **Configuration:** Environment variables for API key and base URL, overriding default OpenAI client when base URL is set
+
+```bash
+# .env configuration
+LLM_API_KEY=your-api-key
+LLM_BASE_URL=https://your-server:443/v1  # When set, overrides OpenAI default
+```
+
+### Phase 5A: Extraction Chain (Foundation)
+
+The extraction chain is a generic, stateless component that can extract any entity type by swapping the output schema.
+
+**Core Concept:** The schema IS the prompt. Pass a Pydantic model, LangChain's structured output handles the rest. Same chain extracts `WasteItem`, `DisposalRule`, or `Condition` - just swap the schema.
+
+#### Interface Design
+```python
+class ExtractionChain:
+    """Generic extraction chain with dynamic schema support."""
+
+    def extract(
+        self,
+        text: str,
+        output_schema: Type[BaseModel],  # Dynamic - WasteItem, Facility, Rule, etc.
+        extraction_prompt: str,           # What to look for
+        context: str = ""                 # Related entities, hints from DB
+    ) -> list[BaseModel]:
+        """Extract entities matching the provided schema from text."""
+        ...
+```
+
+#### Example Usage
+```python
+# Extract waste items from a text chunk
+items = chain.extract(
+    text="Altöl muss bei der Schadstoffannahme abgegeben werden...",
+    output_schema=WasteItemExtract,
+    extraction_prompt="Extract all waste items mentioned with their disposal routes",
+    context="Known facilities: Wertstoffhof Nord, Schadstoffmobil..."
+)
+
+# Same chain, different schema - extract disposal rules
+rules = chain.extract(
+    text="Farbreste: flüssig → Schadstoffannahme, eingetrocknet → Restmüll",
+    output_schema=DisposalRuleExtract,
+    extraction_prompt="Extract conditional disposal rules (if X then Y)",
+    context=""
+)
+```
+
+#### Implementation Details
+- **File:** `src/llm_etl/extraction_chain.py`
+- **Dependencies:** LangChain, Pydantic
+- **Validation:** Retry logic for malformed outputs
+- **CLI:** `python -m src.llm_etl.extract --schema WasteItem --input chunk.txt`
+
+### Phase 5B: Pydantic Schema Definitions
+
+Pydantic models mirroring the Neo4j schema for structured LLM output.
+
+**File:** `src/llm_etl/schemas.py`
+
+```python
+from pydantic import BaseModel, Field
+
+class WasteItemExtract(BaseModel):
+    """Extracted waste item with disposal information."""
+    name: str = Field(description="Name of the waste item in German")
+    synonyms: list[str] = Field(default=[], description="Alternative names")
+    disposal_targets: list[str] = Field(description="Facility or WasteStream names")
+    conditions: list[str] = Field(default=[], description="Conditional disposal notes")
+
+class DisposalRuleExtract(BaseModel):
+    """Conditional disposal rule (the 'Paint Can' problem)."""
+    waste_item: str = Field(description="The waste item this rule applies to")
+    condition: str = Field(description="The condition (e.g., 'liquid', 'dry')")
+    if_true_target: str = Field(description="Disposal target if condition is true")
+    if_false_target: str = Field(default="", description="Disposal target if condition is false")
+
+class FacilityExtract(BaseModel):
+    """Extracted facility information."""
+    name: str = Field(description="Official facility name")
+    address: str = Field(default="", description="Street address")
+    opening_hours: str = Field(default="", description="Operating hours")
+    contact: str = Field(default="", description="Contact information")
+    additional_info: str = Field(default="", description="Holiday closures, special notes")
+    link: str = Field(default="", description="Website URL")
+    accepted_items: list[str] = Field(default=[], description="Waste types accepted")
+
+class WasteStreamExtract(BaseModel):
+    """Extracted waste stream (bin type) with metadata."""
+    name: str = Field(description="German name of the bin type")
+    english_name: str = Field(default="", description="English translation")
+    lid_color: str = Field(default="", description="Lid color (e.g., 'yellow', 'brown')")
+    body_color: str = Field(default="", description="Body/container color")
+    description: str = Field(default="", description="What goes in this bin")
+    emptying_frequency: str = Field(default="", description="How often emptied")
+    available_sizes: list[str] = Field(default=[], description="Available container sizes")
+
+class RelationshipExtract(BaseModel):
+    """Extracted relationship between entities."""
+    source_type: str = Field(description="Source node label (e.g., 'WasteItem')")
+    source_name: str = Field(description="Source node name")
+    relationship: str = Field(description="Relationship type (e.g., 'DISPOSED_AT')")
+    target_type: str = Field(description="Target node label")
+    target_name: str = Field(description="Target node name")
+
+class SourceExtract(BaseModel):
+    """Source document for provenance tracking."""
+    name: str = Field(description="Filename or document title")
+    file_type: str = Field(description="File type (pdf, docx, csv, json, web)")
+    file_path: str = Field(default="", description="Path to source file")
+    url: str = Field(default="", description="Source URL if web-scraped")
+```
+
+#### WasteStream Reference Data (Frankfurt FES)
+The LLM should extract/verify against these known bin types:
+
+| German Name | Lid Color | Body Color | English Name | Sizes |
+|-------------|-----------|------------|--------------|-------|
+| Restabfalltonne | Gray/Black | Gray/Black | Residual Waste | 80, 120, 240, 770L; 1.1, 2.5, 5m³ |
+| Verpackungstonne | Yellow | Gray/Black | Packaging | 120, 240, 770L |
+| Altpapiertonne | Blue/Green | Gray | Paper/Cardboard | 120, 240, 770L |
+| Biotonne | Brown | Brown | Organic Waste | 60, 120, 240L |
+| Altglascontainer | Various | Blue | Glass | Public containers only |
+
+### Phase 5C: Orchestrator Agent (Intelligence Layer)
+
+LangGraph-based agent for complex document processing. This is where the 120B thinking model shines.
+
+**Capabilities:**
+1. **Document Analysis** - "What entity types are likely in this document?"
+2. **Chunking Strategy** - "How should I split this? By section? By table?"
+3. **Extraction Planning** - "Run WasteItem extraction on pages 5-12, then DisposalRule on pages 13-20"
+4. **Gap Analysis** - "Compare extracted items against DB, identify missing relationships"
+5. **Enrichment** - "Web search for AVV codes for these chemical items"
+
+**File:** `src/llm_etl/orchestrator.py`
+
+#### Agent Tools
+| Tool | Purpose |
+|------|---------|
+| `extract_entities` | Invoke extraction chain with specific schema |
+| `query_db` | Query Neo4j for existing entities, find gaps |
+| `web_search` | Search for additional information (AVV codes, etc.) |
+| `chunk_document` | Split document using various strategies |
+| `validate_extraction` | Check extracted data against DB constraints |
+
+#### State Machine (LangGraph)
+```python
+from langgraph.graph import StateGraph
+
+class OrchestratorState(TypedDict):
+    document: str
+    document_type: str
+    extraction_plan: list[dict]
+    extracted_entities: list[BaseModel]
+    db_gaps: list[str]
+    current_step: str
+
+# Nodes
+graph = StateGraph(OrchestratorState)
+graph.add_node("analyze_document", analyze_document)
+graph.add_node("create_plan", create_extraction_plan)
+graph.add_node("extract", run_extraction_chain)
+graph.add_node("validate", validate_against_db)
+graph.add_node("enrich", web_search_enrichment)
+graph.add_node("human_review", request_human_approval)  # Optional checkpoint
+```
+
+### Phase 5D: Database Integration
+
+Loader component to insert extracted entities into Neo4j with provenance tracking.
+
+**File:** `src/llm_etl/loader.py`
+
+```python
+class EntityLoader:
+    """Load extracted entities into Neo4j with provenance."""
+
+    def load(
+        self,
+        entities: list[BaseModel],
+        source: SourceExtract,  # For provenance tracking
+        dry_run: bool = False
+    ) -> LoadResult:
+        """Insert entities using MERGE pattern with source linking."""
+        ...
+```
+
+#### Provenance Tracking
+Every loaded entity gets linked to its source document:
+
+```cypher
+// Create Source node
+MERGE (s:Source {uid: $source_uid})
+SET s.name = $filename,
+    s.type = $file_type,
+    s.file_path = $path,
+    s.import_date = datetime()
+
+// Link extracted entity to source
+MATCH (e {uid: $entity_uid})
+MERGE (e)-[:DERIVED_FROM]->(s)
+```
+
+#### Enrichment Strategy
+For existing nodes (Facilities, WasteStreams), the loader uses MATCH + SET:
+
+```cypher
+// Enrich existing Facility
+MATCH (f:Facility {name: $name})
+SET f.address = $address,
+    f.opening_hours = $opening_hours,
+    f.contact = $contact,
+    f.additional_info = $additional_info,
+    f.link = $link
+
+// Enrich existing WasteStream
+MATCH (s:WasteStream {name: $name})
+SET s.lid_color = $lid_color,
+    s.body_color = $body_color,
+    s.english_name = $english_name,
+    s.description = $description,
+    s.emptying_frequency = $frequency,
+    s.available_sizes = $sizes
+```
+
+### File Structure
+
+```
+src/llm_etl/
+├── __init__.py           # ✅ Exports: ExtractionChain, Orchestrator, EntityLoader
+├── config.py             # ✅ OpenAI client setup with base URL override
+├── schemas.py            # ✅ Pydantic models for extraction
+├── extraction_chain.py   # ✅ Phase 5A: Generic extraction chain
+├── extract.py            # ✅ CLI entry point for extraction
+├── orchestrator.py       # ✅ Phase 5C: LangGraph agent
+├── orchestrate.py        # ✅ CLI entry point for orchestration
+├── loader.py             # ✅ Phase 5D: Neo4j insertion with provenance
+├── load.py               # ✅ CLI entry point for loading
+└── tools/                # Agent tools
+    ├── __init__.py       # ✅ Tool exports
+    ├── db_tools.py       # ✅ query_db, validate_extraction, find_gaps
+    ├── doc_tools.py      # ✅ chunk_document, estimate_entity_types
+    └── web_tools.py      # ✅ web_search placeholder
+```
+
+### Run Commands
+
+```bash
+# Phase 5A: Direct extraction with specific schema
+python -m src.llm_etl.extract \
+    --schema WasteItem \
+    --input data/chunk.txt \
+    --output extracted.json
+
+# Phase 5C: Full orchestrator on a document
+python -m src.llm_etl.orchestrate \
+    --input data/document.txt \
+    --dry-run
+
+# Phase 5D: Load extracted entities into Neo4j
+python -m src.llm_etl.load \
+    --input extracted.json \
+    --dry-run
+
+# Full pipeline: orchestrate + load
+python -m src.llm_etl.load \
+    --file data/document.txt \
+    --source-name "document.txt" \
+    --source-type txt
+
+# Load with custom source provenance
+python -m src.llm_etl.load \
+    --input extracted.json \
+    --source-name "Abfallsatzung_2024.pdf" \
+    --source-type pdf \
+    --source-path "/data/sources/Abfallsatzung_2024.pdf"
+```
+
+### Implementation Phases
+
+| Phase | Component | Description | Dependencies |
+|-------|-----------|-------------|--------------|
+| 5A | Extraction Chain | Generic schema-driven extraction | LangChain, Pydantic |
+| 5B | Schema Definitions | Pydantic models for all entity types | Phase 5A |
+| 5C | Orchestrator Agent | LangGraph planning and delegation | Phase 5A, 5B |
+| 5D | Database Loader | Neo4j insertion with provenance | Phase 5A, 5B |
+
+### Target Data Sources
+
+| Data Source | Purpose | Extraction Strategy |
+|-------------|---------|---------------------|
+| `disposal_map_db.json` | Facility enrichment (addresses, hours, contacts) | FacilityExtract → enrich existing nodes |
+| DOCX container guides | WasteStream metadata, "what goes in" lists | WasteStreamExtract, WasteItemExtract |
+| PDF documents (Abfallsatzung) | Legal disposal rules | DisposalRuleExtract |
+| Web-scraped content | Additional waste items, facilities | WasteItemExtract, FacilityExtract |
+| AVV_Katalog.xlsx | Legal codes, hazard levels | AVVCodeExtract (structured, may not need LLM) |
+
+### Design Principles
+
+1. **Schema is the prompt** - Pydantic models drive extraction, not complex prompts
+2. **Stateless chain, stateful agent** - Chain is reusable; agent manages workflow
+3. **Idempotent insertion** - Always use MERGE, safe to re-run
+4. **Provenance tracking** - Link all extracted data to source documents
+5. **Human-in-the-loop** - Optional approval checkpoints for critical data
+6. **Model-agnostic** - Easy to swap models by changing config
+
+---
+
+## Future Enhancements
+
+| Enhancement | Description |
+|-------------|-------------|
+| Multi-model comparison | Run same extraction with different models, compare quality |
+| Active learning | Flag low-confidence extractions for human review |
+| Incremental updates | Detect changed source documents, re-extract only diffs |
+| RAG-enhanced extraction | Use existing DB entities as context for better extraction |
+| Batch processing | Process multiple documents in parallel |
+
+**Hardware:** 96GB VRAM homelab with OpenAI OSS 120B model available for development and production runs.
