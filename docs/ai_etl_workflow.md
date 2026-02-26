@@ -101,7 +101,43 @@ The orchestrator uses German keyword heuristics to detect likely entity types:
 - **WasteStream**: "tonne", "biotonne", "gelbe tonne", "leerung"
 - **DisposalRule**: "wenn", "falls", "flüssig", "trocken", "→"
 
-### 3. Entity Loader (`loader.py`)
+### 3. Pipeline (`pipeline.py`)
+
+The unified entry point for notebook-driven extraction. Wraps ExtractionChain + EntityLoader into a single `run()` call with two modes.
+
+**Chain mode** — single LLM structured-output call:
+```
+text → ExtractionChain → entities → EntityLoader → Neo4j
+```
+
+**Agent mode** — LangGraph ReAct loop, then extraction:
+```
+text → Agent (explores graph with tools) → context → ExtractionChain → entities → EntityLoader → Neo4j
+```
+
+**Agent tools** (read-only graph exploration):
+| Tool | Description |
+|------|-------------|
+| `search_entities` | List entities of a given type |
+| `get_entity_details` | Get full properties of an entity |
+| `get_graph_stats` | Node counts and relationship totals |
+| `list_waste_streams` | All waste stream names |
+| `list_facilities` | All facility names |
+
+The agent gathers graph context so the extraction step can match disposal targets to exact entity names, avoiding orphaned references.
+
+**Result type:**
+```python
+@dataclass
+class PipelineResult:
+    success: bool
+    entities: list[BaseModel]       # Extracted Pydantic instances
+    load_result: LoadResult | None  # None if load_to_db=False
+    messages: list[str]             # Processing trace
+    errors: list[str]
+```
+
+### 4. Entity Loader (`loader.py`)
 
 Handles database insertion with provenance tracking.
 
@@ -302,6 +338,56 @@ python -m src.llm_etl.load \
 
 ### Python API
 
+#### Pipeline (recommended)
+
+The `Pipeline` class is the simplest way to use the LLM ETL from a notebook or script:
+
+```python
+from src.llm_etl import Pipeline, WasteItemExtract, SourceExtract
+
+# Chain mode: fast, single LLM call
+pipeline = Pipeline(
+    schema=WasteItemExtract,
+    prompt="Extract waste items with disposal routes",
+    mode="chain",
+    load_to_db=True,
+    source=SourceExtract(name="guide.pdf", file_type="pdf"),
+)
+
+result = pipeline.run("Altöl muss bei der Schadstoffannahme abgegeben werden.")
+print(result.entities)      # [WasteItemExtract(name='Altöl', ...)]
+print(result.load_result)   # LoadResult(entities_created=1, ...)
+
+# Agent mode: explores graph for context before extracting
+pipeline = Pipeline(
+    schema=WasteItemExtract,
+    prompt="Match disposal targets to known facilities",
+    mode="agent",
+    max_iterations=5,
+    load_to_db=True,
+    source=SourceExtract(name="brochure.pdf", file_type="pdf"),
+)
+
+for page_text in pdf_pages:
+    result = pipeline.run(page_text)
+```
+
+Custom schemas work without any registration:
+
+```python
+from pydantic import BaseModel, Field
+
+class ChemicalExtract(BaseModel):
+    name: str = Field(description="Chemical name")
+    cas_number: str = Field(default="", description="CAS registry number")
+
+pipeline = Pipeline(schema=ChemicalExtract, prompt="Extract chemicals", load_to_db=True,
+                    source=SourceExtract(name="sds.pdf", file_type="pdf"))
+result = pipeline.run(text)  # Persisted as :ChemicalExtract nodes
+```
+
+#### Lower-level components
+
 ```python
 from src.llm_etl import (
     ExtractionChain,
@@ -319,7 +405,7 @@ items = chain.extract(
     extraction_prompt="Extract waste items with disposal locations",
 )
 
-# Orchestrated extraction
+# Orchestrated extraction (full document processing)
 orchestrator = Orchestrator()
 result = orchestrator.process_file("data/document.txt")
 
@@ -415,6 +501,7 @@ Validation results:
 ```
 src/llm_etl/
 ├── __init__.py           # Package exports
+├── pipeline.py           # Pipeline: unified entry point (chain + agent modes)
 ├── config.py             # LLM client configuration
 ├── schemas.py            # Pydantic extraction schemas
 ├── extraction_chain.py   # Core extraction logic
@@ -422,6 +509,7 @@ src/llm_etl/
 ├── orchestrator.py       # LangGraph state machine
 ├── orchestrate.py        # CLI: orchestrated extraction
 ├── loader.py             # Database loader with provenance
+├── generic_loader.py     # Fallback loader for custom Pydantic schemas
 ├── load.py               # CLI: database loading
 └── tools/
     ├── __init__.py

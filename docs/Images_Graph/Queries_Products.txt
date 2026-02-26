@@ -1,0 +1,123 @@
+# Basic Stats
+
+// Node and relationship overview
+MATCH (n) RETURN labels(n)[0] AS Label, count(*) AS Count ORDER BY Count DESC
+
+// Relationship type breakdown
+MATCH ()-[r]->() RETURN type(r) AS Relationship, count(r) AS Count ORDER BY Count DESC
+
+// All data sources
+MATCH (s:Source) RETURN s.name AS Source, s.type AS Type
+
+# Product Coverage
+
+// Products with name / brand / image / categories
+MATCH (p:Product) WHERE p.name <> "" RETURN count(p) AS with_name
+MATCH (p:Product) WHERE p.brand <> "" RETURN count(p) AS with_brand
+MATCH (p:Product) WHERE p.image_url <> "" RETURN count(p) AS with_image
+MATCH (p:Product) WHERE size(p.categories_tags) > 0 RETURN count(p) AS with_categories
+MATCH (p:Product)-[:HAS_COMPONENT]->() RETURN count(DISTINCT p) AS with_components
+
+// Coverage summary (single query)
+MATCH (p:Product)
+RETURN count(p) AS total,
+       count(CASE WHEN p.name <> "" THEN 1 END) AS has_name,
+       count(CASE WHEN p.brand <> "" THEN 1 END) AS has_brand,
+       count(CASE WHEN p.image_url <> "" THEN 1 END) AS has_image,
+       count(CASE WHEN size(p.categories_tags) > 0 THEN 1 END) AS has_categories,
+       count(CASE WHEN size(p.packaging_tags) > 0 THEN 1 END) AS has_packaging_tags
+
+# Geography
+
+// Top 10 countries by product count
+MATCH (p:Product) UNWIND p.countries_tags AS country
+WITH country, count(*) AS cnt ORDER BY cnt DESC LIMIT 10
+RETURN country AS Country, cnt AS Products
+
+// German products only
+MATCH (p:Product)
+WHERE "en:germany" IN p.countries_tags
+RETURN count(p) AS german_products
+
+# Packaging Decomposition
+
+// Top 10 packaging materials
+MATCH (c:PackagingComponent)-[:MADE_OF]->(m:Material)
+RETURN m.name AS Material, count(c) AS Components
+ORDER BY Components DESC LIMIT 10
+
+// Top 10 packaging shapes
+MATCH (c:PackagingComponent)
+WHERE c.shape <> ""
+RETURN c.shape AS Shape, count(c) AS Count
+ORDER BY Count DESC LIMIT 10
+
+// Material → WasteStream routing (how components flow to bins)
+MATCH (c:PackagingComponent)-[:MADE_OF]->(m:Material)-[:DEFAULT_STREAM]->(ws:WasteStream)
+RETURN ws.name AS WasteStream, count(DISTINCT m) AS Materials, count(c) AS Components
+ORDER BY Components DESC
+
+// Recycling hints distribution
+MATCH (c:PackagingComponent)
+WHERE c.recycling_hint <> ""
+RETURN c.recycling_hint AS Hint, count(c) AS Count
+ORDER BY Count DESC LIMIT 10
+
+# Full Decomposition Chain (Product → Component → Material → WasteStream)
+
+// Sample: 10 products with complete packaging-to-bin routing
+MATCH (p:Product)-[:HAS_COMPONENT]->(c:PackagingComponent)-[:MADE_OF]->(m:Material)-[:DEFAULT_STREAM]->(ws:WasteStream)
+WHERE p.name <> ""
+RETURN p.name AS Product, p.ean AS EAN, c.shape AS Shape, m.name AS Material, ws.name AS Stream
+LIMIT 10
+
+// Visual graph: single product with all components and materials
+MATCH (p:Product {ean: "3017620422003"})-[r1:HAS_COMPONENT]->(c:PackagingComponent)-[r2:MADE_OF]->(m:Material)
+OPTIONAL MATCH (m)-[r3:DEFAULT_STREAM]->(ws:WasteStream)
+RETURN *
+
+# Labels & Certifications
+
+// Top 10 product labels
+MATCH (p:Product) UNWIND p.labels_tags AS label
+WITH label, count(*) AS cnt ORDER BY cnt DESC LIMIT 10
+RETURN label AS Label, cnt AS Products
+
+// Green Dot products (packaging recycling system)
+MATCH (p:Product)
+WHERE "en:green-dot" IN p.labels_tags
+RETURN count(p) AS green_dot_products
+
+# Provenance
+
+// Products per source
+MATCH (p:Product)-[:DERIVED_FROM]->(s:Source)
+RETURN s.name AS Source, count(p) AS Products ORDER BY Products DESC
+
+// Entities per source (all types)
+MATCH (n)-[:DERIVED_FROM]->(s:Source)
+RETURN s.name AS Source, labels(n)[0] AS Type, count(*) AS Count ORDER BY Count DESC
+
+# Data Gaps (for agent pipeline enrichment)
+
+// Products without any packaging info
+MATCH (p:Product)
+WHERE NOT (p)-[:HAS_COMPONENT]->()
+AND size(p.packaging_tags) = 0
+RETURN count(p) AS no_packaging_info
+
+// Products with packaging_tags but no structured components
+MATCH (p:Product)
+WHERE NOT (p)-[:HAS_COMPONENT]->()
+AND size(p.packaging_tags) > 0
+RETURN count(p) AS has_tags_no_components
+
+// Components with unknown materials (no MADE_OF edge)
+MATCH (c:PackagingComponent)
+WHERE NOT (c)-[:MADE_OF]->()
+RETURN count(c) AS components_without_material
+
+// Orphaned components (should be 0)
+MATCH (c:PackagingComponent)
+WHERE NOT ()-[:HAS_COMPONENT]->(c)
+RETURN count(c) AS orphaned

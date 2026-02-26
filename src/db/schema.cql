@@ -73,7 +73,8 @@ CREATE INDEX avv_hazardous IF NOT EXISTS FOR (a:AVVCode) ON (a.is_hazardous);
 // See docs/graph_import_agent.md for full design rationale.
 
 // Product: Commercial product identified by EAN barcode (e.g., "Nutella 400g")
-// Properties: uid, ean, name, brand, quantity, categories_tags, image_url, source_api
+// Properties: uid, ean, name, brand, quantity, categories_tags, labels_tags,
+//             countries_tags, packaging_tags, image_url, source_api
 CREATE CONSTRAINT product_uid IF NOT EXISTS FOR (p:Product) REQUIRE p.uid IS UNIQUE;
 CREATE CONSTRAINT product_ean IF NOT EXISTS FOR (p:Product) REQUIRE p.ean IS UNIQUE;
 CREATE INDEX product_name IF NOT EXISTS FOR (p:Product) ON (p.name);

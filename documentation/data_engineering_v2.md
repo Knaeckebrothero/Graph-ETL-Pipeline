@@ -31,6 +31,11 @@
 | OdeNet | WordNet XML | German synsets with hypernym/hyponym trees | ~36,000 synsets |
 | Open English WordNet | WordNet XML | English-side taxonomy, interlingual links | ~120,000 synsets |
 | OpenThesaurus | Text dump | German synonym clusters | 280,000+ synonyms |
+| Open Food Facts (OFF) | REST API + Parquet dump | Food product packaging data (materials, weights, recycling hints) | ~4.29M products |
+| Open Beauty Facts (OBF) | REST API | Cosmetics/personal care product data (same schema as OFF) | ~13K products |
+| UPCitemdb | REST API | Product name, brand, category (all product types) | ~686M products |
+| OpenGTINDB | REST API | German EAN database with packaging/content flags | ~50K products |
+| `data/materials.json` | JSON | Material taxonomy (~90 OFF tags) mapped to waste streams | ~90 materials |
 | PDFs (Abfallsatzung, container guides, etc.) | PDF | Legal statutes, sorting guides, policy docs | 5 documents |
 | DOCX (bin type documentation) | DOCX | Per-bin-type waste lists and rules | 4 documents |
 
@@ -116,6 +121,33 @@ Defined in `src/db/schema.cql`:
 - `DictionaryEntry` node label for all dictionary-sourced nodes
 - Two-label promotion strategy: `(:DictionaryEntry)` → `(:DictionaryEntry:WasteItem)` after LLM classification
 - Enables four distinct chatbot response states (known item with route, known item without route, non-disposable noun, unknown term)
+
+### 3.5 Schema Extension: Product & Packaging Layer
+
+New node types for EAN barcode-based product decomposition:
+
+- `Product`: EAN-identified real-world product (e.g., "Nutella 400g", EAN 3017620422003)
+- `PackagingComponent`: Individual packaging part with weight (e.g., "Glass jar, 210g")
+- `Material`: Standardized material tag from Open Food Facts taxonomy (~90 types, e.g., `en:clear-glass`, `en:pp-5-polypropylene`)
+
+Relationships:
+
+| Relationship | From | To | Semantics |
+|-------------|------|-----|-----------|
+| `HAS_COMPONENT` | Product | PackagingComponent | Product decomposition (with qty, weight_g) |
+| `MADE_OF` | PackagingComponent | Material | Material classification |
+| `DEFAULT_STREAM` | Material | WasteStream | Material → bin type routing |
+| `IS_A` | Material | Material | Material taxonomy (e.g., pp-5 IS_A plastic) |
+| `IS_A` | Product | WasteItem | Product → waste category (e.g., Nutella IS_A chocolate spread) |
+
+Graph traversal for per-component disposal:
+
+```
+(Product "Nutella 400g")
+  -[:HAS_COMPONENT]-> (PackagingComponent "Glass jar, 210g")
+    -[:MADE_OF]-> (Material "en:clear-glass")
+      -[:DEFAULT_STREAM]-> (WasteStream "Altglascontainer")
+```
 
 ---
 
@@ -252,7 +284,128 @@ Phase 3:  LLM extraction pipeline    (attaches disposal rules)  → see DM doc
 
 ---
 
-## 6. Infrastructure
+## 6. EAN Barcode Pipeline (Data Engineering)
+
+> The barcode image scanning and planned LLM-based product matching are covered in the Data Mining documentation.
+
+### 6.1 Module Overview
+
+A drop-in module that bridges real-world products to the knowledge graph via barcode lookup. Designed to work independently of the main ETL — the chatbot can resolve a scanned barcode to per-component disposal routes without any prior import.
+
+```
+Barcode (EAN) → Fallback Resolver (OFF → OBF → UPCitemdb) → Product + PackagingComponents → Material taxonomy → WasteStreams
+```
+
+### 6.2 Data Sources: Multi-API Fallback Chain
+
+The BarcodeResolver queries APIs in sequence until a product is found:
+
+| Step | API | Coverage | Key Data | Rate Limit | Auth |
+|------|-----|----------|----------|------------|------|
+| 1 | Open Food Facts (OFF) | ~4.29M food products | Packaging components, materials, ecoscore | ~100 req/min | None |
+| 2 | Open Beauty Facts (OBF) | ~13K cosmetics/personal care | Same schema as OFF | ~100 req/min | None |
+| 3 | UPCitemdb | ~686M products (all categories) | Name, brand, category only (no packaging) | 100 req/day (free) | None |
+| opt. | OpenGTINDB | ~50K German products | German names, bitwise packaging/content flags | 500 req/day | Registration (35 EUR) |
+
+- OFF and OBF share the same API schema (v2) — the resolver tries both with identical parsing logic
+- UPCitemdb is a last-resort fallback: broad coverage but no packaging decomposition data
+- OpenGTINDB (`src/barcode/opengtindb.py`) is optional, configured via `OPENGTINDB_QUERYID` in `.env`
+
+### 6.3 Bulk Import: OFF Parquet Dump
+
+For bulk product import, the full Open Food Facts database is available as a Parquet file:
+
+**Location:** `data/off_dump/food.parquet` (4.29 GB)
+**Schema:** 111 columns, 11 mapped to Neo4j properties (see `docs/open_food_facts_import.md`)
+**Filtered subset:** `data/off_dump/openfoodfacts-products.jsonl.gz` (719K high-completeness products)
+
+Key coverage statistics:
+- 4,290,312 unique products (62 duplicates merged)
+- 385,542 products tagged as German (`en:germany`)
+- 400,817 products (9.3%) have structured packaging breakdown
+- 3,313,252 products (77.2%) have images
+
+Import results from Parquet:
+
+| Metric | Count |
+|--------|-------|
+| Product nodes | 4,290,312 |
+| PackagingComponent nodes | 555,000 |
+| MADE_OF edges | 460,000 |
+| Unknown materials (unlinked) | 5,213 (1.1%) |
+
+### 6.4 Material Taxonomy Import
+
+**Module:** `src/etl/materials.py`
+**Input:** `data/materials.json`
+**Output:** ~90 Material nodes with IS_A hierarchy and DEFAULT_STREAM edges
+
+- ~90 standardized material tags from Open Food Facts (e.g., `en:clear-glass`, `en:pp-5-polypropylene`, `en:cardboard`)
+- IS_A hierarchy: `en:pp-5-polypropylene` → `en:plastic` → `en:packaging`
+- Each leaf material mapped to a Frankfurt FES waste stream via `DEFAULT_STREAM`
+- MERGE-based idempotent import, consistent with other ETL modules
+
+### 6.5 Product Import Pipeline
+
+**Module:** `src/etl/products.py`
+**Input:** BarcodeResolver JSON output / `data/products_sample.json` / Parquet dump
+
+Creates graph structure in 5 passes:
+1. `Source` node (provenance)
+2. `Product` nodes with EAN, name, brands (MERGE by UID)
+3. `PackagingComponent` nodes per packaging part (material, shape, weight_g, quantity, food_contact)
+4. `MADE_OF` edges linking components to existing `Material` nodes
+5. `DERIVED_FROM` provenance edges
+
+### 6.6 Concrete Example: Nutella (EAN 3017620422003)
+
+```
+Product "Nutella 400g"
+├── Glass jar (210g)    -[:MADE_OF]-> en:clear-glass         -[:DEFAULT_STREAM]-> Altglascontainer
+├── Plastic lid (8g)    -[:MADE_OF]-> en:pp-5-polypropylene  -[:DEFAULT_STREAM]-> Verpackungstonne
+└── Paper label         -[:MADE_OF]-> en:paper               -[:DEFAULT_STREAM]-> Altpapiertonne
+```
+
+This is a concrete instance of the "Paint Can" problem: one product, multiple components, each with a different disposal route.
+
+### 6.7 Execution Order
+
+```
+Phase 0:  Dictionary import
+Phase 0b: LLM classification
+Phase 1:  Facilities import
+Phase 2:  Waste items CSV import
+Phase 3:  Materials taxonomy import      ← new
+Phase 4:  Product bulk import (Parquet)  ← new
+Phase 5:  LLM extraction pipeline
+(on demand: single product import via barcode scan)
+```
+
+Materials must be imported before products (components link to existing Material nodes).
+
+### 6.8 CLI Usage
+
+```bash
+# Look up product by barcode number (tries OFF → OBF → UPCitemdb)
+python -m src.barcode.lookup --number 3017620422003
+
+# Scan barcode from image
+python -m src.barcode.lookup --image photo.jpg
+
+# Save result to file
+python -m src.barcode.lookup --number 3017620422003 --output result.json
+
+# Import material taxonomy
+python -m src.etl.materials
+
+# Import products from sample/Parquet data
+python -m src.etl.products --input data/products_sample.json
+python -m src.etl.products --input data/products_sample.json --dry-run
+```
+
+---
+
+## 7. Infrastructure
 
 ### 6.1 Container Runtime
 
@@ -304,7 +457,7 @@ python -m src.llm_etl.load --input extracted.json
 
 ---
 
-## 7. Data Quality & Validation
+## 8. Data Quality & Validation
 
 ### 7.1 Validation Queries
 
@@ -340,7 +493,7 @@ MATCH (f:Facility) WHERE f.address IS NULL RETURN f.name;
 
 ---
 
-## 8. Results
+## 9. Results
 
 ### 8.1 Current Graph State
 

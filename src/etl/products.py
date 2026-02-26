@@ -26,8 +26,8 @@ from src.barcode.models import ProductInfo
 logger = logging.getLogger(__name__)
 
 BATCH_SIZE = 500
-SOURCE_NAME = "openfoodfacts"
-SOURCE_TYPE = "api"
+DEFAULT_SOURCE_NAME = "openfoodfacts"
+DEFAULT_SOURCE_TYPE = "api"
 
 
 def generate_uid(value: str) -> str:
@@ -65,6 +65,8 @@ def load_products(filepath: Path) -> list[ProductInfo]:
 def import_products(
     filepath: Path | None = None,
     products: list[ProductInfo] | None = None,
+    source_name: str | None = None,
+    source_type: str | None = None,
     dry_run: bool = False,
     verbose: bool = False,
 ) -> dict:
@@ -76,6 +78,9 @@ def import_products(
     Args:
         filepath: Path to JSON file with ProductInfo array.
         products: Pre-loaded list of ProductInfo (alternative to filepath).
+        source_name: Source identifier for provenance. Auto-detected from
+            data if not provided (falls back to "openfoodfacts").
+        source_type: Source type for provenance (default: "api").
         dry_run: If True, log what would happen without DB changes.
         verbose: If True, enable debug logging.
 
@@ -94,6 +99,17 @@ def import_products(
     else:
         products = [p for p in products if p.found]
         logger.info("Received %d found products programmatically", len(products))
+
+    # Resolve source name: explicit param > first product's source_api > default
+    if source_name is None:
+        for p in products:
+            if p.source_api:
+                source_name = p.source_api
+                break
+        else:
+            source_name = DEFAULT_SOURCE_NAME
+    if source_type is None:
+        source_type = DEFAULT_SOURCE_TYPE
 
     stats = {
         "products_loaded": len(products),
@@ -143,7 +159,7 @@ def import_products(
 
     with neo4j_db.session() as session:
         # Pass 1: Create Source node
-        source_uid = generate_uid(SOURCE_NAME)
+        source_uid = generate_uid(source_name)
         session.run(
             """
             MERGE (s:Source {uid: $uid})
@@ -151,10 +167,10 @@ def import_products(
                           s.import_date = datetime()
             """,
             uid=source_uid,
-            name=SOURCE_NAME,
-            type=SOURCE_TYPE,
+            name=source_name,
+            type=source_type,
         )
-        logger.info("Source node: %s", SOURCE_NAME)
+        logger.info("Source node: %s", source_name)
 
         # Pass 2: Create Product nodes (batched)
         product_entries = [
@@ -286,7 +302,7 @@ def import_products(
                 source_uid=source_uid,
             )
             stats["provenance_edges"] += result.single()["cnt"]
-        logger.info("Linked %d products to source: %s", stats["provenance_edges"], SOURCE_NAME)
+        logger.info("Linked %d products to source: %s", stats["provenance_edges"], source_name)
 
     logger.info("Product import complete: %s", stats)
     return stats

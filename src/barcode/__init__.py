@@ -2,7 +2,9 @@
 
 This package provides:
 - BarcodeScanner: Extract barcode numbers from images (pyzbar)
-- BarcodeResolver: Look up product info by barcode (Open Food Facts API)
+- BarcodeResolver: Look up product info by barcode via multiple APIs
+    Lookup chain: Open Food Facts → Open Beauty Facts → UPCitemdb
+- OpenGTINDBClient: German EAN database client (opengtindb.org)
 - ProductInfo: Pydantic model with structured product data
 - LookupResult: Combined scan + resolve result
 
@@ -21,6 +23,7 @@ from src.barcode.models import (
     ProductInfo,
     ScanResult,
 )
+from src.barcode.opengtindb import OpenGTINDBClient
 from src.barcode.resolver import BarcodeResolver
 from src.barcode.scanner import BarcodeScanner
 
@@ -29,6 +32,7 @@ __all__ = [
     "BarcodeResolver",
     "BarcodeScanner",
     "LookupResult",
+    "OpenGTINDBClient",
     "ProductInfo",
     "ScanResult",
 ]

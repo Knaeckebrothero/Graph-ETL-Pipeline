@@ -267,83 +267,134 @@ Final column selection for baseline import. All 4.29M products are imported — 
 
 **Skipped:** `generic_name` (4.3% — LLM pipeline can use later), `brands_tags` (redundant), `product_quantity` / `product_quantity_unit` (derived from `quantity`)
 
+### Group B: Classification & Categories
+
+| Parquet Column | Neo4j Property | Type | Coverage | Transform |
+|----------------|---------------|------|----------|-----------|
+| `categories_tags` | `Product.categories_tags` | list\<string\> | 41.7% | as-is |
+| `labels_tags` | `Product.labels_tags` | list\<string\> | 27.6% | as-is |
+
+**Skipped:** `categories` (redundant human-readable), `compared_to_category` (nutrition-only), `food_groups_tags` (coarser duplicate), `labels` (redundant)
+
+### Group C: Packaging
+
+| Parquet Column | Neo4j Property | Type | Coverage | Transform |
+|----------------|---------------|------|----------|-----------|
+| `packagings` | `PackagingComponent` nodes | list\<struct\> | 9.3% | Each element → separate node via `HAS_COMPONENT` |
+| ↳ `material` | `MADE_OF` edge → `Material` | string | 82.5%* | Match existing Material node by tag |
+| ↳ `shape` | `PackagingComponent.shape` | string | 82.1%* | as-is |
+| ↳ `recycling` | `PackagingComponent.recycling_hint` | string | 12.4%* | as-is |
+| ↳ `number_of_units` | `PackagingComponent.number_of_units` | int | 23.4%* | as-is |
+| ↳ `weight_measured` | `PackagingComponent.weight_g` | float | 1.3%* | as-is |
+| `packaging_tags` | `Product.packaging_tags` | list\<string\> | 8.7% | Fallback when `packagings` is empty |
+
+*Per-component coverage (measured on 2,784 components from 1,996 products with packaging).
+
+**Skipped:** `packagings_complete` (editorial), `packaging_shapes_tags` / `packaging_recycling_tags` (derived from `packagings`), `packaging` (free-text), `packaging_text` (0.8%), sub-fields `quantity_per_unit*` (food content, not packaging)
+
+### Group D: Environmental & Nutritional Scores
+
+No columns imported. `ecoscore_grade`, `nutriscore_grade`, `nova_group`, `ecoscore_score`, `nutriscore_score` — all skipped for baseline import. Available in Parquet for LLM pipeline enrichment later.
+
+### Group E: Ingredients & Allergens
+
+No columns imported. `ingredients_tags`, `ingredients_text`, `ingredients`, `ingredients_analysis_tags`, `allergens_tags`, `traces_tags`, `additives_tags`, `additives_n` — all skipped for baseline. Available for LLM pipeline enrichment.
+
+### Group F: Geography & Sales
+
+| Parquet Column | Neo4j Property | Type | Coverage | Transform |
+|----------------|---------------|------|----------|-----------|
+| `countries_tags` | `Product.countries_tags` | list\<string\> | 99.5% | as-is |
+
+**Skipped:** `stores_tags` / `stores` (not waste-relevant), `origins_tags` (3.9%), `manufacturing_places_tags` (5.0%), `purchase_places_tags` (4.8%), `cities_tags` (2.3%), `emb_codes` (5.1%)
+
+### Group G: Images
+
+| Parquet Column | Neo4j Property | Type | Coverage | Transform |
+|----------------|---------------|------|----------|-----------|
+| `images` | `Product.image_url` | string | 77.2% | Find first `front_{lang}` key, construct URL: `https://images.openfoodfacts.org/images/products/{code[:3]}/{code[3:6]}/{code[6:9]}/{code[9:]}/{key}.400.jpg` |
+
+### Groups H–K: Metadata, Editorial, Nutrition Detail, Misc
+
+No columns imported. All 55+ columns in these groups (completeness, timestamps, contributors, nutriments, quality flags, etc.) skipped for baseline. Available in Parquet for LLM pipeline enrichment.
+
 ---
 
-## Import Recommendation (draft — being replaced by Import Manifest above)
+### Summary
 
-### Strategy: Import all products, grab every relevant field, leave gaps as NULL
+**11 Parquet columns → 10 Neo4j properties + PackagingComponent nodes**
 
-No filtering by country or completeness — import all 4.29M products. Missing fields are left empty for the agent pipeline to fill later from other sources. This gives us a baseline to measure gaps.
+| Neo4j Target | Source | Transform |
+|-------------|--------|-----------|
+| `Product.uid` | `code` | `sha256(code)[:16]` |
+| `Product.ean` | `code` | as-is |
+| `Product.name` | `product_name` | Multilingual: `de` > `en` > `main` > first |
+| `Product.brand` | `brands` | as-is |
+| `Product.quantity` | `quantity` | as-is |
+| `Product.categories_tags` | `categories_tags` | as-is |
+| `Product.labels_tags` | `labels_tags` | as-is |
+| `Product.countries_tags` | `countries_tags` | as-is |
+| `Product.packaging_tags` | `packaging_tags` | Fallback when `packagings` is empty |
+| `Product.image_url` | `images` | Construct URL from barcode + front image key |
+| `PackagingComponent.shape` | `packagings[].shape` | as-is |
+| `PackagingComponent.recycling_hint` | `packagings[].recycling` | as-is |
+| `PackagingComponent.number_of_units` | `packagings[].number_of_units` | as-is |
+| `PackagingComponent.weight_g` | `packagings[].weight_measured` | as-is |
+| `MADE_OF` edge → `Material` | `packagings[].material` | Match by tag |
 
-### Columns to import (31 of 111)
+**100 columns skipped** — available in Parquet for LLM pipeline enrichment.
 
-**Product node properties:**
-- `code` → `Product.ean` + deterministic `uid`
-- `product_name` → `Product.name` / `Product.name_de` (extract `de` > `en` > `main` > first)
-- `generic_name` → `Product.generic_name` (same multilingual extraction)
-- `brands` → `Product.brand`
-- `quantity` → `Product.quantity`
-- `categories_tags` → `Product.categories_tags`
-- `labels_tags` → `Product.labels_tags`
-- `countries_tags` → `Product.countries_tags`
-- `stores_tags` → `Product.stores_tags`
-- `ecoscore_grade` → `Product.ecoscore_grade`
-- `nutriscore_grade` → `Product.nutriscore_grade`
-- `nova_group` → `Product.nova_group`
-- `ingredients_tags` → `Product.ingredients_tags`
-- `ingredients_analysis_tags` → `Product.ingredients_analysis` (vegan/vegetarian/palm-oil flags)
-- `allergens_tags` → `Product.allergens_tags`
-- `traces_tags` → `Product.traces_tags`
-- `completeness` → `Product.completeness`
-- `lang` → `Product.lang`
-- `images` → `Product.image_url` (construct front image URL from barcode path + first `front_{lang}` key)
-- `origins_tags` → `Product.origins_tags`
-- `manufacturing_places_tags` → `Product.manufacturing_places_tags`
-- `scans_n` → `Product.scans_n` (popularity signal)
+## Import Results (2026-02-26)
 
-**PackagingComponent nodes (from `packagings[]`):**
-- `material` → `MADE_OF` edge to existing `Material` node
-- `shape` → `PackagingComponent.shape`
-- `recycling` → `PackagingComponent.recycling_hint`
-- `number_of_units` → `PackagingComponent.number_of_units`
-- `weight_measured` → `PackagingComponent.weight_g`
-- `quantity_per_unit` → `PackagingComponent.quantity_per_unit`
+Full import completed in **9.0 minutes** (~7,960 products/sec).
 
-**Flat packaging fields (as fallback when `packagings` is empty):**
-- `packaging_tags` → `Product.packaging_tags` (flat material tags, useful even without structured breakdown)
+### Node & Edge Counts
 
-### Columns to skip (80 of 111)
+| Entity | Count |
+|--------|-------|
+| Product nodes | 4,290,312 |
+| PackagingComponent nodes | 555,227 |
+| HAS_COMPONENT edges | 555,227 |
+| MADE_OF edges | 459,850 |
+| DERIVED_FROM edges | 4,290,312 |
+| Skipped (no barcode) | 2 |
+| Unknown materials | 5,213 |
 
-- **Redundant with tags:** `categories`, `labels`, `stores`, `origins`, `manufacturing_places`, `packaging`, `brands_tags`
-- **Nutrition detail:** `nutriments`, `nutrient_levels_tags`, `serving_size`, `serving_quantity`, etc. (not waste-relevant)
-- **Internal counts:** `additives_n`, `ingredients_n`, `known_ingredients_n`, `unknown_ingredients_n`, etc.
-- **Editorial:** `creator`, `editors`, `last_editor`, `correctors_tags`, `informers_tags`, `photographers`, `owner`, `owner_fields`
-- **Quality flags:** `data_quality_*`, `states_tags`, `misc_tags`
-- **Timestamps:** `created_t`, `last_modified_t`, `last_updated_t`, `last_image_t`
-- **Internal:** `rev`, `schema_version`, `popularity_key`, `popularity_tags`, `entry_dates_tags`, `last_edit_dates_tags`
-- **Empty/negligible:** `main_countries_tags` (0%), `nucleotides_tags` (0%), `new_additives_n` (0%), `with_sweeteners` (0.1%)
-- **Derived/redundant packaging:** `packaging_shapes_tags`, `packaging_recycling_tags`, `packaging_text`, `packagings_complete` (all derived from `packagings`)
-- **Raw JSON/ecoscore internals:** `ecoscore_data`, `ecoscore_tags`, `ecoscore_score`, `nova_groups_tags`, `nova_groups`
+62 duplicate EANs in the Parquet merged into existing Product nodes (4,290,374 rows → 4,290,312 unique products).
 
-### Value transformations needed
+### Key Observations
 
-1. **`product_name` / `generic_name`** — Multilingual `list<struct<lang, text>>`. Extract priority: `de` > `en` > `main` > first available.
-2. **`images` → single URL** — Find first `front_{lang}` key, construct: `https://images.openfoodfacts.org/images/products/{code[:3]}/{code[3:6]}/{code[6:9]}/{code[9:]}/{key}.400.jpg`
-3. **`nutriscore_grade`** — Filter out `"unknown"` (98.9% coverage is inflated — real grades are ~31%).
-4. **`packaging_tags` as fallback** — When `packagings` array is empty but `packaging_tags` exists, store the flat tags on the Product node so downstream agents can still infer materials.
+- **385,542 German products** (`en:germany` in countries_tags)
+- **400,817 products** have structured packaging breakdown (9.3%)
+- **274,305 products** have no name (6.4% — mostly junk/placeholder entries)
+- **5,213 unknown materials** (1.1% of MADE_OF attempts) — OFF material tags not in our 90-material taxonomy
 
-### Gap analysis (what's missing, where agents can fill in)
+### Top Materials by Component Count
 
-| Data point | Available products | Missing | Agent opportunity |
-|---|---|---|---|
-| Product name | 4.0M (93.6%) | 274K | Low priority — mostly junk entries |
-| Brand | 2.7M (62.0%) | 1.6M | Could enrich from manufacturer databases |
-| Categories | 1.8M (41.7%) | 2.5M | LLM classification from product name |
-| Structured packaging | 400K (9.3%) | 3.9M | **Biggest gap** — LLM inference from product type + packaging_tags |
-| Ingredients | 1.2M (28.7%) | 3.1M | OCR from product images (77% have images) |
-| Eco-Score | 1.1M (26.8%) | 3.2M | Compute from packaging + transport data |
-| Allergens | 713K (16.6%) | 3.6M | Extract from ingredients text |
-| Country | 4.3M (99.5%) | 23K | Nearly complete |
+| Material | Components |
+|----------|-----------|
+| Plastic | 182,129 |
+| Cardboard | 52,150 |
+| Glass | 48,436 |
+| Metal | 29,179 |
+| Paper | 24,506 |
+| PP 5 - Polypropylene | 21,700 |
+| Aluminium | 15,325 |
+| PET 1 - Polyethylene terephthalate | 15,171 |
+| Paperboard | 6,424 |
+| Non-corrugated cardboard | 6,060 |
+
+### Full Decomposition Chain
+
+Product → PackagingComponent → Material → WasteStream resolves end-to-end:
+
+```
+python -m src.etl.off_import                          # Full import
+python -m src.etl.off_import --dry-run                # Scan only
+python -m src.etl.off_import --limit 1000             # Test with N products
+```
+
+Import order: `materials.py` must run before `off_import.py` (MADE_OF edges MATCH on Material.tag).
 
 ## Local Files
 

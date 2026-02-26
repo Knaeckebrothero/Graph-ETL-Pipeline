@@ -8,6 +8,7 @@ ETL pipeline for constructing a Neo4j knowledge graph to power the "Fessi" unive
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
+- [Pipeline API](#pipeline-api)
 - [Project Structure](#project-structure)
 - [Schema](#schema)
 - [Data Sources](#data-sources)
@@ -87,6 +88,15 @@ WasteItem(Paint) → Condition(Form?) → [Liquid] → Chemical Waste
 | `NEO4J_USER` | `neo4j` | Database username |
 | `NEO4J_PASSWORD` | `neo4j_dev` | Database password |
 
+### LLM Configuration (for AI extraction)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `LLM_PROVIDER` | `openai` | LLM provider (`openai` or `groq`) |
+| `LLM_MODEL` | `gpt-4o` | Model identifier |
+| `LLM_API_KEY` | | API key for the provider |
+| `LLM_BASE_URL` | | OpenAI-compatible endpoint override (for local llama.cpp, etc.) |
+
 ### Default Credentials
 
 - **URI**: `bolt://localhost:7687`
@@ -155,6 +165,95 @@ stats = neo4j_db.get_stats()
 print(f"Nodes: {stats['total_nodes']}, Relationships: {stats['relationship_count']}")
 ```
 
+## Pipeline API
+
+The `Pipeline` class is the unified entry point for LLM-based extraction. It takes text + prompt + settings and returns structured entities with optional Neo4j insertion. Two modes are available:
+
+| Mode | Description | LLM Calls | Use Case |
+|------|-------------|-----------|----------|
+| `chain` | Single structured-output call | 1 | Bulk processing, clean text |
+| `agent` | ReAct loop exploring the graph, then extraction | N+1 | Complex text, needs graph context |
+
+### Quick Start
+
+```python
+from src.llm_etl import Pipeline, WasteItemExtract, SourceExtract
+
+# Create pipeline
+pipeline = Pipeline(
+    schema=WasteItemExtract,
+    prompt="Extract waste items with disposal routes",
+    mode="chain",
+    load_to_db=True,
+    source=SourceExtract(name="guide.pdf", file_type="pdf"),
+)
+
+# Run on each text passage
+result = pipeline.run("Altöl muss bei der Schadstoffannahme abgegeben werden.")
+
+print(result.entities)      # [WasteItemExtract(name='Altöl', ...)]
+print(result.load_result)   # LoadResult(entities_created=1, ...)
+```
+
+### Agent Mode
+
+When extraction benefits from understanding what's already in the graph:
+
+```python
+pipeline = Pipeline(
+    schema=WasteItemExtract,
+    prompt="Extract waste items, match disposal targets to known facilities",
+    mode="agent",
+    max_iterations=5,
+    load_to_db=True,
+    source=SourceExtract(name="brochure.pdf", file_type="pdf"),
+)
+
+for page_text in pdf_pages:
+    result = pipeline.run(page_text)
+    print(result.messages)  # Shows agent tool calls and extraction trace
+```
+
+### Custom Schemas
+
+Define your own Pydantic schema — the `GenericEntityLoader` handles DB insertion automatically:
+
+```python
+from pydantic import BaseModel, Field
+
+class ChemicalExtract(BaseModel):
+    name: str = Field(description="Chemical name")
+    cas_number: str = Field(default="", description="CAS registry number")
+    hazard_class: str = Field(default="", description="GHS hazard class")
+
+pipeline = Pipeline(
+    schema=ChemicalExtract,
+    prompt="Extract chemical substances with hazard info",
+    load_to_db=True,
+    source=SourceExtract(name="safety_sheet.pdf", file_type="pdf"),
+)
+
+result = pipeline.run(text)
+# Entities persisted as :ChemicalExtract nodes in Neo4j
+```
+
+### Pipeline Parameters
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `schema` | *required* | Pydantic model class defining what to extract |
+| `prompt` | `""` | Extraction instructions for the LLM |
+| `mode` | `"chain"` | `"chain"` or `"agent"` |
+| `max_iterations` | `10` | Max agent tool-calling rounds (agent mode) |
+| `max_retries` | `2` | Structured output retry count |
+| `temperature` | `0.0` | LLM sampling temperature |
+| `load_to_db` | `False` | Persist entities to Neo4j |
+| `dry_run` | `False` | Simulate DB writes |
+| `source` | `None` | `SourceExtract` for provenance tracking |
+| `context` | `""` | Static context passed to every `run()` call |
+
+See `notebooks/pipeline_example.ipynb` for a full walkthrough.
+
 ## Project Structure
 
 ```
@@ -162,26 +261,35 @@ print(f"Nodes: {stats['total_nodes']}, Relationships: {stats['relationship_count
 ├── src/
 │   ├── config.py                 # Environment configuration
 │   ├── db/
-│   │   ├── __init__.py
 │   │   ├── neo4j_db.py           # Neo4j database singleton
 │   │   └── schema.cql            # Graph schema (constraints, indexes)
-│   ├── etl/
-│   │   ├── __init__.py
+│   ├── etl/                      # Structured ETL (CSV/JSON)
 │   │   ├── facilities.py         # Phase 1: Facility import
 │   │   ├── waste_items.py        # Phase 2: WasteItem import
-│   │   └── waste_streams.py      # Phase 3A: WasteStream enrichment (pending)
+│   │   ├── materials.py          # Material taxonomy import
+│   │   └── dictionary_classifier.py  # Batched LLM classification
+│   ├── llm_etl/                  # LLM-based ETL (unstructured docs)
+│   │   ├── pipeline.py           # Pipeline: unified entry point
+│   │   ├── extraction_chain.py   # Schema-driven LLM extraction
+│   │   ├── orchestrator.py       # LangGraph document processor
+│   │   ├── loader.py             # Entity loader with provenance
+│   │   ├── generic_loader.py     # Fallback loader for custom schemas
+│   │   ├── schemas.py            # Pydantic extraction schemas
+│   │   ├── config.py             # LLM provider configuration
+│   │   └── tools/                # Agent tools (DB, doc, web)
+│   ├── barcode/                  # Product barcode lookup (OFF API)
 │   └── scripts/
 │       └── init_db.py            # Database initialization CLI
+├── notebooks/
+│   └── pipeline_example.ipynb    # Pipeline usage walkthrough
 ├── data/
 │   ├── disposal_map_db.json      # Facility names, addresses, hours
-│   ├── Abfall-ABC_new.csv        # Waste items and disposal routes
-│   ├── *.docx                    # Bin type documentation (future)
-│   └── *.pdf                     # Legal rules (future)
+│   └── Abfall-ABC_new.csv        # Waste items and disposal routes
+├── docs/                         # Technical documentation
 ├── docker/
 │   └── podman-compose.yml        # Container setup
 ├── requirements.txt
-├── .env.example
-└── etl_implementation.md         # Detailed ETL documentation
+└── .env.example
 ```
 
 ## Schema

@@ -308,9 +308,104 @@ The two-label strategy enables four distinct chatbot responses:
 
 ---
 
-## 8. Validation & Provenance
+## 8. EAN Barcode Pipeline (Data Mining)
 
-### 8.1 Entity Validation
+> The data pipeline (multi-API resolver, bulk Parquet import, material taxonomy, product ETL) is covered in the Data Engineering documentation. This section covers the barcode scanning, data models, and planned LLM-based product matching.
+
+### 8.1 Barcode Image Scanning
+
+**Module:** `src/barcode/scanner.py`
+
+The BarcodeScanner uses pyzbar (a Python wrapper around the ZBar library) to extract barcode numbers from images:
+
+1. Load image via Pillow
+2. Detect and decode barcode regions (supports EAN-13, EAN-8, UPC-A, Code128, QR, etc.)
+3. Return structured `ScanResult` with barcode value, format, and confidence
+
+This is a computer vision preprocessing step — no LLM involved. The extracted barcode number is then passed to the BarcodeResolver for product lookup.
+
+### 8.2 Multi-API Fallback Resolution
+
+**Module:** `src/barcode/resolver.py`
+
+The BarcodeResolver implements a cascading fallback pattern, querying APIs in sequence until a product is found:
+
+1. **Open Food Facts** — ~4.29M food products, full packaging decomposition
+2. **Open Beauty Facts** — ~13K cosmetics/personal care, same API schema
+3. **UPCitemdb** — ~686M products (all categories), name/brand/category only
+4. (Optional) **OpenGTINDB** — ~50K German products, German names, bitwise flags
+
+The resolver returns a unified `ProductInfo` regardless of which API responded. The `source_api` field tracks which source provided the data — relevant for provenance and for understanding data completeness (OFF/OBF provide packaging decomposition, UPCitemdb does not).
+
+### 8.3 Pydantic Data Models
+
+```python
+class PackagingComponentInfo(BaseModel):
+    material: str                 # e.g., "en:clear-glass"
+    shape: str                    # e.g., "en:jar"
+    recycling: str | None         # e.g., "en:recycle-in-glass-bin"
+    number_of_units: int          # e.g., 1
+    weight_measured: float | None # Weight in grams
+    food_contact: bool | None     # Whether component contacts food
+
+class ProductInfo(BaseModel):
+    barcode: str
+    found: bool
+    source_api: str               # "openfoodfacts", "openbeautyfacts", "upcitemdb", "opengtindb"
+    product_name: str
+    product_name_de: str          # German name if available
+    brands: str
+    categories_tags: list[str]
+    packaging_components: list[PackagingComponentInfo]
+    packaging_materials_tags: list[str]  # Material codes — key for waste routing
+    ecoscore_grade: str
+    nutriscore_grade: str
+    image_url: str
+    lookup_timestamp: str         # ISO 8601
+```
+
+Follows the same "schema IS the prompt" principle used in the extraction chain — Pydantic models define the structure, validation is automatic. The models normalize responses from four different APIs into one consistent format.
+
+### 8.4 Planned: LLM-based Product → WasteItem Matching
+
+Currently, the `IS_A` link between a `Product` and a `WasteItem` (e.g., Nutella IS_A chocolate spread) is not automatically resolved. Planned approach (see `docs/graph_import_agent.md`):
+
+**Phase 1 — Category-based bulk matching**
+- Open Food Facts provides `categories_tags` (e.g., `en:chocolate-spreads`, `en:hazelnut-spreads`)
+- Rule-based mapping of OFF categories to existing WasteItem nodes
+- Scales to the full 4.29M product corpus without LLM cost
+
+**Phase 2 — LLM agent-based enrichment**
+- For products without category matches, use an LLM agent with graph search tools
+- Agent tools: search graph by name/category, update product edges, create new WasteItem if needed
+- Input: product name, brands, categories
+- Output: matched WasteItem UID or "no match"
+- Leverages the dictionary baseline: the LLM searches against ~30-60k known WasteItem nodes rather than creating new ones
+
+**Phase 3 — Novel query pattern**
+- User asks: "How do I dispose of Nutella?"
+- Graph traversal: `Product → HAS_COMPONENT → PackagingComponent → MADE_OF → Material → DEFAULT_STREAM → WasteStream`
+- Returns per-component disposal instructions instead of a single answer
+
+### 8.5 The Nutella Example as Applied "Paint Can" Problem
+
+The barcode pipeline makes the "Paint Can" problem concrete and user-facing:
+
+| Component | Material | Disposal Route |
+|-----------|----------|---------------|
+| Glass jar (210g) | Clear glass | Altglascontainer |
+| Plastic lid (8g) | PP-5 Polypropylene | Verpackungstonne |
+| Paper label | Paper | Altpapiertonne |
+
+Same product, three different bins. Vector-RAG would retrieve a passage about Nutella; Graph-RAG traverses the actual component → material → stream paths.
+
+At scale (4.29M products, 555K components), this graph structure provides disposal routing for real-world products that no document-based system could match.
+
+---
+
+## 9. Validation & Provenance
+
+### 9.1 Entity Validation
 
 | Check | Entity Types | Description |
 |-------|-------------|-------------|
@@ -319,14 +414,14 @@ The two-label strategy enables four distinct chatbot responses:
 | Duplicate detection | All | Warns if entity with same name/UID exists |
 | Reference validation | DisposalRule | Checks that referenced WasteItem exists |
 
-### 8.2 Gap Analysis
+### 9.2 Gap Analysis
 
 The validation stage compares extracted entities against the database:
 - **New entities**: extracted items not yet in DB (candidates for insertion)
 - **Existing entities**: already in DB (candidates for enrichment, not duplication)
 - **Missing references**: extracted relationships pointing to non-existent nodes
 
-### 8.3 Provenance Model
+### 9.3 Provenance Model
 
 Every LLM-extracted entity is linked to its source document:
 
@@ -341,7 +436,7 @@ This enables:
 - Auditing which documents contributed which entities
 - Re-extracting from updated source documents
 
-### 8.4 Enrichment Strategy
+### 9.4 Enrichment Strategy
 
 For entities that already exist in the database, the loader updates properties without overwriting existing data:
 
@@ -353,9 +448,9 @@ This prevents partial extractions from erasing previously imported data.
 
 ---
 
-## 9. Results & Evaluation
+## 10. Results & Evaluation
 
-### 9.1 Structured ETL Baseline
+### 10.1Structured ETL Baseline
 
 > Full structured ETL results are in the Data Engineering documentation.
 
@@ -366,19 +461,19 @@ This prevents partial extractions from erasing previously imported data.
 | WasteStream nodes | 5 |
 | Total relationships | 1,067 |
 
-### 9.2 LLM Pipeline Evaluation
+### 10.2LLM Pipeline Evaluation
 
 - TODO: demonstration of extraction on sample documents
 - TODO: entity detection accuracy (precision/recall on annotated test set)
 - TODO: extraction quality assessment (correct vs. hallucinated entities)
 
-### 9.3 Coverage Analysis
+### 10.3Coverage Analysis
 
 - TODO: what percentage of waste items in source documents are captured
 - TODO: what percentage of disposal rules are modeled as graph paths
 - TODO: comparison of graph coverage before and after LLM extraction
 
-### 9.4 Cost Breakdown
+### 10.4Cost Breakdown
 
 | Component | Model | Estimated Cost |
 |-----------|-------|---------------|
@@ -387,7 +482,7 @@ This prevents partial extractions from erasing previously imported data.
 | Document extraction (per document) | Configurable (local or API) | Variable |
 | **Total dictionary baseline** | | **< $5** |
 
-### 9.5 Limitations and Future Work
+### 10.5Limitations and Future Work
 
 - TODO: current limitations (entity types not yet modeled, documents not yet processed, conditional logic coverage gaps)
 - TODO: planned enhancements (multi-model comparison, active learning, incremental updates, batch processing)

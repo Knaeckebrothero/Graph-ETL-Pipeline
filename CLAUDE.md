@@ -79,15 +79,20 @@ src/etl/
 **2. LLM-based ETL (`src/llm_etl/`)** - For unstructured documents (PDFs, DOCX):
 ```
 src/llm_etl/
+├── pipeline.py          # Pipeline: unified entry point (chain + agent modes)
 ├── extraction_chain.py  # Core: LLM structured output extraction
 ├── orchestrator.py      # LangGraph state machine for document processing
 ├── loader.py            # Database loader with provenance tracking
+├── generic_loader.py    # Fallback loader for custom Pydantic schemas
 ├── schemas.py           # Pydantic extraction schemas
 ├── extract.py           # CLI: direct extraction
 ├── orchestrate.py       # CLI: orchestrated extraction
 ├── load.py              # CLI: database loading
-└── tools/               # Document/DB analysis tools
+└── tools/               # Agent tools (DB query, doc analysis, web search)
 ```
+
+The **Pipeline** is the recommended entry point for notebook use:
+`Pipeline(schema, prompt, mode="chain"|"agent") → pipeline.run(text) → PipelineResult`
 
 The orchestrator flow: `Analyze → Plan → Extract → Validate → Load`
 
@@ -120,7 +125,24 @@ def generate_uid(name: str) -> str:
     return hashlib.sha256(name.encode()).hexdigest()[:16]
 ```
 
-**LLM extraction:** Use ExtractionChain for schema-driven extraction:
+**Pipeline (recommended for notebooks):** Unified entry point for LLM extraction:
+```python
+from src.llm_etl import Pipeline, WasteItemExtract, SourceExtract
+
+pipeline = Pipeline(
+    schema=WasteItemExtract,
+    prompt="Extract waste items with disposal routes",
+    mode="chain",          # or "agent" for graph-aware extraction
+    load_to_db=True,
+    source=SourceExtract(name="doc.pdf", file_type="pdf"),
+)
+
+result = pipeline.run("Altöl muss bei der Schadstoffannahme abgegeben werden.")
+# result.entities → list[WasteItemExtract]
+# result.load_result → LoadResult (if load_to_db)
+```
+
+**LLM extraction (lower-level):** Use ExtractionChain for schema-driven extraction:
 ```python
 from src.llm_etl import ExtractionChain, WasteItemExtract
 

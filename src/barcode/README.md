@@ -74,7 +74,7 @@ The `ProductInfo` model returned by `resolver.lookup()`:
 |-------|------|-------------|
 | `barcode` | `str` | EAN/UPC number |
 | `found` | `bool` | Whether the API had data for this barcode |
-| `source_api` | `str` | API that provided the data (`"openfoodfacts"`) |
+| `source_api` | `str` | API that provided the data (`"openfoodfacts"`, `"openbeautyfacts"`, or `"upcitemdb"`) |
 | `product_name` | `str` | Product name (best available language) |
 | `product_name_de` | `str` | German product name, if available |
 | `brands` | `str` | Brand name(s) |
@@ -102,17 +102,42 @@ The `packaging_materials_tags` field maps directly to Frankfurt FES waste stream
 | `en:steel`, `en:aluminium` | Verpackungstonne | Yellow lid |
 | `xx:82-c-pap` (composites) | Verpackungstonne | Yellow lid |
 
-## API
+## APIs
 
-This module uses the [Open Food Facts API](https://openfoodfacts.github.io/openfoodfacts-server/api/) (free, no API key required, ~100 requests/minute). The resolver architecture supports adding fallback APIs in the future.
+The resolver uses a **3-step lookup chain** (stops at first hit):
+
+| Step | API | Coverage | Data Depth | Rate Limit |
+|------|-----|----------|------------|------------|
+| 1 | [Open Food Facts](https://openfoodfacts.github.io/openfoodfacts-server/api/) | ~4M food products | Full (name, packaging, materials, eco-score) | ~100 req/min |
+| 2 | [Open Beauty Facts](https://world.openbeautyfacts.org/) | ~13K cosmetics/personal care | Full (same schema as OFF) | ~100 req/min |
+| 3 | [UPCitemdb](https://www.upcitemdb.com/wp/docs/main/development/responses/) | 686M all-category barcodes | Minimal (name, brand, category only) | 100 req/day |
+
+All three are free and require no API key.
+
+### opengtindb.org (optional enrichment)
+
+The `OpenGTINDBClient` provides access to a German EAN database with ~50K products, German product names, and bitwise packaging/contents flags. Requires registration at [opengtindb.org](https://opengtindb.org/userid.php) (35 EUR donation) and is limited to 500 requests/day.
+
+```bash
+# Set in .env
+OPENGTINDB_QUERY_ID=your_query_id
+```
+
+```python
+from src.barcode import OpenGTINDBClient
+
+client = OpenGTINDBClient()  # reads OPENGTINDB_QUERY_ID from env
+product = client.lookup("4004675064107")
+```
 
 ## Module Structure
 
 ```
 src/barcode/
-    __init__.py   # Package exports: BarcodeResolver, BarcodeScanner, ProductInfo, ...
-    models.py     # Pydantic data models
-    scanner.py    # Image → barcode number (pyzbar + Pillow)
-    resolver.py   # Barcode number → product data (Open Food Facts)
-    lookup.py     # CLI entry point
+    __init__.py    # Package exports: BarcodeResolver, BarcodeScanner, ProductInfo, ...
+    models.py      # Pydantic data models
+    scanner.py     # Image → barcode number (pyzbar + Pillow)
+    resolver.py    # Barcode number → product data (OFF → OBF → UPCitemdb)
+    opengtindb.py  # opengtindb.org API client (optional enrichment)
+    lookup.py      # CLI entry point
 ```

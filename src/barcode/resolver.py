@@ -1,6 +1,9 @@
 """Barcode resolver: look up product information by barcode number via APIs.
 
-Primary API: Open Food Facts (free, no key required)
+Lookup chain (stops at first hit):
+  1. Open Food Facts — food products (~4M)
+  2. Open Beauty Facts — cosmetics/personal care (~13K)
+  3. UPCitemdb — all products, name+brand+category only (100 req/day free)
 """
 
 import logging
@@ -13,6 +16,8 @@ from src.barcode.models import PackagingComponentInfo, ProductInfo
 logger = logging.getLogger(__name__)
 
 OFF_API_BASE = "https://world.openfoodfacts.org/api/v2/product"
+OBF_API_BASE = "https://world.openbeautyfacts.org/api/v2/product"
+UPCITEMDB_API_BASE = "https://api.upcitemdb.com/prod/trial/lookup"
 OFF_USER_AGENT = "FessiWasteBot/1.0 (https://github.com/fessi-chatbot)"
 OFF_TIMEOUT = 10  # seconds
 
@@ -84,10 +89,13 @@ class BarcodeResolver:
         if result.found:
             return result
 
-        # Future fallback APIs can be added here:
-        # result = self._lookup_open_ean_db(barcode)
-        # if result.found:
-        #     return result
+        result = self._lookup_openbeautyfacts(barcode)
+        if result.found:
+            return result
+
+        result = self._lookup_upcitemdb(barcode)
+        if result.found:
+            return result
 
         logger.info("Barcode %s not found in any API", barcode)
         return ProductInfo(
@@ -171,6 +179,136 @@ class BarcodeResolver:
             labels=product.get("labels", ""),
             image_url=product.get("image_url")
             or product.get("image_front_url", ""),
+            lookup_timestamp=timestamp,
+        )
+
+    def _lookup_openbeautyfacts(self, barcode: str) -> ProductInfo:
+        """Query Open Beauty Facts API (cosmetics, personal care).
+
+        Same API schema as Open Food Facts, different base URL.
+        Covers ~13K products: shampoos, soaps, cosmetics, etc.
+        """
+        url = f"{OBF_API_BASE}/{barcode}"
+        params = {"fields": OFF_FIELDS}
+
+        try:
+            response = self.session.get(
+                url, params=params, timeout=self.timeout
+            )
+        except requests.Timeout:
+            logger.warning(
+                "Open Beauty Facts API timeout for barcode %s", barcode
+            )
+            return ProductInfo(barcode=barcode, found=False)
+        except requests.RequestException as e:
+            logger.warning(
+                "Open Beauty Facts API error for barcode %s: %s", barcode, e
+            )
+            return ProductInfo(barcode=barcode, found=False)
+
+        if response.status_code != 200:
+            logger.debug(
+                "Open Beauty Facts returned status %d", response.status_code
+            )
+            return ProductInfo(barcode=barcode, found=False)
+
+        data = response.json()
+        product = data.get("product")
+
+        if not product:
+            logger.debug(
+                "No product data in Open Beauty Facts response for %s", barcode
+            )
+            return ProductInfo(barcode=barcode, found=False)
+
+        timestamp = datetime.now(timezone.utc).isoformat()
+
+        packaging_components = []
+        for comp in product.get("packagings") or []:
+            packaging_components.append(
+                PackagingComponentInfo(
+                    material=comp.get("material") or "",
+                    shape=comp.get("shape") or "",
+                    recycling=comp.get("recycling") or "",
+                    number_of_units=comp.get("number_of_units") or 1,
+                    weight_measured=comp.get("weight_measured"),
+                    food_contact=comp.get("food_contact"),
+                )
+            )
+
+        return ProductInfo(
+            barcode=barcode,
+            found=True,
+            source_api="openbeautyfacts",
+            product_name=product.get("product_name", ""),
+            product_name_de=product.get("product_name_de", ""),
+            brands=product.get("brands", ""),
+            quantity=product.get("quantity", ""),
+            categories=product.get("categories", ""),
+            categories_tags=product.get("categories_tags") or [],
+            packaging=product.get("packaging", ""),
+            packaging_tags=product.get("packaging_tags") or [],
+            packaging_materials_tags=product.get("packaging_materials_tags")
+            or [],
+            packaging_components=packaging_components,
+            ecoscore_grade=product.get("ecoscore_grade", ""),
+            labels=product.get("labels", ""),
+            image_url=product.get("image_url")
+            or product.get("image_front_url", ""),
+            lookup_timestamp=timestamp,
+        )
+
+    def _lookup_upcitemdb(self, barcode: str) -> ProductInfo:
+        """Query UPCitemdb API (all product categories, name+brand+category).
+
+        Free tier: 100 requests/day, no API key required.
+        Returns minimal product info (no packaging or material data).
+        API docs: https://www.upcitemdb.com/wp/docs/main/development/responses/
+        """
+        try:
+            response = self.session.get(
+                UPCITEMDB_API_BASE,
+                params={"upc": barcode},
+                timeout=self.timeout,
+            )
+        except requests.Timeout:
+            logger.warning("UPCitemdb timeout for barcode %s", barcode)
+            return ProductInfo(barcode=barcode, found=False)
+        except requests.RequestException as e:
+            logger.warning("UPCitemdb error for barcode %s: %s", barcode, e)
+            return ProductInfo(barcode=barcode, found=False)
+
+        if response.status_code == 429:
+            logger.warning("UPCitemdb rate limit reached (100/day)")
+            return ProductInfo(barcode=barcode, found=False)
+        if response.status_code != 200:
+            logger.debug("UPCitemdb returned status %d", response.status_code)
+            return ProductInfo(barcode=barcode, found=False)
+
+        data = response.json()
+        items = data.get("items") or []
+        if not items:
+            logger.debug("No items in UPCitemdb response for %s", barcode)
+            return ProductInfo(barcode=barcode, found=False)
+
+        item = items[0]
+        timestamp = datetime.now(timezone.utc).isoformat()
+
+        # Map Google product taxonomy category to categories_tags
+        category = item.get("category", "")
+        categories_tags = (
+            [f"upcitemdb:{category}"] if category else []
+        )
+
+        return ProductInfo(
+            barcode=barcode,
+            found=True,
+            source_api="upcitemdb",
+            product_name=item.get("title", ""),
+            brands=item.get("brand", ""),
+            categories=category,
+            categories_tags=categories_tags,
+            image_url=(item.get("images") or [""])[0],
             lookup_timestamp=timestamp,
         )
 

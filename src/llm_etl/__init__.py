@@ -2,9 +2,11 @@
 LLM-based ETL Pipeline for extracting structured data from unstructured documents.
 
 This package provides:
+- Pipeline: Unified entry point (text + prompt → entities → optional DB insert)
 - ExtractionChain: Generic, schema-driven extraction using LangChain
 - Orchestrator: LangGraph-based document processing pipeline
 - EntityLoader: Database loader with provenance tracking
+- GenericEntityLoader: Fallback loader for arbitrary Pydantic schemas
 - Pydantic schemas for all entity types (WasteItem, Facility, etc.)
 - WasteStream reference data for Frankfurt FES bin types
 - Schema utility functions for dynamic schema handling
@@ -12,8 +14,10 @@ This package provides:
 """
 
 from src.llm_etl.extraction_chain import ExtractionChain
+from src.llm_etl.generic_loader import GenericEntityLoader
 from src.llm_etl.loader import EntityLoader, LoadedEntity, LoadResult
 from src.llm_etl.orchestrator import Orchestrator, OrchestratorResult
+from src.llm_etl.pipeline import Pipeline, PipelineResult
 from src.llm_etl.schemas import (
     # Schema registry
     SCHEMA_REGISTRY,
@@ -41,6 +45,9 @@ from src.llm_etl.schemas import (
 )
 
 __all__ = [
+    # Pipeline (unified entry point)
+    "Pipeline",
+    "PipelineResult",
     # Core extraction
     "ExtractionChain",
     # Orchestrator
@@ -48,6 +55,7 @@ __all__ = [
     "OrchestratorResult",
     # Database loader
     "EntityLoader",
+    "GenericEntityLoader",
     "LoadResult",
     "LoadedEntity",
     # Extraction schemas

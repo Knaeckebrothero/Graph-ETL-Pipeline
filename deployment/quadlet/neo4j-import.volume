@@ -1,0 +1,2 @@
+[Volume]
+# APOC import staging directory (/var/lib/neo4j/import inside container)
