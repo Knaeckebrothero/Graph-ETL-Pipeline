@@ -53,11 +53,13 @@ python -m src.llm_etl.orchestrate --input doc.txt --verbose
 
 Three-layer graph structure defined in `src/db/schema.cql`:
 
-1. **Core Entities:** `WasteItem`, `WasteStream`, `AVVCode`
+1. **Core Entities:** `WasteItem`, `WasteStream`, `AVVCode`, `Product`
 2. **Logic & Rules:** `DisposalRule`, `Condition`, `Instruction`, `Tip`
 3. **Infrastructure:** `Container`, `Room`, `Building`, `Facility`, `Source`
 
 Key relationships:
+- `(Product)-[:IS_A]->(WasteItem)` - EAN product maps to waste category
+- `(Product)-[:HAS_PACKAGING]->(WasteItem)` - product packaging waste category
 - `(WasteItem)-[:DISPOSED_AT]->(Facility)` - direct disposal location
 - `(WasteItem)-[:DISPOSED_IN]->(WasteStream)` - bin type routing
 - `(WasteItem)-[:HAS_RULE]->(DisposalRule)-[:ROUTES_TO]->(WasteStream)` - conditional logic

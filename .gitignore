@@ -1,6 +1,5 @@
 # Projecspecific contents go here
-
-data/fessi_data/*
+backups/*
 
 # Local environment
 .env

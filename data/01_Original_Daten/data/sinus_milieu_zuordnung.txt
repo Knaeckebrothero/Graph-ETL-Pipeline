@@ -1,0 +1,20 @@
+Zuordnung der Sinus-Milieus zu den fünf Hauptgruppen:
+
+1. **Gehobene Milieus**
+   - 01_KOG: Konservativ-Gehobenes Milieu – Strukturkonservative Elite mit Verantwortungsethik und Statusansprüchen.
+
+2. **Bürgerlicher Mainstream**
+   - 05_ADA: Adaptiv-Pragmatische Mitte – Leistungsbereiter Mainstream mit Fokus auf Anpassung und Flexibilität.
+   - 06_NOB: Nostalgisch-Bürgerliches Milieu – Harmonieorientierte Mitte mit Abstiegsängsten und Traditionsbewusstsein.
+
+3. **Prekäre Milieus**
+   - 08_PRE: Prekär – Sozial benachteiligte Unterschicht mit dem Wunsch nach Teilhabe.
+
+4. **Kritisch-kreative Milieus**
+   - 02_PMA: Postmaterielles Milieu – Bildungselite mit Fokus auf Gemeinwohl, Nachhaltigkeit und Diversität.
+   - 10_NOK: Neo-Ökologisches Milieu – Progressive Realisten mit Optimismus und Nachhaltigkeitsbewusstsein.
+   - 04_EPE: Expeditives Milieu – Kreative Bohème, urban, digital und auf Selbstdarstellung fokussiert.
+
+5. **Junge Milieus**
+   - 09_HED: Konsum-Hedonistisches Milieu – Spaßorientierte Lifestyle-Mitte mit Fokus auf Konsum und Entertainment.
+   - 03_PER: Milieu der Performer – Fortschrittsorientierte Leistungselite mit globalem Denken.

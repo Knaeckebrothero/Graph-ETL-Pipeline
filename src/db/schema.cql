@@ -1,12 +1,14 @@
 // =============================================================================
-// Fessi Knowledge Graph - Database Schema v4.0
+// Fessi Knowledge Graph - Database Schema v5.0
 // =============================================================================
 // ETL Pipeline for University Waste Disposal Chatbot (Graph-RAG)
 //
 // Schema Layers:
+//   0. Vocabulary (Vokabular-Ebene) - DictionaryEntry
 //   1. Core Entities (Begriffs-Ebene) - WasteItem, WasteStream, AVVCode
-//   2. Logic & Rules (Regel-Ebene) - DisposalRule, Condition, Instruction
-//   3. Infrastructure (Infrastruktur-Ebene) - Container, Building, Room, Facility
+//   2. Products (Produkt-Ebene) - Product, PackagingComponent, Material
+//   3. Logic & Rules (Regel-Ebene) - DisposalRule, Condition, Instruction
+//   4. Infrastructure (Infrastruktur-Ebene) - Container, Building, Room, Facility
 // =============================================================================
 
 
@@ -22,6 +24,12 @@ CREATE INDEX waste_item_synonyms IF NOT EXISTS FOR (w:WasteItem) ON (w.synonyms)
 // WasteStream: The target fraction (e.g., "Restmüll", "Hazardous Waste")
 CREATE CONSTRAINT waste_stream_uid IF NOT EXISTS FOR (s:WasteStream) REQUIRE s.uid IS UNIQUE;
 CREATE CONSTRAINT waste_stream_name IF NOT EXISTS FOR (s:WasteStream) REQUIRE s.name IS UNIQUE;
+
+// DictionaryEntry: Dictionary-sourced vocabulary nodes (promoted to :WasteItem after LLM classification)
+CREATE CONSTRAINT dict_entry_uid IF NOT EXISTS FOR (d:DictionaryEntry) REQUIRE d.uid IS UNIQUE;
+CREATE CONSTRAINT dict_entry_name IF NOT EXISTS FOR (d:DictionaryEntry) REQUIRE d.name IS UNIQUE;
+CREATE INDEX dict_entry_lang IF NOT EXISTS FOR (d:DictionaryEntry) ON (d.lang);
+CREATE INDEX dict_entry_synset IF NOT EXISTS FOR (d:DictionaryEntry) ON (d.synset_id);
 
 // AVVCode: Legal Classification per Abfallverzeichnis-Verordnung (European Waste Catalogue)
 // Structure: 6-digit code (XX XX XX) where:
@@ -58,7 +66,34 @@ CREATE INDEX avv_hazardous IF NOT EXISTS FOR (a:AVVCode) ON (a.is_hazardous);
 
 
 // -----------------------------------------------------------------------------
-// 2. LOGIC & RULES (Regel-Ebene)
+// 2. PRODUCTS (Produkt-Ebene)
+// -----------------------------------------------------------------------------
+// Decomposition chain: Product → PackagingComponent → Material → WasteStream
+// Based on CEON ontology (Product → Component → Material) and Neo4j BOM pattern.
+// See docs/graph_import_agent.md for full design rationale.
+
+// Product: Commercial product identified by EAN barcode (e.g., "Nutella 400g")
+// Properties: uid, ean, name, brand, quantity, categories_tags, image_url, source_api
+CREATE CONSTRAINT product_uid IF NOT EXISTS FOR (p:Product) REQUIRE p.uid IS UNIQUE;
+CREATE CONSTRAINT product_ean IF NOT EXISTS FOR (p:Product) REQUIRE p.ean IS UNIQUE;
+CREATE INDEX product_name IF NOT EXISTS FOR (p:Product) ON (p.name);
+CREATE INDEX product_brand IF NOT EXISTS FOR (p:Product) ON (p.brand);
+
+// PackagingComponent: Physical part of a product (e.g., "glass jar", "plastic lid")
+// Properties: uid, shape (pot|lid|bottle|wrapper|...), weight_g, food_contact, recycling_hint
+CREATE CONSTRAINT pkg_component_uid IF NOT EXISTS FOR (c:PackagingComponent) REQUIRE c.uid IS UNIQUE;
+CREATE INDEX pkg_component_shape IF NOT EXISTS FOR (c:PackagingComponent) ON (c.shape);
+
+// Material: Shared reference taxonomy (~200 nodes from Open Food Facts material tags)
+// Properties: uid, tag (e.g., "en:clear-glass"), name, name_de
+// Hierarchy via IS_A: en:pp-5-polypropylene IS_A en:plastic
+CREATE CONSTRAINT material_uid IF NOT EXISTS FOR (m:Material) REQUIRE m.uid IS UNIQUE;
+CREATE CONSTRAINT material_tag IF NOT EXISTS FOR (m:Material) REQUIRE m.tag IS UNIQUE;
+CREATE INDEX material_name IF NOT EXISTS FOR (m:Material) ON (m.name);
+
+
+// -----------------------------------------------------------------------------
+// 3. LOGIC & RULES (Regel-Ebene)
 // -----------------------------------------------------------------------------
 
 // DisposalRule: The wrapper for the logic (e.g., "Paint-City-Rule")
@@ -77,7 +112,7 @@ CREATE INDEX tip_type IF NOT EXISTS FOR (t:Tip) ON (t.type);
 
 
 // -----------------------------------------------------------------------------
-// 3. INFRASTRUCTURE (Infrastruktur-Ebene)
+// 4. INFRASTRUCTURE (Infrastruktur-Ebene)
 // -----------------------------------------------------------------------------
 
 // Container: The physical bins
@@ -106,6 +141,16 @@ CREATE INDEX location_name IF NOT EXISTS FOR (l:Location) ON (l.name);
 // =============================================================================
 // These are not executable - just documentation of expected relationships:
 //
+// Product Decomposition (see docs/graph_import_agent.md):
+//   (Product)-[:HAS_COMPONENT {qty, weight_g}]->(PackagingComponent)  // product splits into parts
+//   (PackagingComponent)-[:MADE_OF]->(Material)                       // each part has a material
+//   (Material)-[:DEFAULT_STREAM]->(WasteStream)                       // material routes to bin
+//   (Material)-[:IS_A]->(Material)                                    // taxonomy (pp-5 IS_A plastic)
+//   (Material)-[:CLASSIFIED_AS]->(AVVCode)                            // AVV Ch.15 packaging codes
+//   (Product)-[:IS_A]->(WasteItem)                                    // product content → waste concept
+//   (PackagingComponent)-[:HAS_RULE]->(DisposalRule)                  // component-level conditions
+//   (Product)-[:DERIVED_FROM]->(Source)                               // provenance (e.g., Open Food Facts)
+//
 // Core → Rules:
 //   (WasteItem)-[:HAS_RULE]->(DisposalRule)
 //   (DisposalRule)-[:HAS_CONDITION]->(Condition)
@@ -132,6 +177,12 @@ CREATE INDEX location_name IF NOT EXISTS FOR (l:Location) ON (l.name);
 //   (Instruction)-[:DERIVED_FROM]->(Source)
 //   (WasteItem)-[:DERIVED_FROM]->(Source)
 //   (Tip)-[:DERIVED_FROM]->(Source)
+//
+// Dictionary (Vocabulary Layer):
+//   (DictionaryEntry)-[:SYNONYM_OF]->(DictionaryEntry)      -- same concept, same language
+//   (DictionaryEntry)-[:TRANSLATION_OF]->(DictionaryEntry)   -- cross-language link (en→de)
+//   (DictionaryEntry)-[:IS_A]->(DictionaryEntry)             -- taxonomic hierarchy (hyponym→hypernym)
+//   (DictionaryEntry)-[:DERIVED_FROM]->(Source)              -- provenance
 //
 // Infrastructure:
 //   (WasteStream)-[:COLLECTED_IN]->(Container)

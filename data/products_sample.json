@@ -1,0 +1,116 @@
+[
+  {
+    "barcode": "3017620422003",
+    "barcode_format": "EAN-13",
+    "found": true,
+    "source_api": "openfoodfacts",
+    "product_name": "Nutella",
+    "product_name_de": "Nutella",
+    "brands": "Ferrero",
+    "quantity": "400 g",
+    "categories": "Spreads, Chocolate spreads, Hazelnut spreads",
+    "categories_tags": ["en:spreads", "en:chocolate-spreads", "en:hazelnut-spreads"],
+    "packaging": "Glas, Kunststoff",
+    "packaging_tags": ["en:glass", "en:plastic"],
+    "packaging_materials_tags": ["en:clear-glass", "en:pp-5-polypropylene"],
+    "packaging_components": [
+      {
+        "material": "en:clear-glass",
+        "shape": "en:jar",
+        "recycling": "en:recycle-in-glass-bin",
+        "number_of_units": 1,
+        "weight_measured": 210.0,
+        "food_contact": true
+      },
+      {
+        "material": "en:pp-5-polypropylene",
+        "shape": "en:lid",
+        "recycling": "en:recycle-in-sorting-bin",
+        "number_of_units": 1,
+        "weight_measured": 8.0,
+        "food_contact": true
+      },
+      {
+        "material": "en:paper",
+        "shape": "en:label",
+        "recycling": "",
+        "number_of_units": 1,
+        "weight_measured": null,
+        "food_contact": false
+      }
+    ],
+    "ecoscore_grade": "d",
+    "nutriscore_grade": "e",
+    "labels": "",
+    "image_url": "https://images.openfoodfacts.org/images/products/301/762/042/2003/front_de.434.400.jpg",
+    "lookup_timestamp": "2026-02-26T10:00:00Z"
+  },
+  {
+    "barcode": "4005808262151",
+    "barcode_format": "EAN-13",
+    "found": true,
+    "source_api": "openfoodfacts",
+    "product_name": "Nivea Creme",
+    "product_name_de": "Nivea Creme",
+    "brands": "Nivea",
+    "quantity": "150 ml",
+    "categories": "Body care, Moisturizers",
+    "categories_tags": ["en:body-care", "en:moisturizers"],
+    "packaging": "Metall, Kunststoff",
+    "packaging_tags": ["en:metal", "en:plastic"],
+    "packaging_materials_tags": ["en:steel", "en:pp-5-polypropylene"],
+    "packaging_components": [
+      {
+        "material": "en:steel",
+        "shape": "en:tin",
+        "recycling": "en:recycle-in-sorting-bin",
+        "number_of_units": 1,
+        "weight_measured": 45.0,
+        "food_contact": false
+      },
+      {
+        "material": "en:pp-5-polypropylene",
+        "shape": "en:lid",
+        "recycling": "en:recycle-in-sorting-bin",
+        "number_of_units": 1,
+        "weight_measured": 5.0,
+        "food_contact": false
+      }
+    ],
+    "ecoscore_grade": "",
+    "nutriscore_grade": "",
+    "labels": "",
+    "image_url": "",
+    "lookup_timestamp": "2026-02-26T10:01:00Z"
+  },
+  {
+    "barcode": "5449000000996",
+    "barcode_format": "EAN-13",
+    "found": true,
+    "source_api": "openfoodfacts",
+    "product_name": "Coca-Cola",
+    "product_name_de": "Coca-Cola",
+    "brands": "Coca-Cola",
+    "quantity": "330 ml",
+    "categories": "Beverages, Carbonated drinks",
+    "categories_tags": ["en:beverages", "en:carbonated-drinks"],
+    "packaging": "Aluminium",
+    "packaging_tags": ["en:metal"],
+    "packaging_materials_tags": ["en:aluminium"],
+    "packaging_components": [
+      {
+        "material": "en:aluminium",
+        "shape": "en:can",
+        "recycling": "en:recycle-in-sorting-bin",
+        "number_of_units": 1,
+        "weight_measured": 15.0,
+        "food_contact": true
+      }
+    ],
+    "ecoscore_grade": "c",
+    "nutriscore_grade": "e",
+    "labels": "",
+    "image_url": "https://images.openfoodfacts.org/images/products/544/900/000/0996/front_de.150.400.jpg",
+    "lookup_timestamp": "2026-02-26T10:02:00Z"
+  }
+]

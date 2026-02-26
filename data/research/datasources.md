@@ -2,7 +2,7 @@
 
 This document catalogs potential data sources for the Fessi waste disposal knowledge graph. The goal is to identify data that can populate the three schema layers: **Core Entities**, **Logic & Rules**, and **Infrastructure**.
 
-**Last Updated:** January 2026
+**Last Updated:** February 2026
 
 ---
 
@@ -383,6 +383,45 @@ Fuel (petrol, diesel)     → Schadstoffmobil (small quantities only)
 ```
 
 **Legal Note:** Retailers selling motor oil must accept used oil for free (Altölverordnung).
+
+---
+
+### 1.11 Office Supplies, Stationery & University Products
+
+**What we need:**
+- Product identification (names, EAN barcodes, UNSPSC/eCl@ss codes)
+- Material composition (plastic types, wood, metal, ink/toner chemistry, adhesives)
+- Disposal routes and take-back programs (especially toner/ink cartridges)
+- Eco-label data (Blauer Engel, EU Ecolabel, FSC/PEFC for paper)
+- Conditional logic (empty vs. full cartridge, dried-out vs. liquid correction fluid)
+
+**Data Sources:**
+
+| Source | URL | Format | License | Size | Notes |
+|--------|-----|--------|---------|------|-------|
+| PBSeasy (PBS Network) | pbsnetwork.eu | REST API, JSON | Commercial B2B | 1M+ products | Industry-standard data platform for EU office/stationery. eCl@ss Segment 24. |
+| Blauer Engel Fo.KUS DB | (email request) | XML, file download | Free (request) | 8,850+ EANs | Eco-certified office products with GTIN codes. Daily updates. |
+| EU Ecolabel ECAT | data.europa.eu | CSV, API | Open data | 109,096 products | EAN13 barcodes, product names, company data. Zero-effort download. |
+| ECHA SCIP | echa.europa.eu/scip-database | Web portal | Free | 15M+ factsheets | Only source linking products to hazardous substance composition. |
+| Icecat Open Catalog | icecat.biz | JSON/XML/CSV API | Free tier + paid | 26M+ datasheets | Toner/cartridge specs, compatibility data, EAN/GTIN barcodes. |
+
+**Material Complexity Examples:**
+```
+Wooden pencil     → Wood + graphite + paint + rubber + metal ferrule → Restabfalltonne
+Ballpoint pen     → PP housing + oil-based ink + metal tip → Restabfalltonne (or Verpackungstonne)
+Toner cartridge   → ABS/PS plastic + iron oxide toner + OPC drum → Retailer take-back (NEVER regular bin)
+Ring binder       → PP cover + metal rings + paper labels → Must disassemble: metal→Wertstoffhof, plastic→Verpackungstonne
+Correction fluid  → Solvent + titanium dioxide → Schadstoffmobil (if liquid), Restabfalltonne (if dried)
+Laminated paper   → Paper + plastic film → Restabfalltonne (non-recyclable composite)
+```
+
+**Key Gap:** No single database provides structured material composition for office products. Must combine SCIP (hazardous substances), Safety Data Sheets (chemical products only), eCl@ss properties (schema without data), and Wikidata P186 (generic product types).
+
+**Relevant AVV Codes:**
+- 20 01 01: Paper/cardboard
+- 15 01 01/02: Paper/plastic packaging
+- 08 03 17*: Waste printing toner (hazardous)
+- 08 03 18: Waste printing toner (non-hazardous)
 
 ---
 
@@ -849,6 +888,7 @@ Based on the university use case, here's a suggested priority for data integrati
 | 3 | **AVV Codes** | Legal compliance, proper classification |
 | 4 | **PubChem** | Lab chemicals (university context) |
 | 5 | **Wikidata** | Synonyms, translations, fallback lookup |
+| 5b | **EU Ecolabel ECAT + Blauer Engel** | Office/stationery products with EAN barcodes (free, structured) |
 
 ### Tier 2: Enhanced Features (Should Have)
 
@@ -858,6 +898,7 @@ Based on the university use case, here's a suggested priority for data integrati
 | 7 | **Icecat** | Electronics and appliances |
 | 8 | **OpenStreetMap** | Wertstoffhof locations |
 | 9 | **ADR/UN Numbers** | Transport safety info |
+| 9b | **PBSeasy / Icecat (toner)** | Office supply product data, toner/cartridge specs (negotiated/free tier) |
 
 ### Tier 3: Advanced Features (Nice to Have)
 
@@ -886,6 +927,7 @@ Based on the university use case, here's a suggested priority for data integrati
     │  • Open Food Facts        │   │  • Entity extraction      │
     │  • Icecat                 │   │  • Image classification   │
     │  • PubChem                │   │  • Wikidata lookup        │
+    │  • EU Ecolabel / Bl.Engel │   │  • PBSeasy (office)       │
     └───────────────────────────┘   └───────────────────────────┘
                     │                           │
                     └─────────────┬─────────────┘
@@ -935,6 +977,10 @@ Based on the university use case, here's a suggested priority for data integrati
 | **Product variants** | Can't track every Milka chocolate variant | Map to generic categories ("chocolate bar" → organic waste + packaging) |
 | **Condition-dependent logic** | Same item, different state = different disposal | Core strength of graph model - build comprehensive Condition trees |
 | **Language coverage** | German students may query in Turkish, Arabic, etc. | Wikidata aliases, OpenAI/Claude for translation |
+| **No "Open Office Facts"** | No single open database for office supplies/stationery like OFF for food | Combine EU Ecolabel + Blauer Engel + Wikidata + PBSeasy (negotiated) |
+| **Office product material composition** | No database provides "this pen is 40% PP, 30% PS, 20% brass, 10% ink" | Chain SCIP + SDS + eCl@ss properties; manual research for non-chemical items |
+| **University procurement catalogs** | All German university procurement data is closed/confidential | Partnership with university procurement department (Simple System / JAGGAER) |
+| **Toner cartridge → AVV mapping** | No pre-built dataset mapping cartridges to waste codes | Build 5-layer pipeline: Icecat → SDS → GESTIS/ECHA → threshold calc → AVV code |
 
 ### 9.2 Data Quality Considerations
 
@@ -946,6 +992,9 @@ Based on the university use case, here's a suggested priority for data integrati
 | ÖKOBAUDAT | High (government) | Annual updates | German building materials |
 | Wikidata | Variable | Real-time | Everything, but shallow |
 | Municipal Abfall-ABC | High (authoritative) | Varies | City-specific |
+| EU Ecolabel ECAT | High (official) | Updated | Eco-certified products with EAN13 |
+| Blauer Engel Fo.KUS | High (government-backed) | Daily | German eco-certified office/stationery |
+| PBSeasy | High (vendor data, 200+ checks) | Continuous | EU office supplies (paid B2B) |
 
 ### 9.3 Technical Challenges
 
@@ -972,6 +1021,7 @@ These agents target the most essential data sources for the knowledge graph.
 | 3 | **Chemicals & Hazardous Materials** | GHS data, SDS databases, lab chemicals (university context) |
 | 4 | **German Municipal Waste Rules** | Abfall-ABC sources, MyMüll/AbfallPlus APIs, city-specific disposal rules |
 | 5 | **AVV/EWC Legal Codes** | Official German/EU waste classification codes with hazard markers |
+| 19 | **Office Supplies & Stationery** | PBSeasy, Blauer Engel, EU Ecolabel, BMEcat catalogs, toner/ink data, university procurement |
 
 ### Tier 2: Domain-Specific (Medium Impact)
 
@@ -1041,6 +1091,13 @@ Each research agent should document:
 - [ÖKOBAUDAT](https://www.oekobaudat.de/en.html) - Free
 - [Umweltbundesamt](https://www.umweltbundesamt.de) - AVV guidance
 - [GESTIS](https://gestis.dguv.de) - Hazardous substance database
+- [Blauer Engel Fo.KUS](https://www.blauer-engel.de) - Eco-label product database (XML, free on request)
+
+### Office & Stationery
+- [PBSeasy](https://pbsnetwork.eu) - 1M+ office products (commercial B2B)
+- [EU Ecolabel ECAT](https://data.europa.eu) - 109k products with EAN13 (open data CSV)
+- [ECHA SCIP](https://echa.europa.eu/scip-database) - Hazardous substances in articles
+- [BMECat.net GitHub](https://github.com/stephanstapel/BMECat.net) - BMEcat parser + sample catalogs
 
 ### Classification Systems
 - [UNSPSC](https://www.undp.org/unspsc) - Free PDF

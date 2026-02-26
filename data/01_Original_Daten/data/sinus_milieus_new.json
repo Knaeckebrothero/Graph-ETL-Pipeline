@@ -1,0 +1,149 @@
+{
+  "Gehobene Milieus": {
+    "beschreibung": "Mittleres bis hohes Formalbildungsniveau und gehobene bis sehr hohe Haushaltseinkommen. Sehen sich selbst als Leistungsträger der Gesellschaft. Beruflicher Erfolg und hoher Lebensstandard sind selbstverständliche Ansprüche; wirtschaftliche Effizienz und Wettbewerbsfähigkeit wichtige Maßstäbe. Lebensmotto: „Auf das Erreichte stolz sein und es genießen.“",
+    "zugeordnete_milieus": [
+      "01_KOG"
+    ],
+    "veränderungsmotivation": {
+      "zusammenfassung": "Gehobene Milieus sehen Abfallprobleme vor allem als Thema für Politik und Unternehmen. Sie vertrauen auf technische Innovationen und wirtschaftliche Anreize, lehnen jedoch oft Konsumkritik oder zivilgesellschaftliche Ansätze ab. Nachhaltigkeit als Einkaufskriterium wird selten akzeptiert. Lösungen müssen in ihren mobilen, schnellen Alltag passen und Komfort bieten. Traditionelle Werte wie Reparatur und Qualität finden teilweise Akzeptanz, aber Abfallvermeidung ist meist nur ein Nebeneffekt.",
+      "volltext": "Die gehobenen Milieus sehen Abfall primär als politisches und wirtschaftliches Thema von Politik und Wirtschaft. Dabei ist das Vertrauen in technische Innovationen zur Lösung von Abfallproblemen in den gehobenen Milieus besonders ausgeprägt. Vor allem Unternehmen werden hier als Akteure gesehen, die handeln sollten. Die Politik sollte regulierend wirken. Finanzielle Anreize zur Abfallvermeidung werden befürwortet. Sanktionen werden teilweise akzeptiert. Damit verbunden sind auch Investitionen in abfallvermeidende Innovationen, die befürwortet werden. Neben der allgemeinen wirtschaftlichen Entwicklung ist auch der Erhalt des eigenen Lebensstandards ein wichtiges Motiv für mögliche Veränderungen. Das Wohlstandsniveau gilt es zu erhalten. Konsumkritik ist allerdings selten ein Thema für die gehobenen Milieus. Es werden kaum Zusammenhänge zwischen Abfallproblemen und dem eigenen Konsumstil hergestellt. Zudem sind Vorbehalte gegen ein „Öko“-Image relativ verbreitet. Nachhaltigkeit als Einkaufskriterium findet weniger Akzeptanz und wird teils sogar abgelehnt. Es gibt kaum Berührung mit zivilgesellschaftlichen Initiativen zur Abfallvermeidung. Sie werden zwar nicht grundsätzlich abgelehnt, aber es gibt kaum Identifikation mit den Zielen der Initiativen und auch nur selten eigene Erfahrungen. Ansätze der Abfallvermeidung müssen in den Alltag der gehobenen Milieus passen, der durch Berufstätigkeit und soziale Teilhabe mobil und schnelllebig ist. Komfortable Lösungen werden deshalb bevorzugt. Traditionelles Wissen (z. B. zu Reparatur) und Werte der Beständigkeit und Qualität finden Akzeptanz und werden teilweise als wichtig hervorgehoben. Abfallvermeidung ist dabei eher ein Nebeneffekt, der akzeptiert wird."
+    },
+    "kommunikationsstrategien": {
+      "ansatzpunkte": [
+        "Persönliche Betroffenheit (z. B. Mikroplastik in Nahrung) ansprechen, da Gesundheit und Lebensqualität wichtige Argumente sind.",
+        "Qualität und Mode bei der Kommunikation über abfallvermeidende Praktiken und Angebote beachten, z. B. modische Second-Hand-Ware.",
+        "Belehrende Botschaften und Vorgaben für einen bestimmten Lebensstil vermeiden. Es besteht ein Bedürfnis, als selbstbestimmte Konsument/-innen mit Auswahlmöglichkeiten angesprochen zu werden.",
+        "Nutzenverlängerung und Langlebigkeit von Alltagsgegenständen als Qualitätsfrage beim Einkauf thematisieren.",
+        "Werte wie Designstatus, Tradition und Beständigkeit in den Fokus stellen.",
+        "Praktische und bequeme Informationen, wie Entsorgungshinweise direkt auf der Verpackung, bevorzugen.",
+        "Das Selbstverständnis der gehobenen Milieus als Expert/-innen politischer und wirtschaftlicher Fragen berücksichtigen und gezielt ansprechen.",
+        "Abfallvermeidung mit technischem Fortschritt und Innovation verknüpfen."
+      ],
+      "botschaften": [
+        "Abfallvermeidung ist eines der drängenden Themen unserer Zeit. Es gibt schon heute viele Ideen und Innovationen, die Abfallvermeidung möglich machen können. Diese verlangen unsere Aufmerksamkeit, um alte abfallproduzierende Technologien abzulösen. Aber auch im Alltag, zum Beispiel beim Einkaufen und beim Gebrauch, sind Veränderungen wichtig.",
+        "Wenn Sie gesund und qualitativ hochwertig leben möchten, dann achten Sie auf Öko-Labels und Bewertungen. Leisten Sie sich hohe Lebensqualität mit langlebigen und ökologischen Waren.",
+        "Heutzutage wird viel verbraucht und zu schnell weggeworfen. Früher gab es das noch nicht. Achten Sie auf hochwertige Produkte, denn Sie haben länger Freude damit.",
+        "Es muss nicht immer das Neueste sein. Effizient Abfälle zu vermeiden und Ressourcen zu schonen, zeigt Verantwortung. Kleine Veränderungen beim Einkaufen sind ein Anfang. Wer sich mehr leisten kann, kann auch größere Veränderungen anstoßen.",
+        "Recycling ist eine gute Sache. Aber noch besser ist es, Abfall gar nicht erst entstehen zu lassen. Das spart noch mehr Ressourcen, wie zum Beispiel Strom und Wasser."
+      ]
+    }
+  },
+  "Bürgerlicher Mainstream": {
+    "beschreibung": "Meist mittlere soziale Lagen. Sicherheit und Harmonie im Privaten sind wichtig. An Komfort und Convenience orientiert. Ausgeprägtes Preis-Leistungsbewusstsein. Selbstbild als Mitte der Gesellschaft. Leistungsbereit, um den sozialen Status zu erhalten, jedoch zunehmend Ängste vor sozialem Abstieg. Lebensmotto: „Dazugehören, integriert sein.“",
+    "zugeordnete_milieus": [
+      "05_ADA",
+      "06_NOB"
+    ],
+    "veränderungsmotivation": {
+      "zusammenfassung": "Abfall wird als gesamtgesellschaftliches Problem wahrgenommen. Es wächst das Bewusstsein, dass natürliche Ressourcen begrenzt sind und wirtschaftliches Wachstum Grenzen hat. Es besteht Kritik an der Wegwerfgesellschaft, aber auch die Ansicht, dass Verantwortung geteilt ist zwischen Politik, Wirtschaft und Verbraucher/-innen. Praktiken, die Abfall vermeiden und in den Alltag passen, werden gewünscht, besonders für Haushalte mit geringen bis mittleren Budgets. Wichtig sind alltagspraktische Lösungen, die soziale und ökologische Aspekte verbinden. Motive für abfallvermeidende Praktiken sind ökonomisch oder die Überzeugung, dass Dinge länger genutzt werden sollten. Die Anerkennung solcher Beiträge motiviert zusätzlich.",
+      "volltext": "Abfall nehmen die Menschen im bürgerlichen Mainstream als gesamtgesellschaftliches Problem wahr. Im bürgerlichen Mainstream wächst das Bewusstsein dafür, dass natürliche Ressourcen begrenzt sind; sie sind sich der Grenzen des wirtschaftlichen Wachstums gewahr. Die Kritik an einer Konsum- oder Wegwerfgesellschaft ist relativ verbreitet. Gleichzeitig wird die Verantwortung einzelner als begrenzt angesehen. Die Verantwortungszuschreibung für Abfallprobleme und deren Lösungen ist gemischt: Einerseits werden Politik und Wirtschaft in der Verantwortung gesehen und hier auch teilweise konkrete Forderungen formuliert (z. B. Verbot bestimmter Verpackungen, Pfandpflicht). Anderseits wird auch erkannt, dass Verbraucher/-innen einen Beitrag leisten können. Von ihnen wird der Anspruch erhoben, dass sich alle Gedanken über Abfallprobleme machen und im Rahmen ihrer Möglichkeiten zur Vermeidung von Abfällen beitragen sollten. Abfallvermeidende Praktiken, die in den Alltag passen und einer breiten Bevölkerung zugänglich sind, sind erwünscht. Dazu gehören zum Beispiel abfallreduzierende Einkaufsmöglichkeiten für Haushalte mit geringen bis mittleren Budgets. Hier zeigt sich, dass es für den bürgerlichen Mainstream wichtig ist, alltagspraktisch, soziale und ökologische Belange zu verbinden. Haushalt, Familie und Nahbereich sind wichtige Räume, in denen sich der Alltag abspielt und wo auch Veränderungen ansetzen können. Oftmals werden abfallvermeidende Praktiken als gute Haushaltspraktiken gelebt. Wichtige Sinnanschlüsse für solche Praktiken sind zum einen ökonomische Motive, andererseits gilt es aber auch als Wert an sich, nichts wegzuwerfen oder Alltagsgegenstände und Kleidung möglichst lange zu gebrauchen. Die Anerkennung solcher Beiträge zur Lösung ökologischer Probleme motiviert."
+    },
+    "kommunikationsstrategien": {
+      "ansatzpunkte": [
+        "Empfehlungen für abfallreduzierende Alltagspraktiken sind erwünscht und werden eingefordert. Dabei auch Begrenzung durch die ökonomische Lage des Haushalts bedenken. Anerkennung von Beiträgen mit geringeren Mitteln.",
+        "Politische Vorgaben an die Wirtschaft, um Abfallvermeidung strukturell zu ermöglichen, werden als Voraussetzung angesehen, um Alltagspraktiken zu verändern. Infrastrukturen vor Ort schaffen.",
+        "Synergien zwischen sozialen und ökologischen Belangen aufzeigen und solche Partner/-innen stärker unterstützen, die beides miteinander verbinden. Angst vor sozialem Abstieg auch bei der ökologischen Kommunikation ernst nehmen.",
+        "Ressourcenschonung als Aspekt eines Konsumstils an traditionellen Werten und/oder guter Haushaltsführung orientieren. Hier können weitere Anknüpfungspunkte aufgezeigt werden.",
+        "Abfallvermeidung als Teil des ‚guten Haushaltens‘ verstehen: Ressourcen sparen im Haushalt und der Umwelt zuliebe.",
+        "Angebote für Familien mit Kindern zum Thema Abfallvermeidung schaffen, von abfallsparenden Familienpackungen bis hin zu gemeinsamen Aktivitäten. Angebote vor Ort schaffen. Partner/-innen vor Ort (z. B. Verbände, Vereine, Stadtteilinitiativen) können das Engagement stärken. Ökologische Initiativen bekannter machen."
+      ],
+      "botschaften": [
+        "Privathaushalte können einen großen Beitrag zur Abfallvermeidung in Deutschland leisten. Und das ist ganz einfach. Wir zeigen Ihnen, was Sie tun können.",
+        "Viele Möglichkeiten der Abfallvermeidung kosten nichts und bringen viel. Jeder Schritt zählt. Wir zeigen Ihnen, was Sie tun können.",
+        "Die Politik nimmt das Thema Abfallvermeidung ernst und kümmert sich um gesetzliche Vorgaben für Rahmenbedingungen. Das unterstützt jeden Einzelnen, zur Abfallvermeidung im eigenen Haushalt etwas beizutragen.",
+        "Für unsere Großeltern war Abfallvermeidung selbstverständlich. Sie können dazu beitragen, dass diese gute Tradition nicht ausstirbt.",
+        "Sie können praktisches Wissen an jüngere Generationen weitergeben.",
+        "Sie haben noch gelernt, wie Sie Ressourcen sparen können. Tun Sie es weiterhin Ihrem Geldbeutel und der Umwelt zuliebe – es ist wichtiger denn je.",
+        "Wer heute Abfall vermeidet, hilft, die Erde für unsere Kinder und Enkel lebenswert zu erhalten.",
+        "Nur wenn auch die Jungen lernen, wie man Abfall vermeidet, können sie die Umwelt schützen."
+      ]
+    }
+  },
+  "Prekäre Milieus": {
+    "beschreibung": "Meist einfache Formalbildung und sehr geringe bis geringe Einkommen. Teilhabe an Konsum und sozialem Leben stark eingeschränkt. Sehen sich selbst als Verlierer der Modernisierung. Blicken pessimistisch in die Zukunft. Lebensmotto: „Über die Runden kommen, nicht negativ auffallen.“",
+    "zugeordnete_milieus": [
+      "08_PRE"
+    ],
+    "veränderungsmotivation": {
+      "zusammenfassung": "Prekäre Milieus sehen ökologische Probleme mit Sorge, sind jedoch stark auf soziale Probleme fokussiert, die sie direkt betreffen. Nachhaltiger Konsum wird oft als teuer wahrgenommen, weshalb mehr bezahlbare Optionen gefordert werden. Abfallvermeidende Praktiken wie das lange Nutzen von Alltagsgegenständen sind häufig bereits Teil ihres Alltags und werden als Wert geschätzt. Gleichzeitig wird erwartet, dass Politik und Wirtschaft größere Verantwortung für Umweltprobleme übernehmen. Der Nahbereich und soziale Netzwerke spielen eine zentrale Rolle bei der Aktivierung von Veränderungspotenzial.",
+      "volltext": "Ökologische Probleme, und aktuell auch Abfallprobleme, werden von den prekären Milieus mit Sorge gesehen. Gleichzeitig sind soziale Probleme für die prekären Milieus sehr wichtig. Hier sind sie in besonderem Maß betroffen und deswegen spielen diese für sie eine große Rolle (UBA / BMU 2017, UBA / BMU 2019). Im Alltag wird dies vor allem bei der Bedeutung finanzieller Abwägungen deutlich. Die Sorge, durch politische Steuerungsmaßnahmen belastet zu werden, ist recht ausgeprägt (ebd.). Das trifft sowohl auf Entscheidungen zugunsten von Wirtschaftswachstum als auch des Umweltschutzes zu. Mit Blick auf nachhaltige und speziell abfallvermeidende Praktiken befinden sich die prekären Milieus in einem Spannungsfeld verschiedener Faktoren. Einerseits wird nachhaltiger Konsum häufig als teuer, als Luxus wahrgenommen. Es werden mehr Möglichkeiten gewünscht, mit begrenzten Möglichkeiten nachhaltig zu konsumieren. Beim Thema Abfall betrifft das aktuell vor allem das Einkaufen von weniger Verpackung, denn hier besteht bei günstigen Produkten oft nicht die Wahl. Gleichzeitig ist der Natur- und Ressourcenverbrauch der prekären Milieus aufgrund begrenzter ökonomischer Mittel häufig schon gering. Das wird einerseits als Einschränkung wahrgenommen, andererseits wird Anerkennung dafür gefordert, dass mit sehr begrenzten Mitteln, ein Beitrag zum Umwelt- und Klimaschutz geleistet wird. Abfallvermeidende Praktiken werden häufig schon als gute Praktiken des Haushaltens gelebt und sind auch ein Wert an sich, zum Beispiel möglichst keine Lebensmittel wegzuwerfen oder Alltagsgegenstände lange zu verwenden statt sich ständig das Neueste, Modische zu kaufen. Vor diesem Hintergrund sehen die prekären Milieus die Verantwortung für Umwelt- und Abfallprobleme und deren Lösung bei politischen und wirtschaftlichen Akteuren. Ebenso setzen höhere Einkommen aus ihrer Sicht, Mittel frei, um sich stärker mit Abfall- und Umweltproblemen im Allgemeinen zu befassen. Im Alltag der prekären Milieus spielt der direkte Nahbereich eine wichtige Rolle (Wohnlage, Familie, Freund/-innen). Räume vor Ort und Netzwerke im sozialen Umfeld spielen eine wichtige Rolle, um Veränderungspotenzial zu aktivieren."
+    },
+    "kommunikationsstrategien": {
+      "ansatzpunkte": [
+        "Empfehlungen für abfallreduzierende Alltagspraktiken sind erwünscht und werden eingefordert. Dabei auch Begrenzung durch die ökonomische Lage des Haushalts bedenken. Anerkennung von Beiträgen mit geringeren Mitteln.",
+        "Politische Vorgaben an die Wirtschaft, um Abfallvermeidung strukturell zu ermöglichen, werden als Voraussetzung angesehen, um Alltagspraktiken zu verändern. Infrastrukturen vor Ort schaffen.",
+        "Synergien zwischen sozialen und ökologischen Belangen aufzeigen und solche Partner/-innen stärker unterstützen, die beides miteinander verbinden. Angst vor sozialem Abstieg auch bei der ökologischen Kommunikation ernst nehmen.",
+        "Ressourcenschonung als Aspekt eines Konsumstils an traditionellen Werten und/oder guter Haushaltsführung orientieren. Hier können weitere Anknüpfungspunkte aufgezeigt werden.",
+        "Abfallvermeidung als Teil des ‚guten Haushaltens‘ verstehen: Ressourcen sparen im Haushalt und der Umwelt zuliebe.",
+        "Angebote für Familien mit Kindern zum Thema Abfallvermeidung schaffen, von abfallsparenden Familienpackungen bis hin zu gemeinsamen Aktivitäten. Angebote vor Ort schaffen. Partner/-innen vor Ort (z. B. Verbände, Vereine, Stadtteilinitiativen) können das Engagement stärken. Ökologische Initiativen bekannter machen."
+      ],
+      "botschaften": [
+        "Privathaushalte können einen großen Beitrag zur Abfallvermeidung in Deutschland leisten. Und das ist ganz einfach. Wir zeigen Ihnen, was Sie tun können.",
+        "Viele Möglichkeiten der Abfallvermeidung kosten nichts und bringen viel. Jeder Schritt zählt. Wir zeigen Ihnen, was Sie tun können.",
+        "Die Politik nimmt das Thema Abfallvermeidung ernst und kümmert sich um gesetzliche Vorgaben für Rahmenbedingungen. Das unterstützt jeden Einzelnen, zur Abfallvermeidung im eigenen Haushalt etwas beizutragen.",
+        "Für unsere Großeltern war Abfallvermeidung selbstverständlich. Sie können dazu beitragen, dass diese gute Tradition nicht ausstirbt.",
+        "Sie können praktisches Wissen an jüngere Generationen weitergeben.",
+        "Sie haben noch gelernt, wie Sie Ressourcen sparen können. Tun Sie es weiterhin Ihrem Geldbeutel und der Umwelt zuliebe – es ist wichtiger denn je.",
+        "Wer heute Abfall vermeidet, hilft, die Erde für unsere Kinder und Enkel lebenswert zu erhalten.",
+        "Nur wenn auch die Jungen lernen, wie man Abfall vermeidet, können sie die Umwelt schützen."
+      ]
+    }
+  },
+  "Kritisch-kreative Milieus": {
+    "beschreibung": "Mittlere und höhere Formalbildung; mittlere bis gehobene Einkommen. Aufgeklärt, weltoffen und tolerant. Postmaterielle Grundorientierung. Streben nach Selbstverwirklichung und Unabhängigkeit von Normen und Konventionen. Großes Interesse an gesellschaftlichen und kulturellen Themen. Selbstbild als kritisches Gewissen der Gesellschaft. Lebensmotto: „Die Dinge kritisch hinterfragen; verantwortlich und sinnvoll leben.“",
+    "zugeordnete_milieus": [
+      "02_PMA",
+      "04_EPE",
+      "10_NOK"
+    ],
+    "veränderungsmotivation": {
+      "zusammenfassung": "Das Interesse der kritisch-kreativen Milieus an Abfallproblemen ist hoch. Sie sehen Abfall als gesamtgesellschaftliches Thema und fordern bessere Rahmenbedingungen, besonders Infrastrukturen, zur Abfallvermeidung. Sie setzen sich für nachhaltige Konsumformen ein, die oft auch im Alltag gelebt werden. Politik und Wirtschaft werden als verantwortliche Akteure gesehen. Gleichzeitig betrachten sie sich als politisch aktive Bürger/-innen mit einer Rolle über den reinen Konsum hinaus.",
+      "volltext": "Das Interesse der kritisch-kreativen Milieus an der Abfallproblematik ist relativ ausgeprägt. Aus ihrer Sicht gibt es jedoch wenig gezielte Informationen hierzu. Allgemein werden ökologische Themen jedoch stärker medial verfolgt. Aktuell zählt Abfall für sie zu den wichtigsten ökologischen Problemen. Das Wissen über politische und ökonomische Zusammenhänge mit Bezug zur Abfallthematik ist in den kritisch-kreativen Milieus hoch. Es werden vielfältige Bezüge zu anderen sozial-ökologischen Themen gesehen. Die kritisch-kreativen Milieus diskutieren Abfall als gesamtgesellschaftliches Thema. Darüber hinaus werden aber auch Verbindungen zu den eigenen Praktiken als Verbraucher/-innen gesehen. Das eigene Interesse, ökologisch und sozial nachhaltig zu konsumieren, ist ausgeprägt. Häufig werden auch solche Konsumformen schon praktiziert. Das wird teilweise auch verbunden mit dem Wunsch, nach Entlastung und Entschleunigung im eigenen Alltag, um nachhaltigere Konsumpraktiken leben zu können. Die Forderung nach besseren Rahmenbedingungen für Abfallvermeidung im Alltag – vor allem Infrastrukturen – wird in den kritisch-kreativen Milieus häufig diskutiert. Hier werden Politik und Wirtschaft in der Verantwortung gesehen. Aktuelle Entwicklungen in Politik und Wirtschaft mit Blick auf die Bearbeitung der Abfallproblematik, und auch allgemein ökologischer Probleme, werden von ihnen gesehen. Zivilgesellschaftliches Engagement genießt bei den kritisch-kreativen Milieus einen hohen Stellenwert und Anerkennung. Sie sehen sich nicht nur in der Rolle der Verbraucher/-innen, sondern auch als politisch aktive und kompetente Bürger/-innen."
+    },
+    "kommunikationsstrategien": {
+      "ansatzpunkte": [
+        "Weiteres Potenzial für Engagement aktivieren; dabei praktische Ansätze aufzeigen.",
+        "Kritisch-kreative Milieus nicht nur als Verbraucher/-innen, sondern auch in ihrer politischen Rolle als Bürger/-innen ansprechen.",
+        "Räume für soziales und ökologisches Engagement schaffen und Experimentieransätze aufzeigen.",
+        "Auch lokale Initiativen für Familien können Anklang finden, wenn sie das Experimentieren mit den Alltagserfordernissen vereinbar machen.",
+        "Verbindung des Abfallthemas mit bestehenden Interessen und Aktivitäten, da es bereits vielfältige Verpflichtungen gibt.",
+        "Lösungen für den überlasteten und mobilen Alltag aufzeigen, ohne dabei den Aspekt der Bequemlichkeit zu stark zu betonen.",
+        "Maßnahmen, die wirtschaftliche Akteure in die Pflicht nehmen, z. B. Reparierbarkeit von Produkten und Labels, begünstigen das Engagement der kritisch-kreativen Milieus für Abfallvermeidung.",
+        "Wunsch nach Darstellung komplexer Zusammenhänge berücksichtigen."
+      ],
+      "botschaften": [
+        "Abfallvermeidung braucht unser aller Engagement – das geht über die Vermeidung im Haushalt hinaus. Wer Abfall vermeidet, tut etwas Gutes für Klima und Umwelt. Abfallvermeidung braucht unsere Kreativität – nutzen Sie Angebote wie Repair-Cafés, Secondhand, unterstützen Sie lokale Initiativen.",
+        "Gewohnheiten und Routinen halten uns vom umweltfreundlichen Konsum ab. Hinterfragen Sie Gewohnheiten, nutzen Sie neue Angebote wie Unverpackt-Läden.",
+        "Wer Abfall vermeiden möchte, findet eine Vielzahl guter und passender Angebote: Kleidertauschbörsen, Secondhand-Läden, Repair-Cafés. Siegel und Produktkennzeichnungen, wie der blaue Engel, helfen bei der Auswahl langlebiger und umweltfreundlicher Produkte und Dienstleistungen und nehmen auch Unternehmen in die Pflicht.",
+        "Es gibt auch viele Mythen der Abfallvermeidung, so zum Beispiel, dass Papiertüten immer umweltfreundlicher sind als Plastiktüten. Sie gehen aber schneller kaputt und sind nicht so häufig wiederverwendbar. Prüfen Sie deshalb kritisch verschiedene Lösungen, bevor Sie sich entscheiden."
+      ]
+    }
+  },
+  "Junge Milieus": {
+    "beschreibung": "Toleranz, Respekt und Vielfalt bedeuten viel. Nachhaltigkeit und Umweltbewusstheit sind essenzielle Bestandteile des Selbstbilds. Bereit, sich sozial und ökologisch zu engagieren und dies, wenn möglich, mit dem Beruf zu verbinden. Reisen gerne, wollen die Welt kennenlernen und neue Erfahrungen machen. Lebensmotto: „Nachhaltig leben und die Welt zu einem besseren Ort machen.“",
+    "zugeordnete_milieus": [
+      "09_HED",
+      "03_PER"
+    ],
+    "veränderungsmotivation": {
+      "zusammenfassung": "Die Flexibilität des Alltags der jungen Milieus bietet Chancen und Herausforderungen für abfallvermeidende Praktiken. Während schnelle Konsumentscheidungen und Modetrends Hürden darstellen, schaffen Neuorientierungen in Wohn- oder Lebenssituationen Gelegenheiten für neue nachhaltige Gewohnheiten. Junge Idealisten sind oft stark ambitioniert, während junge Distanzierte Schwierigkeiten sehen, ihren Konsum zu ändern. Politik und Wirtschaft werden als wichtige Akteure für bessere Rahmenbedingungen wahrgenommen, während die Bereitschaft zur Eigenverantwortung ebenfalls hoch ist.",
+      "volltext": "Die Flexibilität des Alltags und wechselnde Lebenssituationen der jungen Milieus sind Hürde und Chance für Abfallvermeidung zugleich: Einerseits werden Konsumentscheidungen oft schnell und pragmatisch getroffen oder richten sich nach Moden. Andererseits besteht bei den jungen Milieus eine Offenheit für neue, alternative Praktiken, auch für nachhaltigen Konsum. Zudem bieten neue Lebensereignisse und Phasen der Neuorientierung, zum Beispiel in einer neuen Stadt, Wohn- oder Familiensituation, auch die Chance, neue Gewohnheiten zu etablieren. Hier gibt es also auch viele Gelegenheitsfenster, um Abfallvermeidung als Thema zu platzieren und im Alltag zu integrieren. In jungen Lebensphasen sind die Kapazitäten für das Ausprobieren neuer Konsum- und Abfallpraktiken eher vorhanden als in späteren Lebensphasen. Darüber hinaus ist die Diversität der jungen Milieus zu beachten (siehe Kapitel 2). Da die jungen Milieus aus unterschiedlichen Herkunftsmilieus stammen, sehen sie ihre Handlungsmöglichkeiten innerhalb der bestehenden Rahmenbedingungen unterschiedlich stark und können darauf aufbauend entsprechend mehr oder weniger Perspektiven für nachhaltigen, abfallvermeidenden Konsum entwickeln. Es gibt durchaus Personen in den jungen Milieus mit starken Ambitionen für einen nachhaltigeren Konsumstil („Junge Idealistische“), aber auch einige, die im Alltag wenig Möglichkeiten sehen, ihren Konsum stärker zu verändern („Junge Distanzierte“). Einige sehen bei der Lösung von Abfallproblemen vor allem die Politik und Wirtschaft in der Verantwortung, die erst einmal Rahmenbedingungen für abfallreduzierenden Konsum schaffen muss. Andere finden, dass Verbraucher/-innen einen wichtigen Beitrag leisten können. Bei Vertreter/-innen beider Positionen gibt es den eigenen Wunsch, Verantwortung für Umweltprobleme zu übernehmen und Abfallreduktion im Alltag umzusetzen. Signale der Verantwortungsübernahme und Priorisierung von Nachhaltigkeitsthemen in Wirtschaft und Politik können aus ihrer Sicht eine wichtige Orientierung und Unterstützung bieten."
+    },
+    "kommunikationsstrategien": {
+      "ansatzpunkte": [
+        "Der offene Umgang mit der eigenen Konsumorientierung und dem Nichtwissen über manche Sachverhalte (wie z. B. bei der Abfalltrennung) kann für eine direkte, auch konfrontative Thematisierung und Sensibilisierung genutzt werden.",
+        "Abfallvermeidende Praktiken, wie Reparieren oder Einkaufen mit eigenen Behältern, werden teilweise als traditionell wahrgenommen und gelten daher als veraltet. Jedoch sind sie auch mit positiven Erfahrungen (z. B. im Elternhaus oder Erzählungen von Großeltern) besetzt.",
+        "Abfallbewusste Vorreiter/-innen (z. B. Influencer/-innen) können abfallvermeidende Praktiken und einen weniger ressourcenintensiven Lebensstil in jungen Milieus bekannter machen.",
+        "Attraktive und zeitgemäße Gestaltung ist wichtig, auch Humor kann gut ankommen. Jedoch muss Abfallvermeidung nicht unbedingt besonders modisch oder trendig sein.",
+        "Junge Milieus wollen als ‚normale‘ Adressat/-innen mit ihren praktischen Alltagsfragen ernstgenommen werden.",
+        "Knappe Zeit im schnelllebigen Alltag und begrenzte finanzielle Ressourcen als Hürden für die Umsetzung abfallvermeidender Praktiken im Alltag ernstnehmen.",
+        "Die Suche nach Orientierung in neuen Lebensphasen kann genutzt werden, um abfallvermeidende Praktiken in neue Gewohnheiten zu integrieren."
+      ],
+      "botschaften": [
+        "Wer Abfall vermeidet, schont die Umwelt und das Klima. Viele Dinge sind zu gut für die Tonne. Die Entscheidung, wie man konsumiert, ist nicht nur eine persönliche, sondern auch eine politische.",
+        "Was früher gut war, wird es wieder: Unverpackt einkaufen ist ein Trend, der gut für Klima und Umwelt ist. Repair-Café, Unverpackt-Laden oder plastikfrei einkaufen: Was Oma und Opa schon gut fanden, ist für das Klima heute doppelt gut.",
+        "Ökologisch und umweltbewusst leben muss nicht teuer sein. Mit wenig Geld kannst Du große Schritte machen."
+      ]
+    }
+  }
+}

@@ -1,0 +1,649 @@
+{
+  "_comment": "Material taxonomy for Open Food Facts packaging_materials_tags → WasteStream mapping. Source: https://world.openfoodfacts.org/packaging-materials.json",
+
+  "waste_stream_defaults": {
+    "Altglascontainer": "Glass containers and bottles",
+    "Verpackungstonne": "Lightweight packaging: plastics, metals, composites",
+    "Altpapiertonne": "Paper, cardboard, paperboard",
+    "Biotonne": "Organic/compostable materials",
+    "Restabfalltonne": "Residual waste (non-recyclable)"
+  },
+
+  "materials": [
+    {
+      "tag": "en:glass",
+      "name": "Glass",
+      "name_de": "Glas",
+      "default_stream": "Altglascontainer",
+      "parent": null
+    },
+    {
+      "tag": "en:clear-glass",
+      "name": "Clear Glass",
+      "name_de": "Klarglas",
+      "default_stream": "Altglascontainer",
+      "parent": "en:glass"
+    },
+    {
+      "tag": "en:brown-glass",
+      "name": "Brown Glass",
+      "name_de": "Braunglas",
+      "default_stream": "Altglascontainer",
+      "parent": "en:glass"
+    },
+    {
+      "tag": "en:green-glass",
+      "name": "Green Glass",
+      "name_de": "Grünglas",
+      "default_stream": "Altglascontainer",
+      "parent": "en:glass"
+    },
+    {
+      "tag": "en:light-sort-glass",
+      "name": "Light Sort Glass",
+      "name_de": "Helles Mischglas",
+      "default_stream": "Altglascontainer",
+      "parent": "en:glass"
+    },
+    {
+      "tag": "en:dark-sort-glass",
+      "name": "Dark Sort Glass",
+      "name_de": "Dunkles Mischglas",
+      "default_stream": "Altglascontainer",
+      "parent": "en:glass"
+    },
+    {
+      "tag": "en:uncoloured-glass",
+      "name": "Uncoloured Glass",
+      "name_de": "Farbloses Glas",
+      "default_stream": "Altglascontainer",
+      "parent": "en:glass"
+    },
+
+    {
+      "tag": "en:plastic",
+      "name": "Plastic",
+      "name_de": "Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": null
+    },
+    {
+      "tag": "en:pet-1-polyethylene-terephthalate",
+      "name": "PET 1 - Polyethylene terephthalate",
+      "name_de": "PET 1 - Polyethylenterephthalat",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:hdpe-2-high-density-polyethylene",
+      "name": "HDPE 2 - High-density polyethylene",
+      "name_de": "HDPE 2 - Polyethylen hoher Dichte",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:pvc-3-polyvinyl-chloride",
+      "name": "PVC 3 - Polyvinyl chloride",
+      "name_de": "PVC 3 - Polyvinylchlorid",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:ldpe-4-low-density-polyethylene",
+      "name": "LDPE 4 - Low-density polyethylene",
+      "name_de": "LDPE 4 - Polyethylen niedriger Dichte",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:pp-5-polypropylene",
+      "name": "PP 5 - Polypropylene",
+      "name_de": "PP 5 - Polypropylen",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:ps-6-polystyrene",
+      "name": "PS 6 - Polystyrene",
+      "name_de": "PS 6 - Polystyrol",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:o-7-other-plastics",
+      "name": "O 7 - Other plastics",
+      "name_de": "O 7 - Sonstige Kunststoffe",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:pe-7-polyethylene",
+      "name": "PE 7 - Polyethylene",
+      "name_de": "PE 7 - Polyethylen",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:pet-transparent",
+      "name": "PET - Transparent",
+      "name_de": "PET - Transparent",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pet-1-polyethylene-terephthalate"
+    },
+    {
+      "tag": "en:pet-colored",
+      "name": "PET - Colored",
+      "name_de": "PET - Gefärbt",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pet-1-polyethylene-terephthalate"
+    },
+    {
+      "tag": "en:pet-opaque",
+      "name": "PET - Opaque",
+      "name_de": "PET - Opak",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pet-1-polyethylene-terephthalate"
+    },
+    {
+      "tag": "en:rpet-recycled-polyethylene-terephthalate",
+      "name": "RPET - Recycled PET",
+      "name_de": "RPET - Recyceltes PET",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pet-1-polyethylene-terephthalate"
+    },
+    {
+      "tag": "en:rpet-transparent",
+      "name": "RPET - Transparent",
+      "name_de": "RPET - Transparent",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:rpet-recycled-polyethylene-terephthalate"
+    },
+    {
+      "tag": "en:opp-oriented-polypropylen",
+      "name": "OPP - Oriented Polypropylene",
+      "name_de": "OPP - Orientiertes Polypropylen",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pp-5-polypropylene"
+    },
+    {
+      "tag": "en:cpp-cast-polypropylen",
+      "name": "CPP - Cast Polypropylene",
+      "name_de": "CPP - Gegossenes Polypropylen",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pp-5-polypropylene"
+    },
+    {
+      "tag": "en:eps-expanded-polystyrene",
+      "name": "EPS - Expanded polystyrene",
+      "name_de": "EPS - Expandiertes Polystyrol",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:ps-6-polystyrene"
+    },
+    {
+      "tag": "en:pa-polyamide",
+      "name": "PA - Polyamide",
+      "name_de": "PA - Polyamid",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:petg-polyethylene-terephthalate-glycol",
+      "name": "PETG - Polyethylene terephthalate glycol",
+      "name_de": "PETG - Polyethylenterephthalatglykol",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:pla-polylactic-acid",
+      "name": "PLA - Polylactic acid",
+      "name_de": "PLA - Polymilchsäure",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:recyclable-plastic",
+      "name": "Recyclable plastic",
+      "name_de": "Recycelbarer Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:recycled-plastic",
+      "name": "Recycled plastic",
+      "name_de": "Recycelter Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:mixed-plastics",
+      "name": "Mixed plastics",
+      "name_de": "Mischkunststoffe",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:biobased-plastic",
+      "name": "Biobased plastic",
+      "name_de": "Biobasierter Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+    {
+      "tag": "en:biodegradable-plastic",
+      "name": "Biodegradable plastic",
+      "name_de": "Biologisch abbaubarer Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:plastic"
+    },
+
+    {
+      "tag": "en:metal",
+      "name": "Metal",
+      "name_de": "Metall",
+      "default_stream": "Verpackungstonne",
+      "parent": null
+    },
+    {
+      "tag": "en:aluminium",
+      "name": "Aluminium",
+      "name_de": "Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:metal"
+    },
+    {
+      "tag": "en:light-aluminium",
+      "name": "Light aluminium",
+      "name_de": "Leichtaluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:aluminium"
+    },
+    {
+      "tag": "en:steel",
+      "name": "Steel",
+      "name_de": "Stahl",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:metal"
+    },
+    {
+      "tag": "en:tin-plated-steel",
+      "name": "Tin-plated steel",
+      "name_de": "Weißblech",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:steel"
+    },
+    {
+      "tag": "en:recyclable-metals",
+      "name": "Recyclable metals",
+      "name_de": "Recycelbare Metalle",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:metal"
+    },
+
+    {
+      "tag": "en:paper",
+      "name": "Paper",
+      "name_de": "Papier",
+      "default_stream": "Altpapiertonne",
+      "parent": null
+    },
+    {
+      "tag": "en:cardboard",
+      "name": "Cardboard",
+      "name_de": "Karton",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:paperboard",
+      "name": "Paperboard",
+      "name_de": "Pappe",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:non-corrugated-cardboard",
+      "name": "Non-corrugated cardboard",
+      "name_de": "Vollpappe",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:cardboard"
+    },
+    {
+      "tag": "en:corrugated-cardboard",
+      "name": "Corrugated cardboard",
+      "name_de": "Wellpappe",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:cardboard"
+    },
+    {
+      "tag": "en:kraft-paper",
+      "name": "Kraft paper",
+      "name_de": "Kraftpapier",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:other-paper",
+      "name": "Other paper",
+      "name_de": "Sonstiges Papier",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:recycled-cardboard",
+      "name": "Recycled cardboard",
+      "name_de": "Recycelter Karton",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:cardboard"
+    },
+    {
+      "tag": "en:recycled-paper",
+      "name": "Recycled paper",
+      "name_de": "Recyceltes Papier",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:fsc-cardboard",
+      "name": "FSC cardboard",
+      "name_de": "FSC-Karton",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:cardboard"
+    },
+    {
+      "tag": "en:fsc-paper",
+      "name": "FSC paper",
+      "name_de": "FSC-Papier",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:paper-or-cardboard",
+      "name": "Paper or cardboard",
+      "name_de": "Papier oder Karton",
+      "default_stream": "Altpapiertonne",
+      "parent": "en:paper"
+    },
+    {
+      "tag": "en:baking-paper",
+      "name": "Baking paper",
+      "name_de": "Backpapier",
+      "default_stream": "Restabfalltonne",
+      "parent": "en:paper"
+    },
+
+    {
+      "tag": "en:composite-material",
+      "name": "Composite material",
+      "name_de": "Verbundmaterial",
+      "default_stream": "Verpackungstonne",
+      "parent": null
+    },
+    {
+      "tag": "en:tetra-pak",
+      "name": "Tetra Pak",
+      "name_de": "Tetra Pak",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:tetra-brik",
+      "name": "Tetra Brik",
+      "name_de": "Tetra Brik",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:tetra-pak"
+    },
+    {
+      "tag": "en:tetra-brik-aseptic",
+      "name": "Tetra Brik Aseptic",
+      "name_de": "Tetra Brik Aseptisch",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:tetra-brik"
+    },
+    {
+      "tag": "en:tetra-prisma-aseptic",
+      "name": "Tetra Prisma Aseptic",
+      "name_de": "Tetra Prisma Aseptisch",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:tetra-pak"
+    },
+    {
+      "tag": "en:tetra-rex",
+      "name": "Tetra Rex",
+      "name_de": "Tetra Rex",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:tetra-pak"
+    },
+    {
+      "tag": "en:tetra-top",
+      "name": "Tetra Top",
+      "name_de": "Tetra Top",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:tetra-pak"
+    },
+    {
+      "tag": "en:elopak",
+      "name": "Elopak",
+      "name_de": "Elopak",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:sig",
+      "name": "SIG",
+      "name_de": "SIG",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:pure-pak",
+      "name": "Pure-Pak",
+      "name_de": "Pure-Pak",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:pure-pak-classic",
+      "name": "Pure-Pak Classic",
+      "name_de": "Pure-Pak Classic",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pure-pak"
+    },
+    {
+      "tag": "en:pure-pak-sense",
+      "name": "Pure-Pak Sense",
+      "name_de": "Pure-Pak Sense",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:pure-pak"
+    },
+    {
+      "tag": "en:paper-and-plastic",
+      "name": "Paper and plastic",
+      "name_de": "Papier und Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:plastic-aluminium",
+      "name": "Plastic/aluminium",
+      "name_de": "Kunststoff/Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:paper-and-cardboard-plastic-aluminium",
+      "name": "Paper and cardboard / Plastic / Aluminium",
+      "name_de": "Papier und Karton / Kunststoff / Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:paper-and-fibreboard-aluminium",
+      "name": "Paper and fibreboard/aluminium",
+      "name_de": "Papier und Faserplatte/Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:plastic-tinplate",
+      "name": "Plastic-tinplate",
+      "name_de": "Kunststoff-Weißblech",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:plastic-steelplate",
+      "name": "Plastic/steelplate",
+      "name_de": "Kunststoff/Stahlblech",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:plastic-miscellaneous-metals",
+      "name": "Plastic/miscellaneous metals",
+      "name_de": "Kunststoff/Diverse Metalle",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:glass-aluminium",
+      "name": "Glass/aluminium",
+      "name_de": "Glas/Aluminium",
+      "default_stream": "Altglascontainer",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "en:glass-tinplate",
+      "name": "Glass/tinplate",
+      "name_de": "Glas/Weißblech",
+      "default_stream": "Altglascontainer",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:81-c-pap",
+      "name": "81 C/PAP - Paper + plastic",
+      "name_de": "81 C/PAP - Papier + Kunststoff",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:82-c-pap",
+      "name": "82 C/PAP - Paper + aluminium",
+      "name_de": "82 C/PAP - Papier + Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:84-c-pap",
+      "name": "84 C/PAP - Paper + plastic + aluminium",
+      "name_de": "84 C/PAP - Papier + Kunststoff + Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:90-c-ldpe",
+      "name": "90 C/LDPE - Plastic + aluminium",
+      "name_de": "90 C/LDPE - Kunststoff + Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:90-c-pp",
+      "name": "90 C/PP - Plastic + aluminium",
+      "name_de": "90 C/PP - Kunststoff + Aluminium",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:92-c-fe",
+      "name": "92 C/FE - Plastic + steel",
+      "name_de": "92 C/FE - Kunststoff + Stahl",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+    {
+      "tag": "xx:evoh",
+      "name": "EVOH - Ethylene vinyl alcohol",
+      "name_de": "EVOH - Ethylenvinylalkohol",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:composite-material"
+    },
+
+    {
+      "tag": "en:wood",
+      "name": "Wood",
+      "name_de": "Holz",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    },
+    {
+      "tag": "en:cork",
+      "name": "Cork",
+      "name_de": "Kork",
+      "default_stream": "Restabfalltonne",
+      "parent": "en:wood"
+    },
+    {
+      "tag": "en:cellulose",
+      "name": "Cellulose",
+      "name_de": "Zellulose",
+      "default_stream": "Biotonne",
+      "parent": null
+    },
+    {
+      "tag": "en:cellophane",
+      "name": "Cellophane",
+      "name_de": "Zellophan",
+      "default_stream": "Verpackungstonne",
+      "parent": "en:cellulose"
+    },
+    {
+      "tag": "en:cotton",
+      "name": "Cotton",
+      "name_de": "Baumwolle",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    },
+    {
+      "tag": "en:fabric",
+      "name": "Fabric",
+      "name_de": "Stoff",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    },
+    {
+      "tag": "en:ceramic",
+      "name": "Ceramic",
+      "name_de": "Keramik",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    },
+    {
+      "tag": "en:rubber",
+      "name": "Rubber",
+      "name_de": "Gummi",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    },
+    {
+      "tag": "en:wax",
+      "name": "Wax",
+      "name_de": "Wachs",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    },
+    {
+      "tag": "en:n2-azote",
+      "name": "N2 - Azote (protective gas)",
+      "name_de": "N2 - Stickstoff (Schutzgas)",
+      "default_stream": null,
+      "parent": null
+    },
+    {
+      "tag": "en:unknown",
+      "name": "Unknown",
+      "name_de": "Unbekannt",
+      "default_stream": "Restabfalltonne",
+      "parent": null
+    }
+  ]
+}

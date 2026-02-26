@@ -2,7 +2,7 @@
 
 Consolidated list of data sources identified from research reports. This is an actionable quick-reference for ETL implementation.
 
-**Last Updated:** 2026-01-11
+**Last Updated:** 2026-02-26
 
 ---
 
@@ -5561,3 +5561,154 @@ curl "https://mymuell.jumomind.com/mmapp/api.php?r=dates&city_id=CITY_ID&area_id
 # Uni Freiburg: https://uni-freiburg.de/sicherheit-umweltschutz/startseite/abteilung-umweltschutz-und-nachhaltigkeit-sun-2/abfall-abc/
 # TUM Halogen Merkblatt: https://portal.mytum.de/archiv/komp_gts/komp_gts_20030306_151203/20030707_183256/2
 ```
+
+---
+
+## Report 19: Office Supplies, Stationery & University Products
+
+**Focus**: Structured product data for office/stationery items (pens, paper, toner, folders, adhesives), BMEcat catalog ecosystem, eco-label databases, material composition sources, and university procurement data availability.
+
+### Critical Insight: No "Open Office Facts" Exists
+
+Unlike food (Open Food Facts) or electronics (Icecat), there is no single open database for everyday office products. The structured data landscape is fragmented across commercial B2B platforms, eco-label registries, and classification taxonomies. The most comprehensive source (PBSeasy) is paid B2B-only.
+
+### Primary Sources
+
+| Source | URL | Format | License | Relevance | Coverage |
+|--------|-----|--------|---------|-----------|----------|
+| **PBSeasy (PBS Network)** | https://pbsnetwork.eu | REST API, JSON, Excel | Commercial B2B (paid) | 5/5 | 1M+ office/stationery products, 150+ EU manufacturers |
+| **Blauer Engel Fo.KUS DB** | (request via blauerengel@fo-kus.info) | XML, file download | Free (request) | 5/5 | 8,850+ EAN-coded eco-certified products, daily updates |
+| **EU Ecolabel ECAT** | https://data.europa.eu | CSV, API | Open data (free) | 4/5 | 109,096 products with EAN13 barcodes |
+| **ECHA SCIP Database** | https://echa.europa.eu/scip-database | Web portal (IUCLID) | Free | 4/5 | 15M+ factsheets — only source linking products to hazardous substances |
+| **Icecat Open Catalog** | https://icecat.biz | JSON/XML/CSV API | Free tier + paid | 4/5 | 26M+ datasheets, toner/cartridge compatibility data |
+
+### Secondary/Classification Sources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| UNSPSC Segment 44 | https://catalog.data.gov/dataset/unspsc-codes-93778 | Free Excel taxonomy: 157k items, includes office supplies (44-12-17 Writing Instruments, 44-10-31 Printer Supplies) |
+| GS1 GPC Segment 10005000 | https://gpc-browser.gs1.org | Free stationery/office classification with brick-level attributes. Verified by GS1: 30 free GTIN lookups/day |
+| eCl@ss Segment 24 | https://eclass.eu | Dominant German industry standard (~50k classes). Free search tool; full download licensed. Release 16.0 adds material declarations |
+| Wikidata | https://query.wikidata.org | CC0 SPARQL. P186 ("made from material") for product types. Q15714692 = office supplies hierarchy |
+| GESTIS | https://gestis.dguv.de | 9,400+ substances with GHS classification — authoritative German source for toner/ink chemistry |
+| ECHA CHEM | https://echa.europa.eu/information-on-chemicals | 100,000+ REACH dossiers for substance hazard data (carbon black, styrene-acrylate, iron oxide) |
+
+### Toner/Ink Cartridge Sources (Multi-Layer Pipeline)
+
+No single database maps cartridge → composition → AVV code. Requires chaining five layers:
+
+| Layer | Source | What It Provides | Access |
+|-------|--------|------------------|--------|
+| 1. Product ID | Icecat | EAN/GTIN, brand, model, compatible printers, page yield | Free tier |
+| 2. Cross-reference | TRI Resources T3 API | OEM ↔ aftermarket cartridge mapping, 1000+ photos | Paid (1-month free trial) |
+| 3. Safety Data Sheets | Xerox, HP, Canon, Brother portals | Composition (Section 3), disposal instructions (Section 13) | Free (scraping) |
+| 4. Substance hazard | GESTIS + ECHA CHEM | GHS classification, CAS numbers, toxicological data | Free |
+| 5. AVV assignment | Threshold calculation | 08 03 17* (hazardous) vs. 08 03 18 (non-hazardous) | Constructed |
+
+**Key finding:** Most modern commercial toner cartridges are NOT classified as hazardous under CLP/GHS — toner powder is typically styrene-acrylate polymer with encapsulated carbon black, silica, and wax.
+
+### BMEcat Ecosystem
+
+BMEcat catalogs are closed B2B documents — no real-world office supply catalogs are openly downloadable. Available resources:
+
+| Resource | URL | Notes |
+|----------|-----|-------|
+| BME e.V. specs + examples | https://bme.de | XSD schemas, DTDs, XML examples ZIP (free, no registration) |
+| BMECat.net GitHub | https://github.com/stephanstapel/BMECat.net | 14 real-world Weidmuller XML files + demo "Office Material" catalog |
+| olivere/bmecat Go library | GitHub | Test files with office supply sample data |
+| SEPIA BMEcatHub | https://sepia.de/en/bmecathub | Import/edit/export BMEcat catalogs (free basic version) |
+
+**Suppliers using BMEcat:** Unite/Mercateo (requires BMEcat 1.2), Schafer Shop (eCl@ss 4.0-7.1, B2B only), Lyreco (BMEcat + JSON + OCI), Simple System (BMEcat-exclusive, widely used by German universities), Bechtle (BMEcat + JSON + CIF).
+
+### Key Integration Notes
+
+**PBSeasy:**
+- Industry-standard data exchange for European PBS sector (Papier, Buro, Schreibwaren)
+- 1M+ products from 150+ manufacturers (LEITZ ACCO Brands, Schneider Novus, etc.)
+- eCl@ss Segment 24 classification, 200+ quality checks, GDSN via b-synced
+- **Access barrier**: Commercial B2B, requires dealer/retailer registration. Negotiate academic access.
+- Material composition is NOT a primary field — eCl@ss properties may include some material attributes
+
+**Blauer Engel Fo.KUS:**
+- Email blauerengel@fo-kus.info for free XML interface access
+- Covers: printers/MFDs (2,825 devices), paper (267 products), office supplies (230+), writing utensils, remanufactured toner (DE-UZ 200)
+- Key product group standards: DE-UZ 14a/14b (recycled paper), DE-UZ 171 (printers), DE-UZ 177 (writing utensils), DE-UZ 200 (remanufactured toner)
+- EAN/GTIN codes enable cross-referencing with barcode lookups
+
+**EU Ecolabel ECAT:**
+- Zero-effort acquisition: CSV download from data.europa.eu, no registration
+- Fields: product name, licence number, group code/name, EAN13 (EXTID_TYPE), company name/country, VAT, expiration date
+- Office-relevant groups: graphic paper, cardboard, converted paper products, printed matter, furniture
+- API and Power BI dashboard also available
+
+**ECHA SCIP:**
+- Only covers articles with SVHCs above 0.1% w/w — standard paper, basic pens, folders will NOT appear
+- Office products likely present: toner cartridges, solvent-based markers, correction fluids, adhesives, PVC binders (phthalate plasticizers)
+- No bulk download API — web portal only. Submission API (S2S/IUCLID) is write-only
+- "Severe delays in SCIP dissemination" reported as of January 2026
+
+**OEM Safety Data Sheets (toner/ink):**
+- Xerox: open directory at xerox.com/download/ehs/msds/ (product-code organized, DE PDFs, highly scrapeable)
+- HP: systematic document IDs (e.g., c07705107)
+- Canon: files.canon-europe.com/files/webcontent/safety-data-sheets/
+- Sharp, Kyocera, OKI, Brother, Konica Minolta all publish per-product SDS
+- SDS Section 3 → composition with CAS numbers; Section 13 → disposal instructions
+- SDS Manager API (paid): 16M+ SDS, JSON/XML output, auto-extracts all 16 sections
+
+### Take-Back Programs (Unstructured)
+
+| Program | Provider | Notes |
+|---------|----------|-------|
+| HP Planet Partners | HP | "Non-returnable supplies list" PDF (Rev. 8, Oct 2025) — closest thing to a recyclability database |
+| Der Sammeldrache | Interzero | School/business cartridge collection (1.4M/year). No structured data |
+| Canon Return Program | Canon | Take-back, no public database |
+| DIN 33870 / DIN 33871 | DIN | Standards for remanufactured toner (B&W) / inkjet. Referenced by ETIRA |
+
+### University Procurement: Entirely Closed
+
+- **No German university publishes procurement catalogs as open data**
+- Framework contracts publicly tendered (award notices published), but actual product catalogs confidential
+- Kaufhaus des Bundes (kdb.bund.de): federal agencies only, no public product data
+- E-procurement portals (cosinex, Vergabe24, DTVP): tender notices with CPV codes (30192700 = Buromaterial) but no product-level data
+- **Recommendation**: Partnership with university procurement department essential (likely uses Simple System or JAGGAER with BMEcat catalogs)
+
+### Material Composition: Critical Unsolved Gap
+
+No database systematically provides "this pen is 40% polypropylene, 30% polystyrene, 20% brass, 10% ink." Available fragments:
+
+| Partial Source | What It Covers | Limitation |
+|----------------|----------------|------------|
+| ECHA SCIP | Hazardous substances >0.1% w/w | No bulk download; non-hazardous products absent |
+| Safety Data Sheets | Chemical products (toner, markers, adhesives, correction fluid) | Not available for paper, pens, folders |
+| eCl@ss properties | Material declaration aspects (Release 16.0) | Schema only — actual data in commercial platforms |
+| Wikidata P186 | Generic material links for product types | Not specific commercial SKUs |
+| Manufacturer declarations | Varies | Rarely public; no aggregated source |
+
+For non-chemical products (standard paper, plastic pens, binders), **no automated source exists** — manual research from manufacturer environmental reports is the only option.
+
+### ETL Priority Phases
+
+**Phase 1 — Immediate (free, structured):**
+1. EU Ecolabel ECAT CSV (data.europa.eu)
+2. Blauer Engel Fo.KUS XML (email request)
+3. UNSPSC Segment 44 Excel (free download)
+4. Wikidata SPARQL extraction (P186 material, P3962 GTIN)
+5. GS1 GPC Excel download
+
+**Phase 2 — Medium effort (free, requires scraping/parsing):**
+6. OEM Safety Data Sheet scraping (Xerox open directory, HP, Canon)
+7. ECHA SCIP portal queries for office product categories
+8. Icecat Open Catalog API (toner/ink cartridge datasheets)
+9. BMEcat sample files (BME.de examples + GitHub repos for parser development)
+
+**Phase 3 — Negotiated access (highest data richness):**
+10. PBSeasy (PBS Network) — academic/research access
+11. Unite/Mercateo Content API — partner program
+12. eCl@ss license — Segment 24 with material declarations
+13. SDS Manager API — structured SDS extraction (16M+ SDS)
+
+**Phase 4 — Specialized enrichment:**
+14. FSC API (api.fsc.org) — paper supply chain verification
+15. EPEAT CSV export — printer/copier environmental ratings
+16. TRI Resources T3 API — cartridge compatibility cross-referencing
+17. GESTIS substance linking — toner/ink CAS → hazard profiles
