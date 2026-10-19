@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 logger = logging.getLogger(__name__)
 
 # Default paths
-DATA_DIR = Path(__file__).parent.parent.parent / "data" / "dictionaries"
+DATA_DIR = Path(__file__).parent.parent.parent / "sources" / "large" / "dictionaries"
 DEFAULT_OUTPUT = DATA_DIR / "concepts.jsonl"
 
 
@@ -37,10 +37,10 @@ def generate_uid(name: str) -> str:
 
 
 def ensure_data_dir() -> Path:
-    """Create data/dictionaries/ directory if it doesn't exist.
+    """Create sources/large/dictionaries/ directory if it doesn't exist.
 
     Returns:
-        Path to the data/dictionaries/ directory.
+        Path to the sources/large/dictionaries/ directory.
     """
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -272,7 +272,7 @@ def main():
         "--output", "-o",
         type=Path,
         default=DEFAULT_OUTPUT,
-        help="Path for output JSONL (default: data/dictionaries/concepts.jsonl)",
+        help="Path for output JSONL (default: sources/large/dictionaries/concepts.jsonl)",
     )
     parse_cmd.add_argument(
         "--dry-run", "-n",
@@ -294,7 +294,7 @@ def main():
         "--input", "-i",
         type=Path,
         default=DEFAULT_OUTPUT,
-        help="Path to concepts.jsonl (default: data/dictionaries/concepts.jsonl)",
+        help="Path to concepts.jsonl (default: sources/large/dictionaries/concepts.jsonl)",
     )
     import_cmd.add_argument(
         "--batch-size",
@@ -322,7 +322,7 @@ def main():
         "--input", "-i",
         type=Path,
         default=DEFAULT_OUTPUT,
-        help="Path to concepts.jsonl (default: data/dictionaries/concepts.jsonl)",
+        help="Path to concepts.jsonl (default: sources/large/dictionaries/concepts.jsonl)",
     )
     classify_cmd.add_argument(
         "--batch-size",

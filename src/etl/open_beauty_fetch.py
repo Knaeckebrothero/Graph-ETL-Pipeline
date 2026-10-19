@@ -10,8 +10,8 @@ ingredient lists useful for hazmat classification.
 API/dump: https://world.openbeautyfacts.org/data
 
 Usage:
-    python -m src.etl.open_beauty_fetch --output data/obf_products.json
-    python -m src.etl.open_beauty_fetch --output data/obf_products.json -v
+    python -m src.etl.open_beauty_fetch --output sources/raw/open-beauty-facts/obf_products.json
+    python -m src.etl.open_beauty_fetch --output sources/raw/open-beauty-facts/obf_products.json -v
 """
 
 import argparse
@@ -161,8 +161,8 @@ def main():
         "--output",
         "-o",
         type=Path,
-        default=Path("data/obf_products.json"),
-        help="Output JSON file path (default: data/obf_products.json)",
+        default=Path("sources/raw/open-beauty-facts/obf_products.json"),
+        help="Output JSON file path (default: sources/raw/open-beauty-facts/obf_products.json)",
     )
     parser.add_argument(
         "-v",

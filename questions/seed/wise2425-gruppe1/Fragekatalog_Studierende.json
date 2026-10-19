@@ -1,0 +1,155 @@
+[
+  {
+    "question": "Wie oft wird die Restabfalltonne geleert?",
+    "expected_output": "Die Leerung der Restabfalltonne erfolgt abhängig von Größe und Bedarf. Details finden sich in der Abfallentsorgungssatzung.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Was darf in die Verpackungstonne geworfen werden?",
+    "expected_output": "Erlaubt sind Verpackungen aus Kunststoff, Verbundmaterialien und Metall. Sie müssen leer sein, aber nicht gespült.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Kann ich als Mieter eine eigene Restmülltonne bestellen?",
+    "expected_output": "Nein, Mieter können die Restmülltonne nicht selbst bestellen. Sie müssen sich an den Vermieter oder die Hausverwaltung wenden.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wo kann ich zusätzliche Müllsäcke kaufen, wenn meine Tonne voll ist?",
+    "expected_output": "Zusätzliche 70-Liter-Restmüllsäcke mit Aufdruck können für 3,50 € an Verkaufsstellen der Stadt erworben werden.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Darf ich Windeln in die Restmülltonne werfen?",
+    "expected_output": "Ja, Windeln gehören in die Restmülltonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Welche Farben sind bei der Altglassammlung zu trennen?",
+    "expected_output": "Altglas wird nach Weiß, Braun und Grün getrennt. Blaues oder buntes Glas gehört zum Grünglas.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie groß sind die Verpackungstonnen?",
+    "expected_output": "Die Verpackungstonnen gibt es in den Größen 120, 240 und 770 Liter sowie 1,1 m³.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Was passiert, wenn zu viel Restmüll in der Verpackungstonne ist?",
+    "expected_output": "Wenn zu viel Restmüll in der Verpackungstonne ist, wird sie nicht geleert. Eine Sonderleerung als Restmüll muss beantragt werden.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Darf ich Pizzakartons in die Verpackungstonne werfen?",
+    "expected_output": "Stark verschmutzte Pizzakartons gehören nicht in die Verpackungstonne, sondern in den Restmüll.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Muss ich die Deckel von Gläsern entfernen, bevor ich sie in den Altglascontainer werfe?",
+    "expected_output": "Nein, das Entfernen der Deckel ist nicht notwendig.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Welche Größe hat die Altpapiertonne?",
+    "expected_output": "Die Altpapiertonne gibt es in den Größen 120, 240, 770 Liter sowie 1,1, 2,5 und 5 m³.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Was gehört in die Altpapiertonne?",
+    "expected_output": "Pappe, Kartonagen, Zeitungen, Illustrierte, Kataloge, Bücher und Hefte.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wann wird die Altpapiertonne geleert?",
+    "expected_output": "Die Altpapiertonne wird alle 14 Tage geleert.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich kaputtes Porzellan?",
+    "expected_output": "Kaputtes Porzellan gehört in die Restmülltonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Darf ich Blumenvasen in den Altglascontainer werfen?",
+    "expected_output": "Nein, Blumenvasen gehören nicht in den Altglascontainer, sondern in den Restmüll.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Was passiert, wenn in der Altpapiertonne zu viel Restmüll ist?",
+    "expected_output": "Wenn zu viel Restmüll in der Altpapiertonne ist, wird sie nicht geleert. Eine Sonderleerung als Restmüll muss beantragt werden.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Gibt es eine Mindestgröße für die Restmülltonne bei Gewerbebetrieben?",
+    "expected_output": "Ja, für Gewerbebetriebe gilt eine Mindestbehälterkapazität laut §8 Absatz 6 der Abfallsatzung.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  }
+]

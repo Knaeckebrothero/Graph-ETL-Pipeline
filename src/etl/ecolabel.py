@@ -12,8 +12,8 @@ API docs: https://apps.data.env.service.ec.europa.eu/dataquery/docs
 Usage:
     python -m src.etl.ecolabel                           # Fetch from API + import
     python -m src.etl.ecolabel --dry-run                 # Preview without DB changes
-    python -m src.etl.ecolabel --input data/ecolabel.json  # Import from local file
-    python -m src.etl.ecolabel --fetch-only --output data/ecolabel.json  # Download only
+    python -m src.etl.ecolabel --input sources/raw/eu-ecolabel/ecolabel.json  # Import from local file
+    python -m src.etl.ecolabel --fetch-only --output sources/raw/eu-ecolabel/ecolabel.json  # Download only
     python -m src.etl.ecolabel -v                        # Verbose output
 """
 

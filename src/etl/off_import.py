@@ -28,7 +28,7 @@ import pyarrow.parquet as pq
 logger = logging.getLogger(__name__)
 
 # Default input path
-DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "off_dump" / "food.parquet"
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "sources" / "large" / "off_dump" / "food.parquet"
 
 # Source provenance
 SOURCE_NAME = "openfoodfacts-parquet"
@@ -465,7 +465,7 @@ def main():
         "--input",
         type=Path,
         default=DATA_FILE,
-        help="Path to food.parquet (default: data/off_dump/food.parquet)",
+        help="Path to food.parquet (default: sources/large/off_dump/food.parquet)",
     )
     parser.add_argument(
         "--dry-run",

@@ -1,7 +1,7 @@
 """
 Material taxonomy importer.
 
-Loads material reference data from data/materials.json into Neo4j:
+Loads material reference data from sources/raw/off-materials/materials.json into Neo4j:
   - Material nodes (~85 tags from Open Food Facts)
   - IS_A hierarchy edges (e.g., en:pp-5-polypropylene IS_A en:plastic)
   - DEFAULT_STREAM edges (each material → its WasteStream)
@@ -22,7 +22,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "materials.json"
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "sources" / "raw" / "off-materials" / "materials.json"
 SOURCE_NAME = "off-packaging-materials"
 SOURCE_TYPE = "reference"
 
@@ -217,7 +217,7 @@ def main():
         "--input",
         type=Path,
         default=DATA_FILE,
-        help="Path to materials.json (default: data/materials.json)",
+        help="Path to materials.json (default: sources/raw/off-materials/materials.json)",
     )
     args = parser.parse_args()
 

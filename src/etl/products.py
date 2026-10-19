@@ -10,9 +10,9 @@ Loads product data (from BarcodeResolver JSON dumps) into Neo4j:
 Requires: materials.py must run first (components link to existing Material nodes).
 
 Usage:
-    python -m src.etl.products --input data/products_sample.json
-    python -m src.etl.products --input data/products_sample.json --dry-run
-    python -m src.etl.products --input data/products_sample.json -v
+    python -m src.etl.products --input sources/raw/product-sample/products_sample.json
+    python -m src.etl.products --input sources/raw/product-sample/products_sample.json --dry-run
+    python -m src.etl.products --input sources/raw/product-sample/products_sample.json -v
 """
 
 import argparse

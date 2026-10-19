@@ -36,7 +36,7 @@ from src.db import neo4j_db
 
 logger = logging.getLogger(__name__)
 
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "Abgabe_Gruppe2_AVV_mit_AbfallABC.csv"
+DATA_FILE = Path(__file__).parent.parent.parent / "sources" / "raw" / "avv-workbook" / "avv_workbook_redacted.csv"
 
 # Chapter names from the AVV standard
 CHAPTER_NAMES = {

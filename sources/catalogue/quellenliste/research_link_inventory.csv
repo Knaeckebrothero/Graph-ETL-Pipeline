@@ -1,0 +1,563 @@
+report,url
+Report 01: Food & Grocery Products,https://world.openfoodfacts.org/data
+Report 01: Food & Grocery Products,https://www.verpackungsregister.org
+Report 01: Food & Grocery Products,https://daten.berlin.de/datensaetze/bsrrecyclingh-fe-und-abfall-abc
+Report 01: Food & Grocery Products,https://www.blauerengel.de/en/trade/e-commerce
+Report 01: Food & Grocery Products,https://www.gs1us.org/tools/gs1-company-databasegepir
+Report 01: Food & Grocery Products,https://www.verpackungsregister.org/en/foundationauthority/public-registers
+Report 02: Consumer Electronics,https://www.stiftungear.de/en/lists/
+Report 02: Consumer Electronics,https://icecat.biz/
+Report 02: Consumer Electronics,https://eprel.ec.europa.eu/
+Report 02: Consumer Electronics,https://echa.europa.eu/scipdatabase
+Report 02: Consumer Electronics,https://www.ifixit.com/api/2.0/doc
+Report 02: Consumer Electronics,https://www.laga-online.de/
+Report 02: Consumer Electronics,https://world.openproductsfacts.org/
+Report 02: Consumer Electronics,https://standard.openrepair.org/
+Report 02: Consumer Electronics,https://www.epbaeurope.net/
+Report 02: Consumer Electronics,https://industry.tcocertified.com/gtinapi/
+Report 02: Consumer Electronics,https://www.gs1.org/
+Report 02: Consumer Electronics,"https://live.icecat.biz/api?lang=de&ProductCode=XYZ&Brand=Samsung"""
+Report 02: Consumer Electronics,"https://world.openproductsfacts.org/api/v2/product/[barcode].json"""
+Report 02: Consumer Electronics,"https://www.ifixit.com/api/2.0/guides/[id]"""
+Report 03: Chemicals & Hazardous,https://pubchem.ncbi.nlm.nih.gov/rest/pug
+Report 03: Chemicals & Hazardous,https://commonchemistry.cas.org/
+Report 03: Chemicals & Hazardous,https://gestis-database.dguv.de/
+Report 03: Chemicals & Hazardous,https://data.europa.eu/data/datasets/echaclassification-and-labelling-inventory
+Report 03: Chemicals & Hazardous,https://echa.europa.eu/
+Report 03: Chemicals & Hazardous,https://github.com/mhchem/hpstatements
+Report 03: Chemicals & Hazardous,https://www.epa.gov/comptox-tools/
+Report 03: Chemicals & Hazardous,https://www.epa.gov/epcra/consolidated-listlists
+Report 03: Chemicals & Hazardous,https://calepa.ca.gov/sitecleanup/corteselist/
+Report 03: Chemicals & Hazardous,https://tes.bam.de/TES/Navigation/EN/DGGDatabase/Products/
+Report 03: Chemicals & Hazardous,https://developers.live.machship.com/api/faqs/dglookup-by-un
+Report 03: Chemicals & Hazardous,https://www.eea.europa.eu/
+Report 03: Chemicals & Hazardous,https://developer.ups.com/api/reference
+Report 03: Chemicals & Hazardous,https://developer.fedex.com/api/
+Report 03: Chemicals & Hazardous,https://ethz.ch/staffnet/
+Report 03: Chemicals & Hazardous,https://hsrm.umn.edu/
+Report 03: Chemicals & Hazardous,https://github.com/astepe/sds_parser
+Report 03: Chemicals & Hazardous,https://pubchem.ncbi.nlm.nih.gov/rest/pug/<input>/<operation>/<output>
+Report 03: Chemicals & Hazardous,https://gestis-database.dguv.de/data?name={ZVG_NUMBER}
+Report 03: Chemicals & Hazardous,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Muriatic%20Acid/s
+Report 03: Chemicals & Hazardous,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/313/classification
+Report 03: Chemicals & Hazardous,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/180/property/Molec
+Report 03: Chemicals & Hazardous,"https://commonchemistry.cas.org/api/detail?cas_rn=67-64-1"""
+Report 03: Chemicals & Hazardous,https://developers.live.machship.com/api/faqs/dg-lookup-by-un?
+Report 04: German Municipal Rules,https://api.abfallplus.de
+Report 04: German Municipal Rules,https://mymuell.jumomind.com/mmapp/api.php
+Report 04: German Municipal Rules,https://daten.berlin.de/datensaetze/bsr-recyclingh-fe-und-abfall-abc
+Report 04: German Municipal Rules,https://opendata.muenchen.de/dataset/awm_wertstoffhoefe_opendata
+Report 04: German Municipal Rules,https://offenedaten.aachen.de/dataset/schadstoffmobil-stadt-aachen
+Report 04: German Municipal Rules,https://www.gesetze-im-internet.de/avv/AVV.pdf
+Report 04: German Municipal Rules,https://www.statistik.sachsen.de/
+Report 04: German Municipal Rules,https://wikiwaste.org.uk/index.php/European_Waste_Catalogue
+Report 04: German Municipal Rules,https://www.csg.co.uk/resources/ewc-codes
+Report 04: German Municipal Rules,https://github.com/mampfes/hacs_waste_collection_sc
+Report 04: German Municipal Rules,https://www.openstreetmap.org/
+Report 04: German Municipal Rules,"https://api.abfallplus.de/index.php"""
+Report 04: German Municipal Rules,"https://mymuell.jumomind.com/mmapp/api.php?r=cities"""
+Report 04: German Municipal Rules,"https://mymuell.jumomind.com/mmapp/api.php?r=streets&city_id=X"""
+Report 04: German Municipal Rules,https://mymuell.jumomind.com/mmapp/api.php?
+Report 04: German Municipal Rules,"https://api.abfall.io/customers/363/widgets/abfall-abc.html"""
+Report 04: German Municipal Rules,"https://overpass-api.de/api/interpreter"""
+Report 05: AVV/EWC Codes,https://www.gesetze-im-internet.de/avv/
+Report 05: AVV/EWC Codes,https://data.europa.eu/
+Report 05: AVV/EWC Codes,https://op.europa.eu/en/web/euvocabularies/controlled-vocabularies
+Report 05: AVV/EWC Codes,http://www.legislation.gov.uk/id/eudn/2000/532/annex
+Report 05: AVV/EWC Codes,https://www.sepa.org.uk/
+Report 05: AVV/EWC Codes,https://data.gov.scot/sepa/waste/
+Report 05: AVV/EWC Codes,https://assets.publishing.service.gov.uk/
+Report 05: AVV/EWC Codes,https://www.netregs.org.uk/
+Report 05: AVV/EWC Codes,https://www.csg.co.uk/resources/ewccodes
+Report 05: AVV/EWC Codes,https://www.laga-online.de/
+Report 05: AVV/EWC Codes,https://www.umweltministerkonferenz.de/
+Report 05: AVV/EWC Codes,https://vorschriften.bgnbranchenwissen.de/
+Report 05: AVV/EWC Codes,https://www.abfallbewertung.org/
+Report 05: AVV/EWC Codes,https://www.umweltbundesamt.de/
+Report 05: AVV/EWC Codes,https://www.bmuv.de/
+Report 05: AVV/EWC Codes,https://docs.live.zedal.de/
+Report 05: AVV/EWC Codes,https://ethz.ch/
+Report 05: AVV/EWC Codes,https://www.unigiessen.de/
+Report 05: AVV/EWC Codes,"https://www.gesetze-im-internet.de/avv/AVV.pdf"""
+Report 05: AVV/EWC Codes,https://op.europa.eu/en/web/eu-vocabularies/controlledvocabularies
+Report 05: AVV/EWC Codes,https://www.abfallbewertung.org/ipa/
+Report 05: AVV/EWC Codes,"https://data.gov.scot/sepa/waste/wfas-qr.html"""
+Report 05: AVV/EWC Codes,https://assets.publishing.service.gov.uk/media/6152d0b78fa8f5610b9c222b/W
+Report 05: AVV/EWC Codes,"https://ethz.ch/content/dam/ethz/associates/services/Service/sicherheitgesundheit-umwelt/files/chemieabwasser/de/Merkblatt_Chemieabwasser_DE.pdf"""
+Report 06: Construction Materials (Bauschutt),https://www.destatis.de/
+Report 06: Construction Materials (Bauschutt),https://www.gesetze-iminternet.de/avv/
+Report 06: Construction Materials (Bauschutt),https://www.laga-online.de/
+Report 06: Construction Materials (Bauschutt),https://www.gesetze-iminternet.de/
+Report 06: Construction Materials (Bauschutt),https://ewccodes.com/
+Report 06: Construction Materials (Bauschutt),https://www.baustoffrecyclingbayern.de/
+Report 06: Construction Materials (Bauschutt),https://www.beton-eisack.it/
+Report 06: Construction Materials (Bauschutt),https://www.wien.gv.at/pdf/ma22/umrechnungsfaktoren.pdf
+Report 06: Construction Materials (Bauschutt),https://www.ur.ch/
+Report 06: Construction Materials (Bauschutt),https://www.statistik.bayern.de/umrechnungsfaktoren
+Report 06: Construction Materials (Bauschutt),https://api.materialsproject.org/
+Report 06: Construction Materials (Bauschutt),https://api.madaster.com/v4.0/
+Report 06: Construction Materials (Bauschutt),https://docs.2050materials.com/
+Report 06: Construction Materials (Bauschutt),https://oekobaudat.de/OEKOBAUDAT/resource
+Report 06: Construction Materials (Bauschutt),https://docs.buildingtransparency.org/ec3/apiand-integrations
+Report 06: Construction Materials (Bauschutt),https://www.wingisonline.de/
+Report 06: Construction Materials (Bauschutt),https://www.epa.gov/epcra/consolidatedlist-lists
+Report 06: Construction Materials (Bauschutt),https://www.hazwasteportal.org/
+Report 06: Construction Materials (Bauschutt),https://sgs-institut-fresenius.de/
+Report 06: Construction Materials (Bauschutt),https://{region}-abfallapp.regioit.de/
+Report 06: Construction Materials (Bauschutt),https://daten.berlin.de/datensaetze/bsrrecyclingh-fe-und-abfall-abc
+Report 06: Construction Materials (Bauschutt),https://abfallnavi.api.bund.dev/
+Report 06: Construction Materials (Bauschutt),https://github.com/pedropro/TACO
+Report 06: Construction Materials (Bauschutt),https://github.com/AgaMiko/waste-datasets-review
+Report 06: Construction Materials (Bauschutt),https://github.com/topics/abfall
+Report 06: Construction Materials (Bauschutt),https://github.com/mampfes/hacs_waste_collection_sc
+Report 06: Construction Materials (Bauschutt),https://{region}-abfallapp.regioit.de/abfall-app-{region}/rest
+Report 06: Construction Materials (Bauschutt),"https://www.betoneisack.it/_default_upload_bucket/Gewichtstabelle%202021_1.pdf"""
+Report 06: Construction Materials (Bauschutt),"https://www.wien.gv.at/pdf/ma22/umrechnungsfaktoren.pdf"""
+Report 06: Construction Materials (Bauschutt),https://www.ur.ch/_docn/297137/220527_318_22_ANL_Umrechnungsfaktoren_fur_
+Report 06: Construction Materials (Bauschutt),"https://api.madaster.com/v4.0/buildings/{id}/materials"""
+Report 06: Construction Materials (Bauschutt),"https://oekobaudat.de/OEKOBAUDAT/resource/processes?name=Beton"""
+Report 06: Construction Materials (Bauschutt),"https://api.buildingtransparency.org/api/epds?search=concrete"""
+Report 06: Construction Materials (Bauschutt),https://www.baustoffrecyclingbayern.de/system/files/oeffentlich/Dokumente/EBV_Anlage%202%20Tabelle%201%
+Report 06: Construction Materials (Bauschutt),https://www.baustoffrecyclingbayern.de/system/files/oeffentlich/Dokumente/EBV_Anlage%202%20Tabelle%203%
+Report 06: Construction Materials (Bauschutt),"https://aachen-abfallapp.regioit.de/abfall-appaachen/rest/fraktionen"""
+Report 06: Construction Materials (Bauschutt),"https://aachen-abfallapp.regioit.de/abfall-appaachen/rest/standorte"""
+Report 06: Construction Materials (Bauschutt),"https://daten.berlin.de/api/3/action/package_show?id=bsr-recyclinghfe-und-abfall-abc"""
+Report 06: Construction Materials (Bauschutt),https://www.hazwasteportal.org/search.php
+Report 06: Construction Materials (Bauschutt),"https://ewccodes.com/api/ewc?code=170101"""
+Report 07: Packaging & Recycling Codes,https://eur-lex.europa.eu/eli/dec/1997/129/oj/eng
+Report 07: Packaging & Recycling Codes,https://verpackungsgesetz-info.de/en/
+Report 07: Packaging & Recycling Codes,https://www.verpackungsregister.org/fileadmin/files/Mindeststandar
+Report 07: Packaging & Recycling Codes,https://www.dihk.de/resource/blob/128168/a5682083c196b98fbc86
+Report 07: Packaging & Recycling Codes,https://www.dinmedia.de/de/norm/din-6120/300614768
+Report 07: Packaging & Recycling Codes,https://github.com/openfoodfacts/openfoodfactsserver/blob/main/taxonomies/packaging_materials.txt
+Report 07: Packaging & Recycling Codes,https://ref.gs1.org/voc/PackagingMaterialTypeCode
+Report 07: Packaging & Recycling Codes,https://www.wikidata.org/wiki/Q2301084
+Report 07: Packaging & Recycling Codes,https://gs1.eu/wpcontent/uploads/2025/06/GS1inEU_GDSN_Packaging_Gu
+Report 07: Packaging & Recycling Codes,https://recyclass.eu/protocols-guidelines/designfor-recycling-guidelines/
+Report 07: Packaging & Recycling Codes,https://www.cyclos-htp.de/publications/chirecyclability-standard/
+Report 07: Packaging & Recycling Codes,https://www.giz.de/de/downloads/202106%20Design%20for%20recycling_barrierefrei.pdf
+Report 07: Packaging & Recycling Codes,https://www.alnatura.de/de-de/magazin/oekologisch-sinnvolleverpackung/faq-verpackung/verpackungswissen_recyclingcodes/
+Report 07: Packaging & Recycling Codes,https://www.verbraucherzentrale.nrw/wissen/umwelthaushalt/abfall/beispiele-fuer-verpackungsmuell-was-gehoertin-welche-tonne-32306
+Report 07: Packaging & Recycling Codes,https://www.bsr.de/assets/downloads/abfalltrenntabelle-dina4.pdf
+Report 07: Packaging & Recycling Codes,https://www.awmmuenchen.de/fileadmin/Dateien_pdfs/Trennliste_Bilder_A4.pdf
+Report 07: Packaging & Recycling Codes,https://www.muelltrennung-wirkt.de/de/ueber-uns/ueber-diedualen-systeme/
+Report 07: Packaging & Recycling Codes,https://deutsche-recycling.com/blog/recycling-symbolsdecoding-their-meaning/
+Report 07: Packaging & Recycling Codes,https://www.zentek.de/avv/schluessel/1501/
+Report 07: Packaging & Recycling Codes,https://www.berlinrecycling.de/wissen/avv/1501
+Report 07: Packaging & Recycling Codes,https://www.sbbmbh.de/de/rechtsgrundlagen/avv2016/avv-anleitung-kapitelindex/avvkapitel-15/
+Report 07: Packaging & Recycling Codes,https://kidv.nl/media/engelse_factsheets/factsheet-identification-ofpackaging.pdf
+Report 07: Packaging & Recycling Codes,https://www.ekokom.cz/wp-content/uploads/2022/03/Packaging-marking-2201.pdf
+Report 07: Packaging & Recycling Codes,https://www.famispa.com/en/company/certifications-andsustainability/environmental-responsibility/environmental-labelling-ofpackaging/
+Report 07: Packaging & Recycling Codes,https://is.muni.cz/el/1431/podzim2013/C7935/Recycling_codes_WIKI_ENG
+Report 07: Packaging & Recycling Codes,https://dpw.lacounty.gov/epd/SBR/pdfs/TypesOfPlastic.pdf
+Report 07: Packaging & Recycling Codes,"https://eur-lex.europa.eu/eli/dec/1997/129/oj/eng"""
+Report 07: Packaging & Recycling Codes,https://www.verpackungsregister.org/fileadmin/files/Mindeststandard/Minde
+Report 07: Packaging & Recycling Codes,"https://raw.githubusercontent.com/openfoodfacts/openfoodfactsserver/main/taxonomies/packaging_materials.txt"""
+Report 07: Packaging & Recycling Codes,"https://ref.gs1.org/voc/PackagingMaterialTypeCode"""
+Report 07: Packaging & Recycling Codes,"https://www.wikidata.org/wiki/Special:EntityData/Q144256.json"""
+Report 07: Packaging & Recycling Codes,https://recyclass.eu/protocols-guidelines/design-forrecycling-guidelines/
+Report 07: Packaging & Recycling Codes,https://www.cyclos-htp.de/publications/chi-recyclabilitystandard/
+Report 07: Packaging & Recycling Codes,"https://www.bsr.de/assets/downloads/abfalltrenntabelle-din-a4.pdf"""
+Report 07: Packaging & Recycling Codes,"https://www.awmmuenchen.de/fileadmin/Dateien_pdfs/Trennliste_englisch.pdf"""
+Report 07: Packaging & Recycling Codes,"https://www.awmmuenchen.de/fileadmin/Dateien_pdfs/Trennliste_Bilder_A4.pdf"""
+Report 07: Packaging & Recycling Codes,"https://www.bsr.de/assets/downloads/broschuere-abfaelle-richtigtrennen.pdf"""
+Report 07: Packaging & Recycling Codes,https://www.berlin-recycling.de/wissen/avv/1501
+Report 08: Batteries & Accumulators,https://www.earsystem.de/earverzeichnis/battghersteller
+Report 08: Batteries & Accumulators,https://eurlex.europa.eu/legalcontent/EN/TXT/PDF/?
+Report 08: Batteries & Accumulators,https://www.gesetze-iminternet.de/battg_2009/
+Report 08: Batteries & Accumulators,https://www.dgg.bam.de/quickinfo/de/
+Report 08: Batteries & Accumulators,https://vds.de/fileadmin/Website_Content_Images/VdS_Publikationen/vds_31
+Report 08: Batteries & Accumulators,https://boxlab-services.com/en/adr-2025-new-un-numbers-for-batteries-and-t
+Report 08: Batteries & Accumulators,https://www.bg-verkehr.de/arbeitssicherheitgesundheit/themen/gefahrgut/unfallgefahren/lithiumbatterien
+Report 08: Batteries & Accumulators,https://webstore.iec.ch/en/publication/23002
+Report 08: Batteries & Accumulators,https://en.wikipedia.org/wiki/List_of_battery_sizes
+Report 08: Batteries & Accumulators,https://energy.panasonic.com/dam/master/pdf/eu/material/Panasonic_Lithium_
+Report 08: Batteries & Accumulators,https://data.energizer.com/
+Report 08: Batteries & Accumulators,https://duracell.com/techlibrary/safetydata-sheets
+Report 08: Batteries & Accumulators,https://energy.panasonic.com/
+Report 08: Batteries & Accumulators,https://www.stiftung-grs.de/downloads/
+Report 08: Batteries & Accumulators,https://www.grsbatterien.de/fileadmin/Downloads/Sicherheit/GRS_Checkliste_Ke
+Report 08: Batteries & Accumulators,https://www.rwth-aachen.de/global/show_document.asp?id=aaaa
+Report 08: Batteries & Accumulators,https://www.uni-heidelberg.de/md/zentral/universitaet/beschaeftig
+Report 08: Batteries & Accumulators,https://www.abfallbewertung.org/ipa/repgen.php?
+Report 08: Batteries & Accumulators,https://www.kaggle.com/datasets/mostafaabla/garbageclassification
+Report 08: Batteries & Accumulators,https://www.tuvsud.com/en-us/-/media/regions/us/pdffiles/whitepaper-report-e-books/tuvsud_overview-of-eubattery-regulations.pdf
+Report 08: Batteries & Accumulators,https://www.tuv.com/landingpage/en/eu-new-batteryregulation-eu-2023-1542/
+Report 08: Batteries & Accumulators,https://www.euromot.eu/wpcontent/uploads/2025/05/2025-05-02-EUROMOT-FAQBatteries-Regulation.pdf
+Report 08: Batteries & Accumulators,https://www.wikidata.org/
+Report 08: Batteries & Accumulators,https://www.ear-system.de/ear-verzeichnis/battghersteller
+Report 08: Batteries & Accumulators,https://vds.de/fileadmin/Website_Content_Images/VdS_Publikationen/vds_310
+Report 08: Batteries & Accumulators,"https://data.energizer.com/wp-content/uploads/2023/01/Alk-MinAIS-SDS-01-23-Energizer.pdf"""
+Report 08: Batteries & Accumulators,https://www.grsbatterien.de/fileadmin/Downloads/Sicherheit/GRS_Checkliste_Kennzeichnungsp
+Report 08: Batteries & Accumulators,"https://en.wikipedia.org/wiki/List_of_battery_sizes"""
+Report 09: Wood & Furniture,https://www.gesetze-iminternet.de/altholzv/
+Report 09: Wood & Furniture,https://www.gesetze-iminternet.de/altholzv/anhang_iii.html
+Report 09: Wood & Furniture,https://www.gesetze-iminternet.de/avv/
+Report 09: Wood & Furniture,https://www.gesetze-iminternet.de/chemverbotsv/
+Report 09: Wood & Furniture,https://www.gesetze-iminternet.de/bimschv_17_2013/
+Report 09: Wood & Furniture,https://www.oekobaudat.de/api/datasets
+Report 09: Wood & Furniture,https://www.abfallbewertung.org/
+Report 09: Wood & Furniture,https://www.lfu.bayern.de/abfall/schadstoffratgeber_gebaeuderueckb
+Report 09: Wood & Furniture,https://www.umweltbundesamt.de/publikationen/
+Report 09: Wood & Furniture,https://www.holzfragen.de/seiten/hsm_historie.html
+Report 09: Wood & Furniture,https://www.lagus.mv-regierung.de/
+Report 09: Wood & Furniture,https://www.wrap.ngo/resources/tool/tools-woodreprocessors-identify-contaminated-wood
+Report 09: Wood & Furniture,https://altholzverband.de/
+Report 09: Wood & Furniture,https://uni-freiburg.de/sicherheitumweltschutz/abfall-abc/
+Report 09: Wood & Furniture,https://www.unigiessen.de/de/org/admin/dez/e/3/logistikaussenanlagen/Abfallwirtschaft/
+Report 09: Wood & Furniture,https://css.umich.edu/publications/researchpublications/life-cycle-assessment-officefurniture-products
+Report 09: Wood & Furniture,https://www.wikidata.org/
+Report 09: Wood & Furniture,https://www.wikidata.org/wiki/Q7302557
+Report 11: Material Properties,https://pubchem.ncbi.nlm.nih.gov/
+Report 11: Material Properties,https://chem.echa.europa.eu/
+Report 11: Material Properties,https://www.epa.gov/tsca-screening-tools/epi-suitetm-estimation-programinterface
+Report 11: Material Properties,https://episuite.dev/EpiWebSuite/
+Report 11: Material Properties,https://next-gen.materialsproject.org/
+Report 11: Material Properties,https://www.matweb.com/
+Report 11: Material Properties,https://www.epa.gov/smm/volume-weight-conversion-factors-solid-waste
+Report 11: Material Properties,https://www.wrap.ngo/resources/report/material-bulk-densities
+Report 11: Material Properties,https://www.gesetze-im-internet.de/avv/
+Report 11: Material Properties,https://www.nrel.gov/transportation/battery-failure.html
+Report 11: Material Properties,https://webbook.nist.gov/chemistry/
+Report 12: Universal Taxonomies,https://catalog.data.gov/dataset/unspsc-codes-93778
+Report 12: Universal Taxonomies,https://finance.cornell.edu/procurement/buyers/unspsc
+Report 12: Universal Taxonomies,https://www.onetcenter.org/dictionary/21.0/excel/unspsc_reference.html
+Report 12: Universal Taxonomies,https://gpc-browser.gs1.org/
+Report 12: Universal Taxonomies,https://data.europa.eu/data/datasets/combined-nomenclature-2021
+Report 12: Universal Taxonomies,https://data.europa.eu/data/datasets/eu-customs-tariff-taric
+Report 12: Universal Taxonomies,https://www.zoll.de/EN/Businesses/Movement-of-goods/Import/Duties-andtaxes/Normal-customs-clearance/Customs-Tariff/
+Report 12: Universal Taxonomies,https://www.destatis.de/DE/Methoden/Klassifikationen/GueterWirtschaftsklassifikationen/Downloads/klassifikationen-wz-2008.html
+Report 12: Universal Taxonomies,https://www.gesetze-im-internet.de/avv/
+Report 12: Universal Taxonomies,https://www.umweltbundesamt.de/en/topics/waste-resources/wastemanagement/waste-regulations
+Report 12: Universal Taxonomies,https://ec.europa.eu/eurostat/web/cpa/correspondence-tables
+Report 13: Multilingual Synonyms,https://query.wikidata.org/sparql
+Report 13: Multilingual Synonyms,https://babelnet.org/downloads
+Report 13: Multilingual Synonyms,https://conceptnet.io/
+Report 13: Multilingual Synonyms,https://omwn.org/
+Report 13: Multilingual Synonyms,https://www.eionet.europa.eu/gemet/
+Report 13: Multilingual Synonyms,https://op.europa.eu/en/web/eu-vocabularies/controlled-vocabularies
+Report 13: Multilingual Synonyms,https://iate.europa.eu/download-iate
+Report 13: Multilingual Synonyms,https://world.openfoodfacts.org/data
+Report 13: Multilingual Synonyms,https://wiki.openfoodfacts.org/Global_packaging_taxonomy
+Report 13: Multilingual Synonyms,https://gpc-browser.gs1.org/
+Report 13: Multilingual Synonyms,https://www.verpackungsregister.org/
+Report 13: Multilingual Synonyms,https://abfallnavi.api.bund.dev/
+Report 13: Multilingual Synonyms,https://github.com/bundesAPI/abfallnavi-api
+Report 13: Multilingual Synonyms,https://handbookgermany.de/ar/waste-separation
+Report 13: Multilingual Synonyms,https://data.europa.eu/data/datasets/echa-term
+Report 13: Multilingual Synonyms,https://unece.org/transport/dangerous-goods/ghs-pictograms
+Report 13: Multilingual Synonyms,https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drecycling
+Report 14: Textiles & Clothing,https://www.nist.gov/news-events/news/2025/01/nist-database-can-help-increaserecycling-textiles-and-clothing
+Report 14: Textiles & Clothing,https://www.ginetex.net/gb/labelling/care-symbols.asp
+Report 14: Textiles & Clothing,https://www.matweb.com/
+Report 14: Textiles & Clothing,"https://www.laga-online.de/documents/laga-m40-vollzugshilfe-zur-vermeidungsowie-zur-erfassung,-sortierung-und-verwertung-von-alttextilien_1685020405.pdf"
+Report 14: Textiles & Clothing,https://circulartextiles.aalto.fi/trexproject/wp-content/uploads/2025/06/T-REXTechnical-Guidance-For-Recyclable-Garments.pdf
+Report 14: Textiles & Clothing,https://textileexchange.org/pfmm/
+Report 14: Textiles & Clothing,https://overpass-turbo.eu/
+Report 14: Textiles & Clothing,https://opendata.wuerzburg.de/explore/dataset/abfallkalenderwuerzburg/api/
+Report 14: Textiles & Clothing,https://mannheim.opendatasoft.com/explore/dataset/150824altkleidercontainer-mannheim/api/
+Report 14: Textiles & Clothing,https://fairwertung.de/
+Report 14: Textiles & Clothing,https://www.bvse.de/
+Report 14: Textiles & Clothing,https://opensupplyhub.org/api/docs/
+Report 14: Textiles & Clothing,https://partnerships.goodonyou.eco/solutions/publishers
+Report 14: Textiles & Clothing,https://cirpassproject.eu/
+Report 14: Textiles & Clothing,https://www.gs1.org/standards/gs1-digital-link
+Report 14: Textiles & Clothing,https://www.barcodelookup.com/api
+Report 14: Textiles & Clothing,https://id.brand.com/01/{GTIN}
+Report 14: Textiles & Clothing,https://www.fashionrevolution.org/
+Report 14: Textiles & Clothing,https://www.wikidata.org/
+Report 15: Disassembly Instructions,https://www.ifixit.com/api/2.0
+Report 15: Disassembly Instructions,https://standard.openrepair.org/
+Report 15: Disassembly Instructions,https://github.com/openrepair/data
+Report 15: Disassembly Instructions,https://github.com/openzim/ifixit
+Report 15: Disassembly Instructions,https://www.apple.com/recycling/recycler-guides/
+Report 15: Disassembly Instructions,https://www.dell.com/support/kbdoc/en-us/000144813/recycling-dell-monitors-howto-get-disassembly-instructions-for-dell-monitors
+Report 15: Disassembly Instructions,https://www.hpe.com/global/livingprogress/environmentalprogress/productdata/
+Report 15: Disassembly Instructions,https://i4r-platform.eu/
+Report 15: Disassembly Instructions,https://echa.europa.eu/scip
+Report 15: Disassembly Instructions,https://weee-forum.org/urban-mine-platform/
+Report 15: Disassembly Instructions,https://github.com/kschmidt-at-dbfz/ewc-onto
+Report 15: Disassembly Instructions,https://datalab.dbfz.de/ontologies/
+Report 15: Disassembly Instructions,https://mymuell.jumomind.com/mmapp/api.php
+Report 15: Disassembly Instructions,https://github.com/Bouni/abfallplus
+Report 15: Disassembly Instructions,https://api.abfallplus.de/index.php
+Report 16: Computer Vision Datasets,https://github.com/pedropro/TACO
+Report 16: Computer Vision Datasets,http://tacodataset.org/
+Report 16: Computer Vision Datasets,http://ai.bu.edu/zerowaste/
+Report 16: Computer Vision Datasets,https://github.com/dbash/zerowaste
+Report 16: Computer Vision Datasets,https://github.com/realwecan/mju-waste
+Report 16: Computer Vision Datasets,https://data.mendeley.com/datasets/wds85kt64j/3
+Report 16: Computer Vision Datasets,https://www.kaggle.com/datasets/sagieppel/labpics-chemistry-labpics-medical
+Report 16: Computer Vision Datasets,https://www.kaggle.com/datasets/mostafaabla/garbage-classification
+Report 16: Computer Vision Datasets,https://github.com/taeyoungYoo/rvm-dataset
+Report 16: Computer Vision Datasets,https://www.kaggle.com/datasets/anmatngu/hazmat-placard-image-dataset
+Report 16: Computer Vision Datasets,https://universe.roboflow.com/fireljj/ghs-hze4d
+Report 16: Computer Vision Datasets,https://unece.org/transport/dangerous-goods/ghs-pictograms
+Report 16: Computer Vision Datasets,https://github.com/garythung/trashnet
+Report 16: Computer Vision Datasets,https://publications.rwth-aachen.de/record/1005633/files/1005633.pdf
+Report 16: Computer Vision Datasets,https://universe.roboflow.com/pfand48/p48
+Report 16: Computer Vision Datasets,https://universe.roboflow.com/zz-77ljl/bankbottle
+Report 16: Computer Vision Datasets,https://wadaba.pcz.pl/
+Report 16: Computer Vision Datasets,https://www.fb5.rwth-aachen.de/
+Report 18: Medical & Lab Waste,https://www.laga-online.de/documents/laga-m-18_stand_2021-0623_1626849905.pdf
+Report 18: Medical & Lab Waste,https://www.destatis.de
+Report 18: Medical & Lab Waste,https://opendata.schleswigholstein.de
+Report 18: Medical & Lab Waste,https://www.gesetze-iminternet.de/avv/
+Report 18: Medical & Lab Waste,https://www.baua.de/DE/Angebote/Regelwerk/TRBA/pdf/TRBA
+Report 18: Medical & Lab Waste,https://www.baua.de/DE/Angebote/Regelwerk/TRBA/TRBA-46
+Report 18: Medical & Lab Waste,https://www.dsmz.de/collection/catalogue/microorganisms/catalogue
+Report 18: Medical & Lab Waste,https://www.dsmz.de/collection/catalogue/microorganisms/permissions-/restrictions
+Report 18: Medical & Lab Waste,https://zkbs-online.de/en/databases/microorganisms
+Report 18: Medical & Lab Waste,https://zkbsonline.de/fileadmin/user_upload/Downloads/Datenbanken/Organismenliste.pd
+Report 18: Medical & Lab Waste,https://www.cdc.gov/niosh/docs/2025103/pdfs/2025-103.pdf
+Report 18: Medical & Lab Waste,https://www.bgw-online.de
+Report 18: Medical & Lab Waste,https://www.baua.de
+Report 18: Medical & Lab Waste,https://www.gesetze-im-internet.de/strlschv_2018/anlage_4.html
+Report 18: Medical & Lab Waste,https://knowledge.bsigroup.com/products/sharps-injury-protectionrequirements-and-test-methods-single-use-sharps-containers
+Report 18: Medical & Lab Waste,http://environmentontology.org/
+Report 18: Medical & Lab Waste,https://datalab.dbfz.de/ontologies/
+Report 18: Medical & Lab Waste,https://www.ebi.ac.uk/chebi/
+Report 18: Medical & Lab Waste,http://university-waste.de/ontology#>
+Report 18: Medical & Lab Waste,https://world.openfoodfacts.org/api/v2/product/40111410.json?
+Report 18: Medical & Lab Waste,https://static.openfoodfacts.org/data/openfoodfactsmongodbdump.tar.gz
+Report 18: Medical & Lab Waste,"https://live.icecat.biz/api?lang=de&ProductCode=XYZ&Brand=Samsung"""
+Report 18: Medical & Lab Waste,"https://www.ifixit.com/api/2.0/guides/[id]"""
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Acetone/synonyms/
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/180/classification
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/180/property/Molec
+Report 18: Medical & Lab Waste,"https://commonchemistry.cas.org/api/detail?cas_rn=67-64-1"""
+Report 18: Medical & Lab Waste,https://developers.live.machship.com/api/faqs/dg-lookup-by-un?
+Report 18: Medical & Lab Waste,"https://api.abfallplus.de/index.php"""
+Report 18: Medical & Lab Waste,"https://mymuell.jumomind.com/mmapp/api.php?r=cities"""
+Report 18: Medical & Lab Waste,"https://mymuell.jumomind.com/mmapp/api.php?r=streets&city_id=X"""
+Report 18: Medical & Lab Waste,https://mymuell.jumomind.com/mmapp/api.php?
+Report 18: Medical & Lab Waste,"https://api.abfall.io/customers/363/widgets/abfall-abc.html"""
+Report 18: Medical & Lab Waste,"https://overpass-api.de/api/interpreter"""
+Report 18: Medical & Lab Waste,"https://www.gesetze-im-internet.de/avv/AVV.pdf"""
+Report 18: Medical & Lab Waste,https://assets.publishing.service.gov.uk/media/6152d0b78fa8f5610b9c222b/W
+Report 18: Medical & Lab Waste,https://data.gov.scot/sepa/waste/
+Report 18: Medical & Lab Waste,https://op.europa.eu/en/web/eu-vocabularies/controlledvocabularies
+Report 18: Medical & Lab Waste,https://www.abfallbewertung.org/ipa/
+Report 18: Medical & Lab Waste,"https://ethz.ch/content/dam/ethz/associates/services/Service/sicherheitgesundheit-umwelt/files/chemieabwasser/de/Merkblatt_Chemieabwasser_DE.pdf"""
+Report 18: Medical & Lab Waste,https://ethz.ch/content/dam/ethz/associates/services/Service/sicherheitgesundheitumwelt/files/sonderabfall_neu/de/MB_%20Entsorgung%20von%20Sonderabf%C3%A4l
+Report 18: Medical & Lab Waste,"https://www.betoneisack.it/_default_upload_bucket/Gewichtstabelle%202021_1.pdf"""
+Report 18: Medical & Lab Waste,"https://www.wien.gv.at/pdf/ma22/umrechnungsfaktoren.pdf"""
+Report 18: Medical & Lab Waste,https://www.ur.ch/_docn/297137/220527_318_22_ANL_Umrechnungsfaktoren_fur_
+Report 18: Medical & Lab Waste,"https://oekobaudat.de/OEKOBAUDAT/resource/processes?name=Beton"""
+Report 18: Medical & Lab Waste,"https://api.madaster.com/v4.0/buildings/{id}/materials"""
+Report 18: Medical & Lab Waste,"https://api.buildingtransparency.org/api/epds?search=concrete"""
+Report 18: Medical & Lab Waste,https://www.baustoffrecyclingbayern.de/system/files/oeffentlich/Dokumente/EBV_Anlage%202%20Tabelle%201%
+Report 18: Medical & Lab Waste,"https://aachen-abfallapp.regioit.de/abfall-appaachen/rest/fraktionen"""
+Report 18: Medical & Lab Waste,"https://aachen-abfallapp.regioit.de/abfall-appaachen/rest/standorte"""
+Report 18: Medical & Lab Waste,"https://ewccodes.com/api/ewc?code=170101"""
+Report 18: Medical & Lab Waste,https://next-gen.materialsproject.org/api
+Report 18: Medical & Lab Waste,"https://eur-lex.europa.eu/eli/dec/1997/129/oj/eng"""
+Report 18: Medical & Lab Waste,https://www.verpackungsregister.org/fileadmin/files/Mindeststandard/Minde
+Report 18: Medical & Lab Waste,"https://raw.githubusercontent.com/openfoodfacts/openfoodfactsserver/main/taxonomies/packaging_materials.txt"""
+Report 18: Medical & Lab Waste,"https://ref.gs1.org/voc/PackagingMaterialTypeCode"""
+Report 18: Medical & Lab Waste,"https://www.wikidata.org/wiki/Special:EntityData/Q144256.json"""
+Report 18: Medical & Lab Waste,"https://www.bsr.de/assets/downloads/abfalltrenntabelle-din-a4.pdf"""
+Report 18: Medical & Lab Waste,"https://www.awmmuenchen.de/fileadmin/Dateien_pdfs/Trennliste_englisch.pdf"""
+Report 18: Medical & Lab Waste,"https://www.bsr.de/assets/downloads/broschuere-abfaelle-richtigtrennen.pdf"""
+Report 18: Medical & Lab Waste,https://www.ear-system.de/ear-verzeichnis/battghersteller
+Report 18: Medical & Lab Waste,https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?
+Report 18: Medical & Lab Waste,"https://www.gesetze-im-internet.de/battg_2009/BJNR158200009.html"""
+Report 18: Medical & Lab Waste,https://vds.de/fileadmin/Website_Content_Images/VdS_Publikationen/vds_310
+Report 18: Medical & Lab Waste,https://www.dgg.bam.de/quickinfo/de/
+Report 18: Medical & Lab Waste,"https://data.energizer.com/wp-content/uploads/2023/01/Alk-MinAIS-SDS-01-23-Energizer.pdf"""
+Report 18: Medical & Lab Waste,https://duracell.com/techlibrary/safety-data-sheets
+Report 18: Medical & Lab Waste,https://energy.panasonic.com/dam/master/pdf/eu/material/Panasonic_Lithium
+Report 18: Medical & Lab Waste,https://www.grsbatterien.de/fileadmin/Downloads/Sicherheit/GRS_Checkliste_Kennzeichnungsp
+Report 18: Medical & Lab Waste,https://www.stiftung-grs.de/downloads/
+Report 18: Medical & Lab Waste,https://www.rwth-aachen.de/global/show_document.asp?
+Report 18: Medical & Lab Waste,"https://www.uniheidelberg.de/md/zentral/universitaet/beschaeftigte/service/sicherheit/bt26.pdf"""
+Report 18: Medical & Lab Waste,https://www.abfallbewertung.org/ipa/repgen.php?
+Report 18: Medical & Lab Waste,"https://en.wikipedia.org/wiki/List_of_battery_sizes"""
+Report 18: Medical & Lab Waste,https://www.bg-verkehr.de/arbeitssicherheitgesundheit/themen/gefahrgut/unfallgefahren/lithiumbatterien
+Report 18: Medical & Lab Waste,"https://www.tuvsud.com/en-us/-/media/regions/us/pdffiles/whitepaper-report-e-books/tuvsud_overview-of-eu-batteryregulations.pdf"""
+Report 18: Medical & Lab Waste,"https://www.gesetze-im-internet.de/altholzv/BJNR030200002.html"""
+Report 18: Medical & Lab Waste,"https://www.gesetze-im-internet.de/altholzv/anhang_iii.html"""
+Report 18: Medical & Lab Waste,"https://www.oekobaudat.de/api/datasets?search=Spanplatte"""
+Report 18: Medical & Lab Waste,"https://www.oekobaudat.de/api/datasets"""
+Report 18: Medical & Lab Waste,https://www.lfu.bayern.de/abfall/schadstoffratgeber_gebaeuderueckbau/such
+Report 18: Medical & Lab Waste,"https://www.holzfragen.de/seiten/hsm_historie.html"""
+Report 18: Medical & Lab Waste,"https://www.wrap.ngo/sites/default/files/2023-10/WRAP-tools-woodreprocessors.pdf"""
+Report 18: Medical & Lab Waste,"https://altholzverband.de/wp-content/uploads/2018/07/2018-07-20BAV-Vorschlag-Regelvermutung.pdf"""
+Report 18: Medical & Lab Waste,https://www.umweltbundesamt.de/sites/default/files/medien/479/publikation
+Report 18: Medical & Lab Waste,"https://uni-freiburg.de/sicherheit-umweltschutz/abfall-abc/"""
+Report 18: Medical & Lab Waste,"https://www.uni-giessen.de/de/org/admin/dez/e/3/logistikaussenanlagen/Abfallwirtschaft/Abfalltrennung"""
+Report 18: Medical & Lab Waste,"https://query.wikidata.org/sparql"""
+Report 18: Medical & Lab Waste,https://www.lagus.mv-regierung.de/serviceassistent/download?
+Report 18: Medical & Lab Waste,"https://css.umich.edu/sites/default/files/publications/css0002.pdf"""
+Report 18: Medical & Lab Waste,https://wiki.openstreetmap.org/wiki/Key:recycling_type
+Report 18: Medical & Lab Waste,https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drecycling
+Report 18: Medical & Lab Waste,"https://daten.berlin.de/datensaetze/bsr-recyclingh-fe-und-abfallabc"""
+Report 18: Medical & Lab Waste,https://www.bsr.de/opendata/standortdaten_rc_eboxen/Doku.txt
+Report 18: Medical & Lab Waste,https://geodienste.hamburg.de/HH_WFS_abfall_recycling
+Report 18: Medical & Lab Waste,https://geodienste.hamburg.de/HH_WFS_abfall_recycling?
+Report 18: Medical & Lab Waste,https://opendata.muenchen.de/api/3/action/package_show?
+Report 18: Medical & Lab Waste,https://geoportal.muenchen.de/geoserver/opendata/ows?
+Report 18: Medical & Lab Waste,https://offenedaten-koeln.de/dataset/schadstoff-mobil-k
+Report 18: Medical & Lab Waste,"https://www.offenedatenkoeln.de/sites/default/files/schadstoffmobil.xml"""
+Report 18: Medical & Lab Waste,https://offenedaten-koeln.de/dataset/wertstoff-center-k
+Report 18: Medical & Lab Waste,https://github.com/mampfes/hacs_waste_collection_schedule
+Report 18: Medical & Lab Waste,https://github.com/mampfes/hacs_waste_collection_schedule/blob/master/doc/
+Report 18: Medical & Lab Waste,https://www.ear-system.de/ear-verzeichnis/sammel-und-ruecknahmestellen
+Report 18: Medical & Lab Waste,"https://www.grs-batterien.de/ruecknahmestellen/kommunaleruecknahmestellen/"""
+Report 18: Medical & Lab Waste,https://github.com/Andre0512/lidl-plus
+Report 18: Medical & Lab Waste,https://softcreatr.github.io/dm-store-finder/
+Report 18: Medical & Lab Waste,https://github.com/t0ffifee/discount-scraper
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Acetone/cids/JSON
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/180/JSON?
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Sodium%20Hypochlo
+Report 18: Medical & Lab Waste,https://echa.europa.eu/information-on-chemicals/clinventory-database
+Report 18: Medical & Lab Waste,https://echa.europa.eu/candidate-list-table
+Report 18: Medical & Lab Waste,https://www.epa.gov/sites/default/files/201604/documents/volume_to_weight_conversion_factors_memorandum_04192016_508fn
+Report 18: Medical & Lab Waste,https://www.wrap.ngo/resources/report/material-bulk-densities
+Report 18: Medical & Lab Waste,https://www.nrel.gov/transportation/battery-failure.html
+Report 18: Medical & Lab Waste,https://data.nrel.gov/submissions/153
+Report 18: Medical & Lab Waste,"https://webbook.nist.gov/cgi/cbook.cgi?Name=acetone&Units=SI"""
+Report 18: Medical & Lab Waste,https://episuite.dev/EpiWebSuite/
+Report 18: Medical & Lab Waste,https://www.dincertco.de/din-certco/en/main-navigation/products-andservices/certification-of-products/packaging/compostable-productsseedling/
+Report 18: Medical & Lab Waste,https://www.matweb.com/search/MaterialGroupSearch.aspx
+Report 18: Medical & Lab Waste,"https://catalog.data.gov/dataset/unspsc-codes93778/resource/113e3005-7def-4b17-a2d6-56b7904ba133"""
+Report 18: Medical & Lab Waste,"https://www.onetcenter.org/dictionary/21.0/excel/unspsc_reference.xlsx"""
+Report 18: Medical & Lab Waste,https://gpc-browser.gs1.org/
+Report 18: Medical & Lab Waste,"https://data.europa.eu/data/datasets/combined-nomenclature-2021"""
+Report 18: Medical & Lab Waste,https://ec.europa.eu/eurostat/data/bulkdownload
+Report 18: Medical & Lab Waste,https://data.europa.eu/data/datasets/eu-customs-tariff-taric
+Report 18: Medical & Lab Waste,https://www.zoll.de/DE/Fachthemen/Zoelle/TARIC/taric_node.html
+Report 18: Medical & Lab Waste,https://www.destatis.de/DE/Methoden/Klassifikationen/GueterWirtschaftsklassifikationen/Downloads/klassifikationen-wz-2008.html
+Report 18: Medical & Lab Waste,https://ec.europa.eu/eurostat/web/cpa/correspondence-tables
+Report 18: Medical & Lab Waste,"https://www.gesetze-im-internet.de/avv/BJNR337910001.html"""
+Report 18: Medical & Lab Waste,https://gist.githubusercontent.com/bennokr/6d5f1e556a78148ff3087c4fd46187
+Report 18: Medical & Lab Waste,https://github.com/KathiravanNatarajan/UNSPSCPrediction
+Report 18: Medical & Lab Waste,https://github.com/kasivisu4/cordiance-experential-project
+Report 18: Medical & Lab Waste,https://business.amazon.com/en/blog/release-notes/taxonomy-for-punchoutintegration
+Report 18: Medical & Lab Waste,https://eclass.eu/en/eclass-standard/releases
+Report 18: Medical & Lab Waste,http://www.wikidata.org/prop/direct/>
+Report 18: Medical & Lab Waste,https://query.wikidata.org/sparql
+Report 18: Medical & Lab Waste,https://schema.org/Product
+Report 18: Medical & Lab Waste,https://schema.org/usageInfo
+Report 18: Medical & Lab Waste,https://www.eionet.europa.eu/gemet/
+Report 18: Medical & Lab Waste,"https://www.eionet.europa.eu/gemet/concept/9041"""
+Report 18: Medical & Lab Waste,https://babelnet.org/downloads
+Report 18: Medical & Lab Waste,"https://api.conceptnet.io/c/de/abfall?limit=10"""
+Report 18: Medical & Lab Waste,"https://api.conceptnet.io/query?node=/c/en/recycling&rel=/r/MadeOf"""
+Report 18: Medical & Lab Waste,https://omwn.org/
+Report 18: Medical & Lab Waste,https://op.europa.eu/en/web/eu-vocabularies/controlled-vocabularies
+Report 18: Medical & Lab Waste,https://iate.europa.eu/download-iate
+Report 18: Medical & Lab Waste,https://data.europa.eu/data/datasets/echa-term
+Report 18: Medical & Lab Waste,"https://static.openfoodfacts.org/data/openfoodfactsproducts.jsonl.gz"""
+Report 18: Medical & Lab Waste,https://github.com/bundesAPI/abfallnavi-api
+Report 18: Medical & Lab Waste,https://abfallnavi.api.bund.dev/
+Report 18: Medical & Lab Waste,https://www.verpackungsregister.org/
+Report 18: Medical & Lab Waste,https://www.awb-landkreis-karlsruhe.de/
+Report 18: Medical & Lab Waste,https://www.die-bremer-stadtreinigung.de/
+Report 18: Medical & Lab Waste,https://www.aha-region.de/
+Report 18: Medical & Lab Waste,"https://handbookgermany.de/ar/waste-separation"""
+Report 18: Medical & Lab Waste,"https://handbookgermany.de/tr/waste-separation"""
+Report 18: Medical & Lab Waste,https://unece.org/transport/dangerous-goods/ghs-pictograms
+Report 18: Medical & Lab Waste,https://overpass-api.de/api/interpreter
+Report 18: Medical & Lab Waste,https://github.com/garythung/trashnet
+Report 18: Medical & Lab Waste,https://www.nist.gov/news-events/news/2025/01/nist-database-can-helpincrease-recycling-textiles-and-clothing
+Report 18: Medical & Lab Waste,"https://www.laga-online.de/documents/laga-m40-vollzugshilfe-zurvermeidung-sowie-zur-erfassung,-sortierung-und-verwertung-vonalttextilien_1685020405.pdf"
+Report 18: Medical & Lab Waste,https://circulartextiles.aalto.fi/trexproject/wpcontent/uploads/2025/06/T-REX-Technical-Guidance-For-RecyclableGarments.pdf
+Report 18: Medical & Lab Waste,https://www.ginetex.net/gb/labelling/care-symbols.asp
+Report 18: Medical & Lab Waste,https://mannheim.opendatasoft.com/api/explore/v2.1/catalog/datasets/15082
+Report 18: Medical & Lab Waste,https://opendata.wuerzburg.de/explore/dataset/abfallkalenderwuerzburg/api/
+Report 18: Medical & Lab Waste,https://fairwertung.de/standortsuche/
+Report 18: Medical & Lab Waste,https://www.bvse.de/mitgliedersuche/alle.html
+Report 18: Medical & Lab Waste,https://opensupplyhub.org/api/docs/
+Report 18: Medical & Lab Waste,"https://opensupplyhub.org/api/facilities/?q=H%26M"""
+Report 18: Medical & Lab Waste,https://www.gs1.org/standards/gs1-digital-link
+Report 18: Medical & Lab Waste,https://id.gs1.org/01/{GTIN}
+Report 18: Medical & Lab Waste,https://www.barcodelookup.com/api
+Report 18: Medical & Lab Waste,https://api.barcodelookup.com/v3/products?
+Report 18: Medical & Lab Waste,https://cirpassproject.eu/
+Report 18: Medical & Lab Waste,https://textileexchange.org/pfmm/
+Report 18: Medical & Lab Waste,https://partnerships.goodonyou.eco/solutions/publishers
+Report 18: Medical & Lab Waste,https://www.fashionrevolution.org/
+Report 18: Medical & Lab Waste,https://www.matweb.com/
+Report 18: Medical & Lab Waste,https://www.ifixit.com/api/2.0
+Report 18: Medical & Lab Waste,"https://www.ifixit.com/api/2.0/categories?requireGuides=true"""
+Report 18: Medical & Lab Waste,"https://www.ifixit.com/api/2.0/guides/12345"""
+Report 18: Medical & Lab Waste,"https://www.ifixit.com/api/2.0/suggest/MacBook"""
+Report 18: Medical & Lab Waste,"https://www.ifixit.com/api/2.0/devices/MacBook%20Pro%2015%22%202019"""
+Report 18: Medical & Lab Waste,https://github.com/openzim/ifixit
+Report 18: Medical & Lab Waste,https://www.apple.com/recycling/recycler-guides/
+Report 18: Medical & Lab Waste,https://github.com/goranmoomin/apple-documentation-archive-scraper
+Report 18: Medical & Lab Waste,https://github.com/smalot/pdfparser
+Report 18: Medical & Lab Waste,https://www.dell.com/support/kbdoc/en-us/000144813/recycling-dellmonitors-how-to-get-disassembly-instructions-for-dell-monitors
+Report 18: Medical & Lab Waste,https://www.dell.com/support/manuals/en-al/idrac9-lifecycle-controllerv5.x-series/idrac9_5.00.00.00_lcug/about-view-and-export-current-inventory
+Report 18: Medical & Lab Waste,https://www.hpe.com/global/livingprogress/environmentalprogress/productdat
+Report 18: Medical & Lab Waste,https://i4r-platform.eu/
+Report 18: Medical & Lab Waste,https://echa.europa.eu/scip
+Report 18: Medical & Lab Waste,https://weee-forum.org/urban-mine-platform/
+Report 18: Medical & Lab Waste,https://standard.openrepair.org/
+Report 18: Medical & Lab Waste,https://github.com/openrepair/data
+Report 18: Medical & Lab Waste,https://github.com/kschmidt-at-dbfz/ewc-onto
+Report 18: Medical & Lab Waste,https://api.abfallplus.de/index.php
+Report 18: Medical & Lab Waste,https://github.com/Bouni/abfallplus
+Report 18: Medical & Lab Waste,https://github.com/pedropro/TACO
+Report 18: Medical & Lab Waste,http://tacodataset.org/
+Report 18: Medical & Lab Waste,http://ai.bu.edu/zerowaste/
+Report 18: Medical & Lab Waste,https://github.com/dbash/zerowaste
+Report 18: Medical & Lab Waste,https://github.com/realwecan/mju-waste
+Report 18: Medical & Lab Waste,https://opendatalab.com/OpenDataLab/MJU-Waste/download
+Report 18: Medical & Lab Waste,https://www.kaggle.com/datasets/mostafaabla/garbage-classification
+Report 18: Medical & Lab Waste,https://data.mendeley.com/datasets/wds85kt64j/3
+Report 18: Medical & Lab Waste,https://www.kaggle.com/datasets/sagieppel/labpics-chemistry-labpicsmedical
+Report 18: Medical & Lab Waste,https://github.com/taeyoungYoo/rvm-dataset
+Report 18: Medical & Lab Waste,https://www.kaggle.com/datasets/anmatngu/hazmat-placard-image-dataset
+Report 18: Medical & Lab Waste,https://universe.roboflow.com/fireljj/ghs-hze4d
+Report 18: Medical & Lab Waste,https://www.kaggle.com/datasets/mario78/biomedical-waste-classificationimages-dataset
+Report 18: Medical & Lab Waste,https://archive.ics.uci.edu/dataset/908/realwaste
+Report 18: Medical & Lab Waste,https://wadaba.pcz.pl/
+Report 18: Medical & Lab Waste,https://universe.roboflow.com/pfand48/p48
+Report 18: Medical & Lab Waste,https://universe.roboflow.com/zz-77ljl/bank-bottle
+Report 18: Medical & Lab Waste,https://github.com/AgaMiko/waste-datasets-review
+Report 18: Medical & Lab Waste,https://huggingface.co/kendrickfff/waste-classification-yolov8-ken
+Report 18: Medical & Lab Waste,https://github.com/jeremy-rico/litter-detection
+Report 18: Medical & Lab Waste,https://github.com/nikhilvenkatkumsetty/TrashBox
+Report 18: Medical & Lab Waste,https://arxiv.org/html/2403.18033v1
+Report 18: Medical & Lab Waste,https://publications.rwth-aachen.de/record/1005633/files/1005633.pdf
+Report 18: Medical & Lab Waste,https://www.fb5.rwthaachen.de/cms/georessourcen/forschung/publikationen/publikationen/~bbvzxu/
+Report 18: Medical & Lab Waste,https://tes.bam.de/TES/Navigation/EN/DGG-Database/Products/DangerousGoods-Dataservice/dangerous-goods-dataservice.html
+Report 18: Medical & Lab Waste,https://dgg.bam.de
+Report 18: Medical & Lab Waste,https://unece.org/adr-2025-files
+Report 18: Medical & Lab Waste,https://unece.org/transport/dangerous-goods
+Report 18: Medical & Lab Waste,https://api.store/eu-institutions-api/european-chemicals-agencyapi/echa-classification-and-labelling-inventory-api
+Report 18: Medical & Lab Waste,https://chem.echa.europa.eu
+Report 18: Medical & Lab Waste,https://developer.ups.com/api/reference?tag=Dangerous-Goods
+Report 18: Medical & Lab Waste,https://github.com/UPS-API/apidocumentation/blob/main/DangerousGoods.yaml
+Report 18: Medical & Lab Waste,https://prosafecon.de/die-1000-punkte-regel/
+Report 18: Medical & Lab Waste,https://prosafecon.de/gefahrgut-befoerderungspapier/
+Report 18: Medical & Lab Waste,https://adr-tool.com/
+Report 18: Medical & Lab Waste,https://www.chemradar.com/tools/un
+Report 18: Medical & Lab Waste,https://gestis-database.dguv.de
+Report 18: Medical & Lab Waste,https://epub.sub.unihamburg.de/epub/volltexte/2014/30664/pdf/2_06b.pdf
+Report 18: Medical & Lab Waste,https://portal.mytum.de/archiv/form_gebaeude/form_gebaeude_20030303_113231
+Report 18: Medical & Lab Waste,https://www.unidue.de/imperia/md/images/ak_schulz/entsorgungsrichtlinie.pdf
+Report 18: Medical & Lab Waste,https://www.ihk-niederbayern.de/pdfs/adr_2025_neuerungen_folien_v2.pdf
+Report 18: Medical & Lab Waste,https://www.transport-community.org/wp-content/uploads/2024/12/9-RIDADR-2025e-What-is-new.pdf
+Report 18: Medical & Lab Waste,https://www.umweltbundesamt.de/en/topics/waste-resources/wastemanagement/waste-types/waste-classification
+Report 18: Medical & Lab Waste,https://www.hse.gov.uk/cdg/manual/exemptions.htm
+Report 18: Medical & Lab Waste,https://www.gesetze-im-internet.de/avv/
+Report 18: Medical & Lab Waste,https://www.baua.de/DE/Angebote/Regelwerk/TRBA/pdf/TRBA-466.pdf
+Report 18: Medical & Lab Waste,https://www.baua.de/DE/Angebote/Regelwerk/TRBA/TRBA-462
+Report 18: Medical & Lab Waste,https://www.baua.de/DE/Angebote/Regelwerk/TRBA/TRBA-460
+Report 18: Medical & Lab Waste,https://www.baua.de/DE/Angebote/Regelwerk/TRBA/pdf/TRBA-250.pdf
+Report 18: Medical & Lab Waste,https://zkbsonline.de/fileadmin/user_upload/Downloads/Datenbanken/Organismenliste.pdf
+Report 18: Medical & Lab Waste,https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{CID}/JSON?
+Report 18: Medical & Lab Waste,https://www.cdc.gov/niosh/docs/2025-103/pdfs/2025-103.pdf
+Report 18: Medical & Lab Waste,https://www.bgw-online.de/bgw-online-de/service/medienarbeitshilfen/mediencenter/agg-gefahrstoffe/gefahrstoffrechtlichekennzeichnung-von-arzneistoffen-in-der-18278
+Report 18: Medical & Lab Waste,https://www.buzer.de/Anlage_4_StrlSchV.htm
+Report 18: Medical & Lab Waste,https://www.umweltbundesamt.de/sites/default/files/medien/3662/dokumente/h
+Report 18: Medical & Lab Waste,https://www.washinhcf.org/wp-content/uploads/2021/07/GuidelinesTransport-of-infectious-waste-UN3291.pdf
+Report 18: Medical & Lab Waste,https://www.sharpsmart.co.uk/compliance-standards-reusablesharps-containers
+Report 18: Medical & Lab Waste,https://www.danielshealth.com/sites/danielshealth.com/files/PDFs/Other/Sha
+Report 18: Medical & Lab Waste,https://www.abfallmanager-medizin.de/abfall-abc/abfallschluesselnummer180108/
+Report 18: Medical & Lab Waste,https://www.uniheidelberg.de/universitaet/beschaeftigte/service/sicherheit/gefahrstoffe/e
+Report 18: Medical & Lab Waste,https://uni-freiburg.de/sicherheitumweltschutz/startseite/abteilung-umweltschutz-und-nachhaltigkeit-sun2/abfall-abc/
+Report 18: Medical & Lab Waste,https://portal.mytum.de/archiv/komp_gts/komp_gts_20030306_151203/20030707_

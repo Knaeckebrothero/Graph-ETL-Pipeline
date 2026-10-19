@@ -1,0 +1,4 @@
+# Store inherited data byte for byte, so the checksums in sources/manifest.csv hold after checkout
+sources/** -text
+questions/seed/** -text
+docs/prior-work/** -text

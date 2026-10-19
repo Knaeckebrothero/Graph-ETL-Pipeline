@@ -9,13 +9,13 @@ Rate-limited to ~1 request/second.
 
 Usage:
     # From a text file (one EAN per line)
-    python -m src.etl.opengtindb_fetch --eans data/ean_list.txt --output data/opengtindb_products.json
+    python -m src.etl.opengtindb_fetch --eans sources/raw/opengtindb/ean_list.txt --output sources/raw/opengtindb/opengtindb_products.json
 
     # From Product nodes in the graph that are missing names
-    python -m src.etl.opengtindb_fetch --from-graph --output data/opengtindb_products.json
+    python -m src.etl.opengtindb_fetch --from-graph --output sources/raw/opengtindb/opengtindb_products.json
 
     # Limit number of lookups (for testing or rate limit budget)
-    python -m src.etl.opengtindb_fetch --eans data/ean_list.txt --limit 50 --output data/out.json
+    python -m src.etl.opengtindb_fetch --eans sources/raw/opengtindb/ean_list.txt --limit 50 --output sources/raw/opengtindb/out.json
 """
 
 import argparse
@@ -151,8 +151,8 @@ def main():
         "--output",
         "-o",
         type=Path,
-        default=Path("data/opengtindb_products.json"),
-        help="Output JSON file (default: data/opengtindb_products.json)",
+        default=Path("sources/raw/opengtindb/opengtindb_products.json"),
+        help="Output JSON file (default: sources/raw/opengtindb/opengtindb_products.json)",
     )
     parser.add_argument(
         "--limit",

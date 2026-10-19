@@ -1,0 +1,227 @@
+[
+  {
+    "question": "Wie entsorge ich Verpackungen aus Kunststoff wie Folien, Becher und Styropor,?",
+    "expected_output": "Verpackungen aus Kunststoff wie Folien, Becher und Styropor, gehört in die Verpackungstonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Verpackungn aus Papier und Pappe,?",
+    "expected_output": "Verpackungn aus Papier und Pappe, gehört in die Verpackungstonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Verpackungen aus Glas,?",
+    "expected_output": "Verpackungen aus Glas, gehört in die Verpackungstonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Getränkeflaschen,?",
+    "expected_output": "Getränkeflaschen, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Ketchupflaschen,?",
+    "expected_output": "Ketchupflaschen, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Arzneimittelflaschen,?",
+    "expected_output": "Arzneimittelflaschen, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Deckelgläser wie Marmeladengläser,?",
+    "expected_output": "Deckelgläser wie Marmeladengläser, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Cremedosen,?",
+    "expected_output": "Cremedosen, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Flachglas wie Spiegel und Scheiben,?",
+    "expected_output": "Flachglas wie Spiegel und Scheiben, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Trinkgläser und Blumenvasen,?",
+    "expected_output": "Trinkgläser und Blumenvasen, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Porzellan und Keramik,?",
+    "expected_output": "Porzellan und Keramik, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Leuchtmittel jeglicher Art,?",
+    "expected_output": "Leuchtmittel jeglicher Art, gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Pappen und Kartonagen,?",
+    "expected_output": "Pappen und Kartonagen, gehört in die Altpapiertonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Zeitungen, Illustrierte, Kataloge,?",
+    "expected_output": "Zeitungen, Illustrierte, Kataloge, gehört in die Altpapiertonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Bücher und Hefte,?",
+    "expected_output": "Bücher und Hefte, gehört in die Altpapiertonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Stark verschmutztes Papier,?",
+    "expected_output": "Stark verschmutztes Papier, gehört in die Altpapiertonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich beschichtetes Papier,?",
+    "expected_output": "beschichtetes Papier, gehört in die Altpapiertonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Zahnbürste?",
+    "expected_output": "Zahnbürste gehört in die Restabfalltonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Joghurtbecher?",
+    "expected_output": "Joghurtbecher gehört in die Verpackungstonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Zeitung?",
+    "expected_output": "Zeitung gehört in die Altpapiertonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Pizzakarton?",
+    "expected_output": "Pizzakarton gehört in die Restabfalltonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Milchverpackung?",
+    "expected_output": "Milchverpackung gehört in die Verpackungstonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Kassenbon?",
+    "expected_output": "Kassenbon gehört in die Restabfalltonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Glasflasche?",
+    "expected_output": "Glasflasche gehört in die Alltagscontainer.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie entsorge ich Keramik?",
+    "expected_output": "Keramik gehört in die Restabfalltonne.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  }
+]

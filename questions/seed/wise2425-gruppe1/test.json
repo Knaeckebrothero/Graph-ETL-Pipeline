@@ -1,0 +1,38 @@
+[
+  {
+    "question": "Wo entsorge ich Glas?",
+    "expected_output": "Altglascontainer. Glas wird nach den Farben braun, grün, weiß getrennt gesammelt. Buntes Glas gehört zum Grünglas.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wo entsorge ich Glas?",
+    "expected_output": "Altglascontainer. Glas wird nach den Farben braun, grün, weiß getrennt gesammelt. Buntes Glas gehört zum Grünglas.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "kurz",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Kann ich Tetrapaks in den Papiermüll werfen oder müssen sie in den Gelben Sack?",
+    "expected_output": "Tetrapaks dürfen nicht in den Papiermüll geworfen werden, sondern müssen in den Gelben Sack oder die Gelbe Tonne. Obwohl sie aus Papier bestehen, sind Tetrapaks zusätzlich mit Kunststoff- und Aluminiumfolien beschichtet, um sie haltbar und flüssigkeitsdicht zu machen. Diese unterschiedlichen Materialien müssen getrennt recycelt werden, was im Papiermüll nicht möglich ist. Daher gehört der Tetrapak in den Gelben Sack oder die Gelbe Tonne, wo er im Rahmen des Dualen Systems entsprechend sortiert und verwertet wird.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "kurz",
+    "model": "gpt-4o"
+  },
+  {
+    "question": "Wie groß sind die Verpackungstonnen?",
+    "expected_output": "Die Verpackungstonnen gibt es in den Größen 120, 240 und 770 Liter sowie 1,1 m³.",
+    "sinus_milieu_kurzel": null,
+    "age_group_class_num": null,
+    "language": "de",
+    "answer_length": "lang",
+    "model": "gpt-4o"
+  }
+]

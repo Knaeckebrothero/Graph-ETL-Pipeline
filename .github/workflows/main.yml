@@ -1,19 +1,40 @@
+name: checks
+
 on:
   push:
-    branches: [ "main", "*", "*/*" ]
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ "main", "*", "*/*" ]
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: |
-        echo "Add your build steps here"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Byte-compile the Python code
+        run: python -m compileall -q src
+      - name: Reject credential files and large files
+        run: |
+          python - <<'EOF'
+          import os, re, subprocess, sys
+          files = subprocess.run(["git", "ls-files", "-z"], capture_output=True, check=True).stdout.decode().split("\0")
+          bad = [f for f in files if re.search(r"(^|/)(api_keys\.txt|credentials\.txt|\.env)$", f)]
+          big = [f for f in files if f and os.path.isfile(f) and os.path.getsize(f) > 25 * 1024 * 1024]
+          if bad or big:
+              sys.exit("Not allowed in Git: " + ", ".join(bad + big))
+          print(f"{len(files) - 1} tracked files checked")
+          EOF
+      - name: Check that manifest paths exist
+        run: |
+          python - <<'EOF'
+          import csv, pathlib, sys
+          rows = list(csv.DictReader(open("sources/manifest.csv", encoding="utf-8")))
+          missing = [r["path"] for r in rows if r["path"].startswith("sources/raw/") and not pathlib.Path(r["path"]).exists()]
+          if missing:
+              sys.exit("Manifest paths missing: " + ", ".join(missing))
+          print(f"{len(rows)} manifest rows, all raw paths present")
+          EOF

@@ -1,0 +1,108 @@
+Quellen, die nicht (aktiv) genutzt wurden
+
+Im ursprünglichen Data Ordner lagen neben den genutzten Kernquellen weitere Dateien, die wir bewusst nicht in die Modellierung und den ETL-Prozess des Fessi Graphen einbezogen haben. Diese Dateien bleiben höchstens als Archiv oder Hintergrundkontext erhalten. Im Folgenden werden sie mit Begründung aufgeführt.
+
+1. Nicht verwendete tabellarische Datenquellen
+
+a) Abfall-ABC.csv (Data/01_Original_Daten/data/Abfall-ABC.csv)
+
+Diese CSV Datei stellt eine ältere und deutlich kleinere Version des Frankfurter Abfall-ABC dar (nur 244 Zeilen). Sämtliche fachlich relevanten Informationen sind in der neueren und erweiterten Datei Abfall_ABC_finalesFormat.xlsx sowie in Abfall-ABC_new.csv enthalten.
+
+Begründung:
+- durch neuere Quellen vollständig überholt,
+- geringerer Umfang,
+- keine exklusiven Informationen.
+Daher wird Abfall-ABC.csv nicht mehr für den Graphen verwendet.
+
+b) abfall_bereinigt.csv (Data/Group_3_Data/abfall_bereinigt.csv)
+
+Diese CSV Datei ist eine Zwischenversion, die aus dem Arbeitsprozess von Gruppe 3 entstanden ist. Sie enthält im Wesentlichen:
+- die gleichen Abfallarten wie Abfall_ABC_finalesFormat.xlsx,
+- eine Spalte "Entsorgungsweg Stadt Frankfurt", sowie weitere Spalten für "Entsorgungsweg FRA UAS", "Organisationseinheit" und "Zusätzliche Information".
+
+Probleme:
+- in der ersten Datenzeile befinden sich offensichtliche Test- bzw. Platzhalterwerte ("jiewjqfi hü", "fqcfet", "qvt3t"),
+- die Spalten für FRA-UAS-Entsorgungswege, Organisationseinheit und Zusatzinfos sind fast vollständig leer,
+- die sinnvollen Inhalte (Abfallart und FES-Entsorgungsweg) liegen vollständig und sauberer in Abfall_ABC_finalesFormat.xlsx vor.
+
+Begründung:
+- inhaltlich weitgehend redundant,
+- enthält Testdaten und unvollständige Spalten,
+- kein Mehrwert gegenüber der finalen Version.
+Daher wird abfall_bereinigt.csv nicht für den Graphen genutzt.
+
+2. Nicht verwendete alternative oder doppelte Varianten
+
+a) sinus_milieus_new.json (Data/01_Original_Daten/data/sinus_milieus_new.json)
+
+Diese Datei ist eine ältere Variante der Sinus Milieu Beschreibung. Mit sinus_milieus_new_v2.json liegt eine überarbeitete, konsistentere und für unsere Zwecke besser geeignete Version vor.
+
+Begründung:
+- durch v2-Version fachlich ersetzt,
+- würde nur Verwirrung stiften, da zwei unterschiedliche Fassungen parallel existieren würden.
+Daher wird sinus_milieus_new.json nicht verwendet.
+
+b) Doppelte Dateien im Root des ursprünglichen Data Ordners
+
+Im ursprünglichen Data Ordner existieren mehrere Dateien doppelt, einmal im Root-Verzeichnis und einmal in 01_Original_Daten. Dazu gehören unter anderem:
+- Abfall-ABC_new.csv
+- disposal_map_db.json
+- pdf_metadata.json
+- word_metadata.json
+- Abfallsatzung 8_ Aenderungssatzung.pdf
+- Auf dem Weg zur Zero Waste City.pdf
+- was_kommt_wo_hinein_de.pdf
+- Alltagscontainer.docx
+- Altpapiertonne.docx
+- Restabfalltonne.docx
+- Verpackungstonne.docx
+
+Inhaltlich sind diese Root-Dateien identisch mit den Versionen in 01_Original_Daten (oder unterscheiden sich nur in unkritischen Office-Metadaten). Für einen konsistenten Datenhaushalt definieren wir die Variante im Bereich 01_Original_Daten bzw. im bereinigten Data (cleaned) Ordner als "kanonische" Quelle.
+
+Begründung:
+- inhaltlich redundante Duplikate,
+- es reicht, genau eine Version der Datei als offizielle Quelle zu pflegen.
+Die Root-Varianten werden daher nicht in den ETL eingebunden und gelten als nicht genutzt.
+
+3. Nicht verwendete Kontext- und Mediendateien
+
+a) Auf dem Weg zur Zero Waste City.pdf (Data/01_Original_Daten/data/pdfs/Auf dem Weg zur Zero Waste City.pdf und Duplikat im Root)
+
+Dieses Dokument beschreibt die Zero-Waste-Strategie der Stadt Frankfurt, enthält aber keine direkt operationalisierbaren Regeln, Standorte oder strukturierten Entsorgungsdaten. Es ist für das Verständnis des politischen und strategischen Rahmens wertvoll, aber nicht notwendig für die konkrete Modellierung von WasteItem-, Facility- und Rule-Knoten.
+
+Begründung:
+- reines Kontext- bzw. Strategiedokument,
+- keine direkt nutzbaren Tabellen oder Regelstrukturen für den Graphen.
+Das Dokument wird ggf. in der schriftlichen Ausarbeitung erwähnt, aber nicht als Datenquelle in der Graph- und ETL-Pipeline genutzt.
+
+b) Bilder im Ordner image_storage (Data/01_Original_Daten/image_storage/*.jpg)
+
+Im Ordner image_storage liegen mehrere JPG-Dateien (z. B. Fotos von Farbeimern, Beispielbilder für "Farbe entsorgen"). Diese Bilder können für Frontend oder UI-Design hilfreich sein, enthalten aber keine strukturierte Information, die für die Graphmodellierung benötigt wird.
+
+Begründung:
+- rein visuelle Assets ohne strukturierte Metadaten,
+- für Neo4j und die logische Entsorgungslogik nicht relevant.
+Daher werden die JPG-Dateien nicht in den Graph integriert.
+
+4. Technische Hilfsdateien und Systemartefakte
+
+a) .DS_Store Dateien (z. B. Data/01_Original_Daten/data/.DS_Store, Data/01_Original_Daten/data/pdfs/.DS_Store)
+
+Diese Dateien werden automatisch vom Betriebssystem (macOS) erzeugt und enthalten keine fachlichen Inhalte. Sie dienen ausschließlich der Finder-Darstellung und sind für das Projekt irrelevant.
+
+b) test_metadata.py (Data/01_Original_Daten/data/word_docs/test_metadata.py)
+
+Dieses Python Skript wurde vermutlich genutzt, um Metadaten aus Dokumenten auszulesen und in die JSON Dateien pdf_metadata.json bzw. word_metadata.json zu schreiben. Für den produktiven Einsatz nutzen wir ausschließlich die fertigen Metadatendateien und nicht das Hilfsskript.
+
+c) Temporäre Lock-Datei .~lock.Alltagscontainer.docx# (Data/01_Original_Daten/data/word_docs/.~lock.Alltagscontainer.docx#)
+
+Hierbei handelt es sich um eine temporäre Sperrdatei, die von Office Programmen beim Öffnen einer Datei angelegt wird. Sie enthält keine fachlichen Daten und ist rein technischer Natur.
+
+Begründung für alle drei Typen:
+- keine fachlichen Inhalte,
+- keine Relevanz für ETL, Graph oder fachliche Auswertung.
+Sie werden deshalb konsequent ignoriert und nicht in den bereinigten Datenbestand übernommen.
+
+Zusammenfassung
+
+Alle oben aufgeführten Dateien werden bewusst nicht in die Modellierung des Fessi Graphen und in die ETL-Pipeline eingebunden. Entweder sind sie durch neuere und vollständigere Quellen ersetzt, inhaltlich redundant, technisch bedingt (System- oder Lock-Dateien) oder liefern lediglich strategischen Kontext ohne direkt nutzbare strukturierte Daten. Die fachliche und technische Arbeit stützt sich ausschließlich auf die in "genutzte Quellen" beschriebenen Dateien.

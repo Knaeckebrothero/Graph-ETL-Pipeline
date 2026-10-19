@@ -163,7 +163,7 @@ def extract_kaikki_nouns(gz_path: "Path | None" = None) -> list[KaikkiEntry]:
 
     Args:
         gz_path: Path to de-extract.jsonl.gz. If None, uses the default
-            cache location in data/dictionaries/.
+            cache location in sources/large/dictionaries/.
 
     Returns:
         List of KaikkiEntry instances (~149k entries).
@@ -172,7 +172,7 @@ def extract_kaikki_nouns(gz_path: "Path | None" = None) -> list[KaikkiEntry]:
         from pathlib import Path
 
         gz_path = (
-            Path(__file__).parent.parent.parent / "data" / "dictionaries" / "de-extract.jsonl.gz"
+            Path(__file__).parent.parent.parent / "sources" / "large" / "dictionaries" / "de-extract.jsonl.gz"
         )
 
     if not gz_path.exists():

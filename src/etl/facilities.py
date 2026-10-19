@@ -30,7 +30,7 @@ from src.db import neo4j_db
 logger = logging.getLogger(__name__)
 
 # Default data path
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "disposal_map_db.json"
+DATA_FILE = Path(__file__).parent.parent.parent / "sources" / "raw" / "fes-facility-map" / "disposal_map_db.json"
 
 
 def generate_uid(name: str) -> str:
@@ -81,7 +81,7 @@ def import_facilities(filepath: Path = None, dry_run: bool = False) -> dict:
     Import facilities into Neo4j.
 
     Args:
-        filepath: Path to JSON file (defaults to data/disposal_map_db.json)
+        filepath: Path to JSON file (defaults to sources/raw/fes-facility-map/disposal_map_db.json)
         dry_run: If True, only log what would be done without writing
 
     Returns:

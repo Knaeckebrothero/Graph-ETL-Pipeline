@@ -28,7 +28,7 @@ from src.db import neo4j_db
 logger = logging.getLogger(__name__)
 
 # Default data path
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "Abfall-ABC_new.csv"
+DATA_FILE = Path(__file__).parent.parent.parent / "sources" / "raw" / "fes-abfall-abc" / "Abfall-ABC_new.csv"
 
 # Bin types that should be WasteStream nodes (not Facility nodes)
 # These are the standard Frankfurt FES waste streams
@@ -310,7 +310,7 @@ def import_waste_items(filepath: Path = None, dry_run: bool = False) -> dict:
     Import waste items into Neo4j.
 
     Args:
-        filepath: Path to CSV file (defaults to data/Abfall-ABC_new.csv)
+        filepath: Path to CSV file (defaults to sources/raw/fes-abfall-abc/Abfall-ABC_new.csv)
         dry_run: If True, only log what would be done without writing
 
     Returns:

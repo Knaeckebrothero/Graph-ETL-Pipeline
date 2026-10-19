@@ -1,0 +1,123 @@
+Genutzte Quellen für den Fessi Graph
+
+Im Projekt unterscheiden wir klar zwischen den Quellen, die aktiv in die Modellierung des Fessi Graphen und in die ETL-Pipeline einfließen, und Quellen, die nur als Hintergrundkontext dienen. Im Folgenden werden ausschließlich die Datenquellen beschrieben, die wir bewusst nutzen.
+
+1. Primärdaten für den Graph (Fachliche Kernbasis)
+
+a) Abfall_ABC_finalesFormat.xlsx (ursprünglich: Data/Group_3_Data/Abfall_ABC_finalesFormat.xlsx, im bereinigten Ordner unter "Primärdaten für den Graph/(besser)Abfall_ABC_finalesFormat.xlsx")
+
+Dieses Excel ist unsere zentrale Quelle für die Modellierung der Abfallarten und der FES-Entsorgungswege. Die Datei enthält 606 Datensätze mit den Spalten:
+- ABC (Buchstabe A bis Z)
+- Abfallart
+- Entsorgungsweg FES
+- Entsorgungsweg FRA AUS
+- Organisationseinheit
+- Zusätzliche Informationen
+
+Wir nutzen:
+- "Abfallart" und "ABC", um daraus WasteItem-Knoten (inklusive alphabetischer Zuordnung) zu erzeugen.
+- "Entsorgungsweg FES", um die Entsorgungswege der Stadt Frankfurt zu extrahieren und daraus DisposalRule- bzw. Facility-Beziehungen im Graphen abzuleiten.
+
+Die Spalten "Entsorgungsweg FRA AUS", "Organisationseinheit" und "Zusätzliche Informationen" sind aktuell weitgehend leer und werden im Ist-Stand nur ergänzend berücksichtigt. Für die Kernmodellierung dienen sie vor allem als Platzhalter für zukünftige Erweiterungen (z. B. FRA-UAS-spezifische Prozesse).
+
+b) Abgabe_Gruppe2_AVV_mit_AbfallABC.xlsx (ursprünglich: Data/Group_2_Data/Abgabe_Gruppe2_AVV_mit_AbfallABC.xlsx, im bereinigten Ordner unter "Primärdaten für den Graph/Abgabe_Gruppe2_AVV_mit_AbfallABC.xlsx")
+
+Diese Datei ist unsere Hauptquelle für die rechtliche Klassifikation nach AVV (Abfallverzeichnis-Verordnung) und für hochschulspezifische Entsorgungswege.
+
+Wir nutzen:
+- Die Spalten AVV_Level1, AVV_Level2, AVV_Level3, AVV_Status und AVV_Beschreibung, um eine AVVCode-Hierarchie aufzubauen (Kapitel, Unterkapitel, konkreter AVV-Code). Diese Daten werden in AVVCode-Knoten mit einer expliziten Hierarchie über Parent-Child-Beziehungen überführt.
+- Die Spalte "Entsorgungsweg FRA_UAS", in der JSON-artige Strings mit Namen und Kontaktdaten (z. B. Facility Management, Ansprechpartner, Telefonnummer) hinterlegt sind. Daraus leiten wir FRA-UAS-spezifische Facility-Knoten und Kontakte ab und können später WasteItems bzw. AVVCode-Knoten mit diesen internen Entsorgungswegen verknüpfen.
+
+Damit bildet diese Quelle die Brücke zwischen fachlicher Klassifikation (AVV) und den realen Entsorgungsprozessen auf dem Campus.
+
+c) disposal_map_db.json (ursprünglich: Data/01_Original_Daten/data/disposal_map_db.json, im bereinigten Ordner unter "Primärdaten für den Graph/disposal_map_db.json")
+
+Diese JSON Datei ist die zentrale Standortdatenbank für FES-Facilities. Sie enthält für mehrere hundert Schlüssel (UUIDs) jeweils eine Liste von Standorten mit:
+- Name (z. B. "Wertstoffhof Nord", "Wertstoffhof West", "Schadstoffsammlung")
+- Adresse
+- Öffnungszeiten
+- Kontakt
+- zusätzliche Informationen
+- Weblink
+
+Wir verwenden diese Datei, um:
+- Facility- bzw. DisposalChannel-Knoten mit korrekten Adressen und Öffnungszeiten anzulegen.
+- die in Abfall_ABC_finalesFormat.xlsx genannten Entsorgungswege (z. B. "Wertstoffhof Nord") gegen eine normalisierte Facility-Liste zu matchen.
+- die flachen Textinformationen aus den CSV Dateien zu entkoppeln und in eine saubere Infrastruktur-Schicht im Graphen zu überführen.
+
+d) Abfall-ABC_new.csv (ursprünglich: Data/Abfall-ABC_new.csv, im bereinigten Ordner als "Abfall-ABC_new (optional für zusätzliche Kontaktinfos wenn was im disposal json fehlt).csv")
+
+Diese Datei enthält eine frühere bzw. alternative Version des Frankfurter Abfall-ABC mit den Spalten:
+- Abfallart
+- Entsorgungsweg
+- Adresse
+- Öffnungszeiten
+- Kontakt
+
+Wir betrachten Abfall_ABC_finalesFormat.xlsx als primäre Quelle für die Abfallarten und deren FES-Entsorgungswege. Abfall-ABC_new.csv wird in unserem Setup jedoch als unterstützende Quelle verwendet:
+- zur Validierung der Entsorgungswege und Standorte,
+- als Backup für Kontakt- und Adressinformationen, falls in disposal_map_db.json einzelne Details fehlen oder unplausibel sind.
+
+Die Datei wird also nicht als Master, aber als ergänzende Referenzquelle herangezogen.
+
+2. Regel- und Erklärungstexte (rechtliche und kommunikative Quellen)
+
+a) Abfallsatzung 8_ Aenderungssatzung.pdf (ursprünglich: Data/01_Original_Daten/data/pdfs/Abfallsatzung 8_ Aenderungssatzung.pdf, im bereinigten Ordner unter "Regel(gesetz) und Erklärungstexte(Flyer)/...Aenderungssatzung (als rechtliche Basis für Legitimität).pdf")
+
+Die Abfallsatzung der Stadt Frankfurt ist unsere rechtliche Referenz. Wir nutzen sie fachlich wie folgt:
+- als normative Grundlage für die Interpretation von Abfallarten, Sammelsystemen und Container-Typen,
+- zur Validierung, ob die im Graphen modellierten Regeln (z. B. Zuordnungen von Abfallarten zu Tonnen oder Wertstoffhöfen) mit den rechtlichen Vorgaben vereinbar sind,
+- als "Source"-Knoten im Graphen, um rechtlich begründbare Regeln explizit auf diese Quelle zurückführen zu können.
+
+Wir parsen das PDF nicht automatisiert in Strukturknoten, nutzen den Inhalt aber zur Begründung und Legitimation des modellierten Wissens.
+
+b) was_kommt_wo_hinein_de.pdf (ursprünglich: Data/01_Original_Daten/data/pdfs/was_kommt_wo_hinein_de.pdf, im bereinigten Ordner unter "Regel(gesetz) und Erklärungstexte(Flyer)/Flyer und der Container/was_kommt_wo_hinein_de.pdf")
+
+Dieser Flyer der FES erläutert in verständlicher Form, welche Abfallarten in welche Tonne bzw. zu welchen Sammelstellen gehören. Wir nutzen den Flyer:
+- als verständliche, bürgernahe Textquelle für Erklärungen im Chatbot,
+- als Grundlage, um die modellierten WasteItem- und Container-Beziehungen qualitativ zu überprüfen,
+- als "Source"- oder "Instruction"-Knoten im Graphen, um die Herkunft bestimmter Regeln oder Beispiele zu dokumentieren.
+
+c) Container- und Tonnenbeschreibungen (Alltagscontainer.docx, Altpapiertonne.docx, Restabfalltonne.docx, Verpackungstonne.docx)
+
+Diese Word Dokumente stammen ebenfalls von der FES und beschreiben jeweils einen bestimmten Containertyp bzw. eine Tonne. Wir nutzen sie:
+- zur semantischen Anreicherung der Container- bzw. Facility-Knoten (z. B. welche Fraktionen dürfen in welche Tonne, welche nicht),
+- als Grundlage für erklärende Textbausteine im Chatbot (z. B. "Was gehört in die Restabfalltonne?"),
+- als Quellenknoten ("Instruction") im Graphen, um Domainwissen nachvollziehbar an originale Dokumente zu binden.
+
+d) Metadaten zu den Dokumenten (pdf_metadata.json, word_metadata.json)
+
+Die Dateien pdf_metadata.json und word_metadata.json enthalten Metadaten (Titel, Autor, Datum) zu den oben genannten PDFs und Word Dokumenten. Wir nutzen sie, um:
+- Source-Knoten im Graphen mit aussagekräftigen Attributen zu versehen (z. B. Titel "Was kommt wo hinein? Abfall richtig trennen - Wertstoffe sichern", Autor "FES", Datum),
+- in der Dokumentation transparent zu machen, auf welche Version eines Dokuments sich unser Modell stützt.
+
+3. Zielgruppen-, Persona- und Prompt-Daten (für personalisierte Kommunikation)
+
+a) age_groups.json
+
+Diese Datei definiert Altersgruppen (z. B. 18 bis 29 Jahre, 30 bis 59 Jahre, 60 plus) und ordnet ihnen Kategorien wie "young", "middle-aged" oder "old" zu. Außerdem beschreibt sie, wie diese Gruppen kommunikativ angesprochen werden sollten (z. B. lockerer vs. sachlicher Ton).
+
+Wir nutzen diese Quelle nicht für die Struktur des Waste-Graphs selbst, sondern:
+- als Konfigurationswissen für personalisierte Antworten im Frontend (z. B. Tonalität abhängig von der Zielgruppe),
+- als Basis, um die Antwortstrategie des Bots also nicht nur fachlich, sondern auch adressatengerecht zu gestalten.
+
+b) sinus_milieus_new_v2.json und sinus_milieu_zuordnung.txt
+
+Diese beiden Dateien bilden zusammen unser Modell für Sinus Milieus:
+- sinus_milieus_new_v2.json enthält eine reduzierte, aber gut strukturierte Obergruppenlogik (z. B. "Gehobene Milieus", "Bürgerlicher Mainstream", "Prekäre Milieus", "Kritisch-kreative Milieus", "Junge Milieus") inklusive Beschreibung, Veränderungsmotivation und Kommunikationsstrategien.
+- sinus_milieu_zuordnung.txt beschreibt, welche Einzelmilieus (z. B. 01_KOG, 05_ADA, 10_NOK) welcher Obergruppe zugeordnet sind.
+
+Wir nutzen diese Quellen:
+- um die mögliche Ansprache und Argumentationsmuster des Bots nach soziokulturellen Gruppen zu differenzieren,
+- als Grundlage für Personas, die im Rahmen des Projektes beschrieben werden,
+- als reine Konfigurations- bzw. Kontextdaten, nicht als primäre Graph-Knoten für die Mülldaten.
+
+c) prompts.json
+
+Die Datei prompts.json enthält unter anderem einen komplexen Multi-Query-Prompt, der beschreibt, wie aus einer Nutzeranfrage mehrere semantische Suchanfragen generiert werden sollen (z. B. zur Kombination von Entsorgungsweg, Standortlogik und Regelwissen).
+
+Wir nutzen diese Datei:
+- als Konfigurationsquelle für das LLM-Frontend und die Abfragepipeline,
+- um die Schnittstelle zwischen Wissensgraph und Sprachmodell reproduzierbar zu dokumentieren.
+
+Damit sind alle Quellen aufgelistet, die in unserem bereinigten Datenhaushalt aktiv verwendet werden. Alle anderen im ursprünglichen Data-Ordner vorhandenen Dateien bleiben bewusst ungenutzt oder dienen nur als Archiv bzw. Hintergrundkontext und sind in einer separaten Liste dokumentiert.

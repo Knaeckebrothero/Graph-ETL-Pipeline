@@ -1,0 +1,1073 @@
+[
+    {
+        "question": "Wie entsorge ich mein Altglas?",
+        "expected_output": "Um Ihr Altglas ordnungsgemäß zu entsorgen, sollten Sie es in einem Altglascontainer an öffentlichen Plätzen oder auf FES-Wertstoffhöfen entsorgen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich meine Plastikverpackungen?",
+        "expected_output": "Gelbe Verpackungstonne",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie lautet die Telefonummer der FES Frankfurter Entsorgungs- und Service GmbH?",
+        "expected_output": "Die Telefonnummer der FES ist 0800 2008007-0",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was kommt in den Altglascontainer und was in die Altkleidersammlung?",
+        "expected_output": "In den Altglascontainer gehören saubere Flaschen und Deckelgläser, getrennt nach Farben Weiß, Grün und Braun. Blaues oder buntes Glas geht zum Grünglas. Auch Konservengläser können entsorgt werden. Nicht erlaubt sind Flachglas wie Spiegel und Scheiben, Trinkgläser, Blumenvasen, Porzellan und Keramik sowie Glühbirnen und Energiesparlampen. In die Altkleidersammlung gehören saubere Kleidungsstücke, Schuhe und Accessoires. Beschädigte oder stark verschmutzte Gegenstände können entsorgt werden, sollten aber besser im Restmüll landen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was kommt in den Papiermüll und was kommt in den Restmüll? Wie lautet die Telefonnummer und Öffnungszeiten von der FES Betriebsstätte Frankfurt-Bornheim (Wertstoffhof Ost)?",
+        "expected_output": "Papier und Pappe gehören in die grüne Altpapiertonne, wenn sie nicht beschichtet sind und unverschmutzt. In der grauen Restmülltonne sollten alle Abfälle entsorgt werden, die aufgrund von Verunreinigung oder Vermischung in keine der anderen Tonnen gehört. Die FES Betriebsstätte Frankfurt-Bornheim (Wertstoffhof Ost) hat folgende Kontaktdaten: Telefon: +4980020080070 Öffnungszeiten: Mo-Sa 08:00-14:30",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Plastik Müll?",
+        "expected_output": "Plastikmüll gehört in den Gelben Sack oder die Gelbe Tonne, je nach Region. Darunter fallen vor allem Verpackungen aus Kunststoff, wie z.B. Joghurtbecher, Plastikflaschen, Tüten und Folien. Es ist wichtig, darauf zu achten, dass die Verpackungen leer sind, bevor sie entsorgt werden, aber sie müssen nicht ausgespült werden. Einige Kunststoffe, die nicht zu Verpackungen gehören, wie Spielzeuge oder Plastikmöbel, sollten hingegen beim Wertstoffhof oder Recyclingzentrum abgegeben werden. Am besten informierst du dich bei deiner örtlichen Abfallentsorgung über spezifische Regeln und Entsorgungsmöglichkeiten für Plastikmüll in deiner Region.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich einen Joghurtbescher?",
+        "expected_output": "Ein Joghurtbecher sollte im Gelben Sack oder in der Gelben Tonne entsorgt werden, da er als Verpackung gilt. Bevor er entsorgt wird, ist es wichtig, den Becher auszuleeren, aber er muss nicht gespült werden. Wenn der Joghurtbecher aus Kunststoff besteht und einen Aluminiumdeckel hat, sollten diese beiden Teile getrennt entsorgt werden. Der Aluminiumdeckel gehört ebenfalls in den Gelben Sack oder die Gelbe Tonne.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was darf ich in die Biotonne werfen?",
+        "expected_output": "In die Biotonne dürfen organische Abfälle, die biologisch abbaubar sind. Dazu gehören Obst- und Gemüsereste, Kaffeesatz und Teefilter (inklusive Papier), Eierschalen, Speisereste (ohne Fleisch oder Fisch, je nach regionalen Vorschriften), sowie Gartenabfälle wie Gras, Laub, kleine Äste und Blumen. Auch Brot- und Backwarenreste, Pflanzenreste, sowie kleine Mengen von ungekochtem Reis, Nudeln oder Kartoffeln sind erlaubt. Wichtig ist, dass keine Plastiktüten (auch nicht biologisch abbaubare, wenn nicht explizit erlaubt), Glas, Metall, Kunststoffe, Asche, behandeltes Holz oder andere nicht-organische Abfälle in die Biotonne geworfen werden. Es kann regionale Besonderheiten und Einschränkungen geben, daher lohnt es sich, die örtlichen Vorgaben zu beachten.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was gehört in den Papiermüll und welche Materialien müssen getrennt entsorgt werden?",
+        "expected_output": "In den Papiermüll gehören saubere Papier- und Kartonprodukte, die recycelt werden können, wie Zeitungen, Zeitschriften, Broschüren, Schreibpapier, Briefumschläge ohne Plastikfenster, Pappkartons, Verpackungen aus Pappe, Bücher ohne Kunststoff- oder Ledereinband sowie Eierkartons und Papierverpackungen, die nicht beschichtet sind. Materialien, die nicht in den Papiermüll gehören und getrennt entsorgt werden müssen, sind beschichtetes Papier wie Getränkekartons, stark verschmutztes Papier wie fettige Pizzakartons oder Backpapier, Geschenkpapier mit Glanz- oder Plastikbeschichtung, Fotos und Fotopapier, Tapetenreste sowie Windeln oder Taschentücher. Auch Briefumschläge mit Kunststofffenstern sollten getrennt entsorgt werden, indem das Fenster entfernt wird. Es ist wichtig, Papier möglichst sauber zu entsorgen, um eine gute Wiederverwertung zu gewährleisten. Bei Unsicherheiten helfen die regionalen Vorgaben zur Abfalltrennung weiter.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie trenne ich Biomüll richtig und welche Abfälle dürfen nicht in die Biotonne?",
+        "expected_output": "Biomüll sollte richtig getrennt werden, indem ausschließlich organische, biologisch abbaubare Abfälle in die Biotonne gegeben werden. Dazu gehören Obst- und Gemüsereste, Kaffeesatz und Teefilter, Eierschalen, Gartenabfälle wie Gras und Laub, sowie kleine Äste und Blumen. Auch Brot- und Backwarenreste, Pflanzenreste und kleine Mengen von ungekochtem Reis, Nudeln oder Kartoffeln sind erlaubt. Es ist wichtig, bestimmte Abfälle nicht in die Biotonne zu werfen. Dazu gehören Plastiktüten (auch biologisch abbaubare, wenn nicht explizit erlaubt), Glas, Metall, Kunststoffe, Asche, behandeltes Holz und chemisch belastete Materialien. Auch gekochte Speisereste, Fleisch, Fisch, Knochen, Öl oder Fett gehören in den Restmüll, da sie Schädlinge anziehen und die Kompostierung stören können. Hygienematerialien wie Windeln oder Taschentücher dürfen ebenfalls nicht in die Biotonne. Um die Trennung zu erleichtern, können Papiertüten oder Zeitungspapier verwendet werden, um Biomüll zu sammeln. Plastiktüten sollten vermieden werden, es sei denn, sie sind in deiner Region ausdrücklich erlaubt. Ein Blick auf die lokalen Vorschriften hilft, die Biotonne korrekt zu nutzen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Kunststoffe dürfen in den Gelben Sack und welche müssen anderes entsorgt werden?",
+        "expected_output": "In den Gelben Sack oder die Gelbe Tonne dürfen hauptsächlich Verpackungen aus Kunststoff, Metall und Verbundstoffen, die recycelt werden können. Dazu gehören Plastikverpackungen wie Joghurtbecher, Margarinedosen, Plastikflaschen, Folien, Tüten sowie Kunststoffverpackungen von Lebensmitteln wie Wurst- und Käseverpackungen. Auch Blisterverpackungen, Plastikverschlüsse von Flaschen und Tetrapacks sowie Styroporverpackungen dürfen in den Gelben Sack. Kunststoffe, die nicht in den Gelben Sack gehören und anderweitig entsorgt werden müssen, umfassen Nicht-Verpackungen aus Kunststoff, wie Spielzeuge, Plastikmöbel oder Haushaltsgegenstände, die zum Wertstoffhof gebracht werden sollten. CDs, DVDs und andere Datenträger gehören zum Sondermüll oder Elektroschrott. Stark verschmutzte oder chemisch belastete Kunststoffprodukte gehören in den Restmüll, und Bau- oder Gartenfolien sowie große Plastikplanen oder Rohre müssen ebenfalls beim Wertstoffhof oder als Sondermüll entsorgt werden. Es ist wichtig, den Gelben Sack nur mit Verpackungen zu füllen, da andere Kunststoffprodukte speziellere Recyclingprozesse erfordern und nicht über den Gelben Sack verwertet werden können. Regionale Vorgaben können hier ebenfalls variieren, daher ist es sinnvoll, diese zu beachten.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie entsorge ich Glas richtig und gibt es Unterschiede zwischen den verschiedenen Glasarten?",
+        "expected_output": "Glas sollte je nach Art und Farbe richtig entsorgt werden, da verschiedene Glasarten und Farben getrennt recycelt werden müssen. Glasverpackungen wie Flaschen und Gläser gehören in spezielle Altglascontainer, die nach den Farben Weiß, Grün und Braun sortiert sind. Es ist wichtig, das Glas korrekt nach diesen Farben zu trennen, da falsch sortiertes Glas den Recyclingprozess erschwert. Blaues oder andersfarbiges Glas wird üblicherweise im Grünglascontainer entsorgt, da dieser am flexibelsten ist. Zu den Glasarten, die in den Altglascontainer dürfen, gehören Glasflaschen (z.B. von Getränken oder Öl), Einmachgläser und Marmeladengläser sowie Kosmetikbehälter aus Glas, wobei Deckel oder Verschlüsse entfernt und separat entsorgt werden sollten. Einige Glasarten, die nicht in den Altglascontainer gehören, haben andere chemische Eigenschaften oder Schmelzpunkte und müssen anders entsorgt werden. Dazu zählen Trinkgläser und Geschirr, die in den Restmüll oder zum Wertstoffhof gehören, sowie Fensterglas, Spiegel und Glas von Duschkabinen, die ebenfalls im Wertstoffhof entsorgt werden sollten. Glühbirnen werden als Sondermüll oder Elektroschrott entsorgt, je nach Art, und Keramik, Porzellan oder hitzebeständiges Glas wie Laborglas gehören nicht ins Altglas, sondern in den Restmüll oder zum Wertstoffhof. Es ist außerdem wichtig, Glasverpackungen vor der Entsorgung zu leeren, auch wenn sie nicht gespült werden müssen. Regionale Vorgaben sollten beachtet werden, da es lokal spezifische Regelungen geben kann.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Elektronikgeräte müssen gesondert entsorgt werden?",
+        "expected_output": "Elektronikgeräte müssen aufgrund ihrer Materialien und möglicher Schadstoffe gesondert entsorgt werden, um eine umweltgerechte Behandlung und Recycling sicherzustellen. Dazu gehören große Haushaltsgeräte wie Waschmaschinen, Kühlschränke, Trockner, Geschirrspüler und Elektroherde sowie kleine Haushaltsgeräte wie Staubsauger, Kaffeemaschinen, Toaster, Wasserkocher und Bügeleisen. Unterhaltungselektronik wie Fernseher, Radios, Stereoanlagen, DVD-Player und Blu-ray-Player, aber auch Kommunikationsgeräte wie Handys, Smartphones, Tablets, Computer, Laptops, Drucker und Monitore müssen ebenfalls gesondert entsorgt werden. Auch Beleuchtung wie Energiesparlampen, LED-Lampen und Leuchtstoffröhren (nicht jedoch Glühbirnen, die in den Restmüll gehören) fallen darunter. Weitere zu trennende Elektronikgeräte sind Elektrowerkzeuge wie Bohrmaschinen und Akkuschrauber, Küchengeräte wie Mixer und elektrische Pfannen sowie Batterien und Akkus, die oft Schadstoffe enthalten und in speziellen Sammelboxen oder Wertstoffhöfen entsorgt werden müssen. Diese Geräte können in der Regel kostenlos bei Wertstoffhöfen oder speziellen Sammelstellen abgegeben werden, und auch viele Geschäfte nehmen ausgediente Elektronik zurück. Kleinere Elektrogeräte unter 25 cm Kantenlänge können zudem in größeren Einzelhandelsgeschäften abgegeben werden, ohne dass der Kauf eines neuen Geräts erforderlich ist. Es ist wichtig, Elektronikgeräte niemals im Restmüll zu entsorgen, da sie wertvolle Rohstoffe enthalten, die recycelt werden können, und Schadstoffe, die umweltgerecht behandelt werden müssen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Kann ich Tetrapaks in den Papiermüll werfen oder müssen sie in den Gelben Sack?",
+        "expected_output": "Tetrapaks dürfen nicht in den Papiermüll geworfen werden, sondern müssen in den Gelben Sack oder die Gelbe Tonne. Obwohl sie aus Papier bestehen, sind Tetrapaks zusätzlich mit Kunststoff- und Aluminiumfolien beschichtet, um sie haltbar und flüssigkeitsdicht zu machen. Diese unterschiedlichen Materialien müssen getrennt recycelt werden, was im Papiermüll nicht möglich ist. Daher gehört der Tetrapak in den Gelben Sack oder die Gelbe Tonne, wo er im Rahmen des Dualen Systems entsprechend sortiert und verwertet wird.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie trenne ich Speisereste und verpackte Lebensmittel, die nicht mehr verwendbar sind?",
+        "expected_output": "Speisereste und verpackte Lebensmittel, die nicht mehr verwendbar sind, müssen sorgfältig getrennt entsorgt werden. Unverpackte Speisereste wie Obst- und Gemüsereste, Brot, Nudeln, Reis und andere nicht-tierische Abfälle gehören in die Biotonne. In einigen Regionen dürfen auch kleine Mengen an gekochten Speiseresten wie gekochtes Gemüse in die Biotonne gegeben werden. Verpackte Lebensmittel, die verdorben sind, müssen vor der Entsorgung von ihrer Verpackung getrennt werden. Die Verpackung, wie Plastik oder Tetrapaks, gehört in den Gelben Sack, während die verdorbenen Lebensmittel – insbesondere tierische Produkte oder stark verarbeitete Speisen – in den Restmüll gehören, da sie nicht in die Biotonne dürfen. Verpackungen aus Glas sollten in den entsprechenden Altglascontainer entsorgt werden. Tierische Abfälle wie Fleisch, Fisch, Knochen oder fettige Lebensmittelreste müssen ebenfalls in den Restmüll, da sie Schädlinge anziehen können und die Kompostierung stören. Es ist wichtig, Verpackungen und Lebensmittel getrennt zu entsorgen, um das Recycling zu unterstützen und die Umwelt zu schonen. Bei Unsicherheiten können regionale Abfallentsorgungsvorschriften hilfreich sein.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Holz in Frankfurt am Main?",
+        "expected_output": "In Frankfurt am Main kannst du Holz in den Wertstoffhöfen oder Recyclinghöfen der Stadt entsorgen. Kleinere Mengen an Altholz, wie beispielsweise Reste von Möbeln oder Brettern, kannst du zum Beispiel beim Wertstoffhof Nordweststadt oder dem Recyclinghof Ost abgeben. Größere Mengen, wie sie bei Renovierungen oder Bauarbeiten anfallen, solltest du direkt bei einem der städtischen Recyclinghöfe anliefern. Achte darauf, dass das Holz frei von Schadstoffen wie Lacken oder Imprägnierungen ist, da diese Materialien getrennt entsorgt werden müssen. Alternativ kannst du auch den Sperrmüllservice der Stadt nutzen, der in regelmäßigen Abständen Abholtermine anbietet. Für genauere Informationen über die Standorte und Öffnungszeiten der Recyclinghöfe sowie die Regeln für die Entsorgung kannst du die Webseite der Stadt Frankfurt besuchen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Holz? Antworte für Experten",
+        "expected_output": "Die Entsorgung von Holz unterliegt in Deutschland spezifischen Regelungen, die je nach Holzart und Verwendungszweck variieren. Altholz wird in vier verschiedene Kategorien (A I bis A IV) unterteilt, die den Grad der Verunreinigung und die mögliche Schadstoffbelastung bestimmen. Holz der Kategorie A I (unbehandeltes Holz, wie Paletten oder naturbelassenes Bauholz) kann in der Regel direkt an Recyclinghöfen oder Entsorgungsbetrieben abgegeben werden. Es wird häufig mechanisch aufbereitet und stofflich recycelt, beispielsweise zu Spanplatten verarbeitet. Holz der Kategorien A II bis A IV, das behandelte oder mit Schadstoffen belastete Holz wie lackierte Möbel, imprägniertes Bauholz oder mit halogenorganischen Verbindungen (z. B. PVC) behandelte Materialien umfasst, muss getrennt entsorgt werden. Es darf nicht mit anderen Abfällen vermischt werden und wird in speziellen Anlagen, wie Altholzverbrennungsanlagen, thermisch verwertet. Je nach Bundesland und regionaler Abfallwirtschaft gibt es spezielle Entsorgungswege für gefährliche Althölzer, die streng überwacht und dokumentiert werden müssen. In Ballungsgebieten wie Frankfurt am Main gibt es spezialisierte Entsorgungsunternehmen, die auf die sichere und regelkonforme Entsorgung von Altholz ausgelegt sind. Für größere Mengen oder gewerbliche Entsorgung sollte eine Vorabsprache mit dem Entsorger erfolgen, um sicherzustellen, dass alle gesetzlichen Vorschriften eingehalten werden und die Nachweisführung ordnungsgemäß durchgeführt wird.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Holz? Erkläre für Experten, vermeide lokale Bezüge und rechtliche Aspekte",
+        "expected_output": "Die Entsorgung von Holz hängt stark von der Art und dem Zustand des Materials ab. Grundsätzlich wird Holz in verschiedenen Prozessen entweder stofflich oder energetisch verwertet. Unbehandeltes Holz, das keine Beschichtungen oder chemischen Behandlungen aufweist, kann direkt recycelt werden. Es wird mechanisch zerkleinert und in der Herstellung neuer Holzprodukte wie Spanplatten oder Faserplatten wiederverwendet. Behandeltes Holz, das durch Lacke, Farben oder Imprägnierungen verändert wurde, erfordert eine spezielle Aufbereitung. In der Regel wird es einer thermischen Verwertung zugeführt, bei der das Holz in speziellen Verbrennungsanlagen zur Energiegewinnung genutzt wird. Diese Anlagen sind darauf ausgelegt, Schadstoffe sicher abzubauen, die beim Verbrennen von behandeltem Holz entstehen können. Holz, das stark mit Fremdstoffen wie Metallen, Kunststoffen oder giftigen Substanzen kontaminiert ist, kann nicht direkt in den Recyclingkreislauf gelangen und erfordert oft eine vorherige Trennung oder Aufbereitung, bevor es weiterverarbeitet oder verwertet werden kann. Hier spielen Sortier- und Aufbereitungsverfahren eine wichtige Rolle, um das Material für die nachfolgende Nutzung optimal vorzubereiten.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Holz in Frankfurt am Main? Erkläre für Experten in maximal 100 Zeichen in Englisch",
+        "expected_output": "Dispose of wood in Frankfurt at recycling centers or through bulky waste collection services.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Where do I dispose of my paper waste?",
+        "expected_output": "Paper waste should be disposed of in the green Altpapiertonne located at your residence. It is emptied every 14 days.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie lautet die Telefonummer und Öffnungzeiten von der FES Betriebsststätte Frankfurt-Bornheim (Wertstoffhof Ost)?",
+        "expected_output": "Die Telefonnummer der FES Betriebsstätte Frankfurt-Bornheim (Wertstoffhof Ost) ist +4980020080070. Die Öffnungszeiten sind Montag bis Samstag von 08:00 Uhr bis 14:30 Uhr.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wann wird der Restmüll in Frankfurt abgeholt?",
+        "expected_output": "Die Abholung des Restmülls erfolgt je nach Stadtteil an unterschiedlichen Tagen. Den genauen Abfuhrtermin für deine Adresse kannst du im Abfallkalender der FES Frankfurt nachsehen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Darf ich Batterien im Restmüll entsorgen?",
+        "expected_output": "Nein, Batterien gehören nicht in den Restmüll. Sie müssen an Sammelstellen in Supermärkten oder Wertstoffhöfen entsorgt werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Kann ich alte Medikamente in die Toilette werfen?",
+        "expected_output": "Nein, Medikamente sollten nicht über die Toilette oder das Waschbecken entsorgt werden. Sie können in Apotheken oder über den Restmüll entsorgt werden, um die Umwelt nicht zu belasten.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo kann ich Sperrmüll in Frankfurt entsorgen?",
+        "expected_output": "Sperrmüll kann über die FES Frankfurt kostenfrei zur Abholung angemeldet oder an einem der Wertstoffhöfe abgegeben werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie entsorge ich Energiesparlampen richtig?",
+        "expected_output": "Energiesparlampen enthalten Quecksilber und dürfen nicht im Restmüll entsorgt werden. Sie müssen an Sammelstellen für Elektroschrott oder in Wertstoffhöfen abgegeben werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Gibt es in Frankfurt eine zentrale Anlaufstelle für Recycling?",
+        "expected_output": "Ja, Frankfurt hat mehrere Wertstoffhöfe, an denen verschiedene Arten von Abfällen fachgerecht entsorgt werden können. Eine Liste aller Standorte findest du auf der FES-Webseite.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie funktioniert die Abholung von Gartenabfällen in Frankfurt?",
+        "expected_output": "Gartenabfälle können über die Biotonne entsorgt oder an bestimmten Sammelstellen abgegeben werden. In manchen Stadtteilen gibt es zudem saisonale Abholtermine.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was kostet die Abholung von Sperrmüll in Frankfurt?",
+        "expected_output": "Die erste Sperrmüllabholung pro Jahr ist in Frankfurt kostenlos. Jede weitere Abholung ist kostenpflichtig und muss bei der FES angemeldet werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich alte Elektrogeräte in Frankfurt?",
+        "expected_output": "Elektrogeräte können an den Wertstoffhöfen oder über die Sperrmüllabholung der FES Frankfurt entsorgt werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was passiert mit dem gesammelten Altglas in Frankfurt?",
+        "expected_output": "Das Altglas wird recycelt und zur Herstellung neuer Glasverpackungen verwendet, um Ressourcen zu sparen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Akkus?",
+        "expected_output": "Akkus sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-700.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Altbatterien?",
+        "expected_output": "Altbatterien sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-701.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Alarmanlage?",
+        "expected_output": "Alarmanlage sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Alteisen?",
+        "expected_output": "Alteisen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-703.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Altreifen?",
+        "expected_output": "Altreifen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Aluminium?",
+        "expected_output": "Aluminium sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Antenne?",
+        "expected_output": "Antenne sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Asbest?",
+        "expected_output": "Asbest sollte über Deponiepark Wicker entsorgt werden. Adresse: Rhein-Main-Deponiepark 1 65439 Flörsheim-Wicker. Öffnungszeiten: Montag bis Freitag  07:30–12:00, 13:00–16:00         Samstag 08:00-13:00  Sonntag Geschlossen. Kontakt: Telefon: (06145)92 60-0                            E-Mail: pr@deponiepark.de.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Autobatterie?",
+        "expected_output": "Autobatterie sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Autofelgen?",
+        "expected_output": "Autofelgen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Automaten?",
+        "expected_output": "Automaten sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Autoteile?",
+        "expected_output": "Autoteile sollte über Auf Anfrage entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Backofen?",
+        "expected_output": "Backofen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Batterien?",
+        "expected_output": "Batterien sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bekleidung?",
+        "expected_output": "Bekleidung sollte über Kleiderspende entsorgt werden. Adresse: Neufundland Lärchenstraße 135 65933 Frankfurt am Main. Öffnungszeiten: Montag bis Freitag  10:00–18:00         Samstag Geschlossen  Sonntag Geschlossen. Kontakt: Tel: 069 939996-0                                      E-Mail: neufundland@gwr-frankfurt.de Fax: 069 939996-219.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Beleuchtung?",
+        "expected_output": "Beleuchtung sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Beleuchtungskörper?",
+        "expected_output": "Beleuchtungskörper sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bettwäsche?",
+        "expected_output": "Bettwäsche sollte über Kleiderspende entsorgt werden. Adresse: Neufundland Lärchenstraße 135 65933 Frankfurt am Main. Öffnungszeiten: Montag bis Freitag  10:00–18:00         Samstag Geschlossen  Sonntag Geschlossen. Kontakt: Tel: 069 939996-0                                      E-Mail: neufundland@gwr-frankfurt.de Fax: 069 939996-219.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bildschirmgeräte?",
+        "expected_output": "Bildschirmgeräte sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-702.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bleche, Blechteile?",
+        "expected_output": "Bleche, Blechteile sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-703.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bleibatterien?",
+        "expected_output": "Bleibatterien sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-704.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Boiler?",
+        "expected_output": "Boiler sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-705.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bohrmaschine?",
+        "expected_output": "Bohrmaschine sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-706.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Brandschutzanlage?",
+        "expected_output": "Brandschutzanlage sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-707.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Brockbackautomat?",
+        "expected_output": "Brockbackautomat sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-708.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Bügeleisen?",
+        "expected_output": "Bügeleisen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-709.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Ceranfeld?",
+        "expected_output": "Ceranfeld sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-709.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Computer, PC?",
+        "expected_output": "Computer, PC sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-710.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Computerschrott?",
+        "expected_output": "Computerschrott sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Computerteile?",
+        "expected_output": "Computerteile sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-712.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Couch?",
+        "expected_output": "Couch sollte über Möbelspende entsorgt werden. Adresse: Neufundland Lärchenstraße 135 65933 Frankfurt am Main. Öffnungszeiten: Montag bis Freitag  10:00–18:00         Samstag Geschlossen  Sonntag Geschlossen. Kontakt: Tel: 069 939996-0                                      E-Mail: neufundland@gwr-frankfurt.de Fax: 069 939996-219.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Dachpappe?",
+        "expected_output": "Dachpappe sollte über Rhein-Main-Deponie entsorgt werden. Adresse: Rhein-Main-Deponiepark 1 65439 Flörsheim-Wicker. Öffnungszeiten: Montag bis Freitag  07:30–12:00, 13:00–16:00         Samstag 08:00-13:00  Sonntag Geschlossen. Kontakt: Telefon: (06145)92 60-0                            E-Mail: pr@deponiepark.de.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Dachziegel?",
+        "expected_output": "Dachziegel sollte über Rhein-Main-Deponie entsorgt werden. Adresse: Rhein-Main-Deponiepark 1 65439 Flörsheim-Wicker. Öffnungszeiten: Montag bis Freitag  07:30–12:00, 13:00–16:00         Samstag 08:00-13:00  Sonntag Geschlossen. Kontakt: Telefon: (06145)92 60-0                            E-Mail: pr@deponiepark.de.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Dämmstoffe?",
+        "expected_output": "Dämmstoffe sollte über Rhein-Main-Deponie entsorgt werden. Adresse: Rhein-Main-Deponiepark 1 65439 Flörsheim-Wicker. Öffnungszeiten: Montag bis Freitag  07:30–12:00, 13:00–16:00         Samstag 08:00-13:00  Sonntag Geschlossen. Kontakt: Telefon: (06145)92 60-0                            E-Mail: pr@deponiepark.de.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Disketten?",
+        "expected_output": "Disketten sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Display?",
+        "expected_output": "Display sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Dreirad?",
+        "expected_output": "Dreirad sollte über Sachspende entsorgt werden. Adresse: Neufundland Lärchenstraße 135 65933 Frankfurt am Main. Öffnungszeiten: Montag bis Freitag  10:00–18:00         Samstag Geschlossen  Sonntag Geschlossen. Kontakt: Tel: 069 939996-0                                      E-Mail: neufundland@gwr-frankfurt.de Fax: 069 939996-219.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Drucker, Toner?",
+        "expected_output": "Drucker, Toner sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Druckerpatronen?",
+        "expected_output": "Druckerpatronen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Dunstabzugshaube?",
+        "expected_output": "Dunstabzugshaube sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich DVD-Player?",
+        "expected_output": "DVD-Player sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Eierkocher?",
+        "expected_output": "Eierkocher sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-711.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Eisenteile?",
+        "expected_output": "Eisenteile sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-712.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Eisschrank?",
+        "expected_output": "Eisschrank sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-713.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Eiswürfelbereiter?",
+        "expected_output": "Eiswürfelbereiter sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-714.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektroaltgeräte?",
+        "expected_output": "Elektroaltgeräte sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-715.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektroboiler?",
+        "expected_output": "Elektroboiler sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-716.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektrogeräte?",
+        "expected_output": "Elektrogeräte sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-717.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektrogrill?",
+        "expected_output": "Elektrogrill sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-718.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektroherd?",
+        "expected_output": "Elektroherd sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-719.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektrokabel?",
+        "expected_output": "Elektrokabel sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-720.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektrokleingeräte?",
+        "expected_output": "Elektrokleingeräte sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-721.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektromotoren?",
+        "expected_output": "Elektromotoren sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-722.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektronik?",
+        "expected_output": "Elektronik sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-723.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektroofen?",
+        "expected_output": "Elektroofen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-724.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Elektrowerkzeug?",
+        "expected_output": "Elektrowerkzeug sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-725.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Energiesparlampen?",
+        "expected_output": "Energiesparlampen sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-726.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Epilierer?",
+        "expected_output": "Epilierer sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Espressomaschine?",
+        "expected_output": "Espressomaschine sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Fahrrad, Fahrräder?",
+        "expected_output": "Fahrrad, Fahrräder sollte über Sachspende entsorgt werden. Adresse: Neufundland Lärchenstraße 135 65933 Frankfurt am Main. Öffnungszeiten: Montag bis Freitag  10:00–18:00         Samstag Geschlossen  Sonntag Geschlossen. Kontakt: Tel: 069 939996-0                                      E-Mail: neufundland@gwr-frankfurt.de Fax: 069 939996-219.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Faxgerät?",
+        "expected_output": "Faxgerät sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Fernseher?",
+        "expected_output": "Fernseher sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Festplatte?",
+        "expected_output": "Festplatte sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Fitnessgeräte?",
+        "expected_output": "Fitnessgeräte sollte über Sachspende entsorgt werden. Adresse: Neufundland Lärchenstraße 135 65933 Frankfurt am Main. Öffnungszeiten: Montag bis Freitag  10:00–18:00         Samstag Geschlossen  Sonntag Geschlossen. Kontakt: Tel: 069 939996-0                                      E-Mail: neufundland@gwr-frankfurt.de Fax: 069 939996-219.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Fliesenschneider?",
+        "expected_output": "Fliesenschneider sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Föhn?",
+        "expected_output": "Föhn sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Folienschweißgerät?",
+        "expected_output": "Folienschweißgerät sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Fotoapparat?",
+        "expected_output": "Fotoapparat sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo entsorge ich Friteuse?",
+        "expected_output": "Friteuse sollte über Recyclingzentrum entsorgt werden. Adresse: Lärchenstraße 131 65933 Frankfurt-Griesheim . Öffnungszeiten: Mo - Do 8:00 bis 16:30 Fr 8:00 bis 14:30 Uhr. Kontakt: Telefon: 069 94 21 63 - 100                               E-Mail: recycling@gwr-frankfurt.de           Fax: 069 94 21 63-727.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Gebühren fallen für die Nutzung der Restabfalltonne in Frankfurt an?",
+        "expected_output": "Die Gebühren für die Nutzung der Restabfalltonne richten sich nach der Größe der Tonne und der Leerungshäufigkeit. Die genauen Gebühren können im Abfallgebührenverzeichnis der Stadt Frankfurt am Main eingesehen werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie groß sind die in Frankfurt verfügbaren Restabfalltonnen?",
+        "expected_output": "Die Restabfalltonnen sind in den Größen 80, 120, 240 und 770 Liter sowie 1,1, 2,5 und 5 m³ erhältlich.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Darf ich meine Restabfalltonne selbst bestellen?",
+        "expected_output": "Nein, Mieter können die Restabfalltonne nicht selbst bestellen. Sie müssen sich an den Eigentümer oder die Hausverwaltung wenden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie oft wird die Verpackungstonne in Frankfurt geleert?",
+        "expected_output": "Die Verpackungstonne wird alle 14 Tage geleert.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was kann ich tun, wenn meine Verpackungstonne nicht ausreicht?",
+        "expected_output": "Falls die Verpackungstonne nicht ausreicht, können 'Gelbe Säcke' neben der Tonne zur Abholung bereitgestellt werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Materialien dürfen in die Verpackungstonne?",
+        "expected_output": "Es dürfen Verpackungen aus Kunststoff, Verbundmaterialien, Metall sowie geschäumte Kunststoffe entsorgt werden. Verpackungen müssen leer, aber nicht gespült sein.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was passiert, wenn zu viel Restmüll in der Verpackungstonne ist?",
+        "expected_output": "Falls zu viel Restmüll enthalten ist, kann der Inhalt nicht sortiert und weiterverarbeitet werden. Die Tonne wird dann nicht geleert und eine Sonderleerung als Restmüll muss schriftlich beantragt werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie werden Altglascontainer in Frankfurt geleert?",
+        "expected_output": "Die Altglascontainer werden in der Regel alle 14 Tage geleert, bei Bedarf auch häufiger.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie soll Altglas in den Containern entsorgt werden?",
+        "expected_output": "Altglas muss nach Farben getrennt (Weiß, Grün, Braun) entsorgt werden. Blaues oder buntes Glas sollte in den Grünglascontainer gegeben werden.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was gehört nicht in den Altglascontainer?",
+        "expected_output": "Flachglas (z. B. Spiegel, Fensterscheiben), Trinkgläser, Porzellan, Keramik, Leuchtmittel und stark verschmutzte Gläser gehören nicht in den Altglascontainer.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Abfälle gehören in die Altpapiertonne?",
+        "expected_output": "In die Altpapiertonne gehören Pappen, Kartonagen, Zeitungen, Illustrierte, Kataloge, Bücher und Hefte.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie oft wird die Altpapiertonne in Frankfurt geleert?",
+        "expected_output": "Die Altpapiertonne wird alle 14 Tage geleert.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Abfälle gehören nicht in die Altpapiertonne?",
+        "expected_output": "Stark verschmutztes Papier, beschichtetes Papier, Pergament- und Hygienepapiere sowie Windeln gehören nicht in die Altpapiertonne.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Was ist das Konzept der Zero Waste City in Frankfurt?",
+        "expected_output": "Die Zero Waste City-Initiative in Frankfurt zielt darauf ab, Abfall zu vermeiden, Recycling zu fördern und die Kreislaufwirtschaft zu stärken. Maßnahmen umfassen Abfalltrennung, Sensibilisierungskampagnen und die Förderung von Wiederverwendung.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie wird in Frankfurt der Bioabfall verwertet?",
+        "expected_output": "Der Bioabfall wird in einer Bioabfallbehandlungsanlage zu Kompost verarbeitet und zur Gewinnung von Biogas genutzt.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Warum ist die richtige Mülltrennung in Frankfurt wichtig?",
+        "expected_output": "Eine korrekte Mülltrennung ermöglicht ein effizientes Recycling, spart Ressourcen und reduziert die Abfallgebühren.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wie kann ich Sperrmüll in Frankfurt entsorgen?",
+        "expected_output": "Sperrmüll kann kostenlos einmal pro Jahr zur Abholung angemeldet werden. Die Anmeldung erfolgt über die FES Frankfurt.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Welche Maßnahmen plant Frankfurt zur Abfallreduzierung?",
+        "expected_output": "Frankfurt plant Maßnahmen wie verbesserte Mülltrennung, Sensibilisierungskampagnen, Einführung der Zero Waste City und die Förderung von Wiederverwendungsinitiativen.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    },
+    {
+        "question": "Wo kann ich Batterien und Elektroschrott entsorgen?",
+        "expected_output": "Batterien können in Sammelstellen in Supermärkten oder auf Wertstoffhöfen abgegeben werden. Elektroschrott wird an speziellen Sammelstellen oder über die Sperrmüllabholung entsorgt.",
+        "sinus_milieu_kurzel": null,
+        "age_group_class_num": null,
+        "language": "de",
+        "answer_length": "kurz",
+        "model": "gpt-4o"
+    }
+]

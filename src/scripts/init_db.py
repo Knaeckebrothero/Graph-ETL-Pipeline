@@ -16,20 +16,20 @@ from pathlib import Path
 
 from db import Neo4jDatabase
 
-# Path to schema file
-SCHEMA_FILE = Path(__file__).parent.parent / "db" / "schema.cql"
+# Default schema file (curated v5.0)
+SCHEMA_FILE = Path(__file__).resolve().parent.parent.parent / "schemas" / "v5.0" / "schema.cql"
 
 
-def apply_schema(db: Neo4jDatabase, logger: logging.Logger) -> dict:
+def apply_schema(db: Neo4jDatabase, logger: logging.Logger, schema_file: Path = SCHEMA_FILE) -> dict:
     """
-    Apply schema constraints and indexes from schema.cql.
+    Apply schema constraints and indexes from a .cql file.
 
     Returns dict with counts of applied constraints and indexes.
     """
-    if not SCHEMA_FILE.exists():
-        raise FileNotFoundError(f"Schema file not found: {SCHEMA_FILE}")
+    if not schema_file.exists():
+        raise FileNotFoundError(f"Schema file not found: {schema_file}")
 
-    schema_content = SCHEMA_FILE.read_text()
+    schema_content = schema_file.read_text()
 
     # Parse and execute each statement
     statements = []
@@ -105,7 +105,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--schema',
         action='store_true',
-        help='Apply schema constraints and indexes from schema.cql'
+        help='Apply schema constraints and indexes from the schema file'
+    )
+    parser.add_argument(
+        '--schema-file',
+        type=Path,
+        default=SCHEMA_FILE,
+        help='Schema file for --schema (default: schemas/v5.0/schema.cql)'
     )
     parser.add_argument(
         '--stats',
@@ -156,9 +162,9 @@ def main():
 
     # Apply schema
     if args.schema:
-        logger.info(f"Applying schema from {SCHEMA_FILE}")
+        logger.info(f"Applying schema from {args.schema_file}")
         try:
-            results = apply_schema(db, logger)
+            results = apply_schema(db, logger, args.schema_file)
             logger.info(f"Schema applied: {results['constraints']} constraints, {results['indexes']} indexes")
             if results['skipped']:
                 logger.info(f"  Skipped {results['skipped']} (already existed)")

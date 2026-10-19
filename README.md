@@ -1,329 +1,90 @@
-# Fessi Graph ETL Pipeline
+# fessi knowledge-graph theses
 
-ETL pipeline for constructing a Neo4j knowledge graph to power the "Fessi" university waste disposal chatbot. Uses Graph-RAG to model decision logic rather than just retrieving text segments.
+Shared workspace for two master's theses at Frankfurt University of Applied Sciences (M.Sc. Wirtschaftsinformatik). Both use the **fessi** waste-disposal chatbot as their case study and analyse the same construction runs: LLM agents import heterogeneous waste-disposal sources into a Neo4j graph under different schemas.
 
-## Table of Contents
+| | Thesis A | Thesis B |
+|---|---|---|
+| Title | A Technique for Evaluating Knowledge-Graph Schema Fitness across Coverage, Populatability, and Queryability | A Multi-Layer Evaluation Methodology for Agent-Driven Knowledge Graph Construction: Design, Instrumentation, and Case Study in the Waste-Disposal Domain |
+| Author | [@Knaeckebrothero](https://github.com/Knaeckebrothero) | Rachid Yagubi |
+| Compares | schema treatments (curated fessi schema, raw-triple/EAV, LLM-induced) | agent configurations |
+| Supplies to the other | competency questions, reference benchmark | run instrumentation and process data |
+| Supervision | Prof. Dr. Josef Fink, second examiner Prof. Dr. Sebastian Bremm | to be added |
+| Submission | 16 February 2027 (hard deadline) | to be added |
 
-- [Overview](#overview)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Pipeline API](#pipeline-api)
-- [Project Structure](#project-structure)
-- [Schema](#schema)
-- [Data Sources](#data-sources)
-- [License](#license)
-- [Contact](#contact)
+Both theses are graded as individual work. Keep authorship traceable: commit under your own name, and put each thesis's own analysis under [`analysis/`](analysis/).
 
-## Overview
+## Status (19 October 2026)
 
-### Why Graph-RAG?
+The project starts from the sources, import code and documentation of earlier fessi semesters, not from their graphs. No earlier graph is reused: rebuilding graphs under controlled conditions is what the theses study. [`docs/prior-work/`](docs/prior-work/README.md) summarises what was built before, what actually ran, and which claims in the earlier reports do not hold.
 
-Standard vector search retrieves conflicting documents without understanding context. For example, asking "How do I dispose of a paint can?" might return:
+| Component | State |
+|---|---|
+| Sources | 27 files and endpoints in [`sources/manifest.csv`](sources/manifest.csv); candidate catalogue of about 256 unverified sources; no stratified sample yet |
+| Import code | Hand-written importers for the structured sources in [`src/etl/`](src/etl/), tied to one vocabulary; LLM extraction scaffolding in [`src/llm_etl/`](src/llm_etl/) |
+| Schemas | Curated v4.0 and v5.0 in [`schemas/`](schemas/); EAV and LLM-induced treatments not built |
+| Competency questions | 160 legacy questions as seeds in [`questions/`](questions/); about 500 needed |
+| Construction agent and runs | Not built; see [`experiments/`](experiments/) |
+| Deployment | Nothing current on the university server; see [`deploy/`](deploy/) |
 
-- "Paint cans must be disposed of in Chemical Waste" (liquid paint)
-- "Paint cans can be put in regular trash" (empty/dry cans)
-
-A knowledge graph models **decision logic**, not just text:
+## Repository layout
 
 ```
-WasteItem(Paint) → Condition(Form?) → [Liquid] → Chemical Waste
-                                    → [Dry]    → Regular Trash
+sources/       source files, the manifest and the candidate catalogue
+  raw/         small source files, tracked in Git, one folder per source
+  large/       large files (Open Food Facts, Wiktionary), kept outside Git
+  catalogue/   LLM-generated candidate source list and the research behind it
+schemas/       curated schema versions (v4.0 spec and Cypher, v5.0 Cypher)
+src/           Python code: Neo4j access, importers (etl/), LLM extraction (llm_etl/), barcode lookup
+questions/     competency questions and their seeds
+experiments/   run configurations and results (shared by both theses)
+analysis/      each thesis's own analysis
+deploy/        Neo4j and chatbot deployment, locally and on the university server
+docs/          documentation of the earlier semesters and of this project
+notebooks/     example notebooks from the earlier semester
+private/       local only, never committed: credentials and files with personal data
 ```
 
-### Current Status
+## Where things run
 
-| Metric | Count |
-|--------|-------|
-| Facility nodes | 38 |
-| WasteItem nodes | 548 |
-| WasteStream nodes | 5 |
-| Relationships | 1,067 |
-| **Total nodes** | **591** |
+| What | Where | State |
+|---|---|---|
+| This repository | GitHub, `Knaeckebrothero/Graph-ETL-Pipeline` (private) | Restructured for the theses on 19 October 2026 |
+| fessi chatbot | GitHub, [`Knaeckebrothero/Advanced-LLM-Chat`](https://github.com/Knaeckebrothero/Advanced-LLM-Chat) (public); CI builds images to `ghcr.io/knaeckebrothero/advanced-llm-chat-{backend,frontend}` | Not deployed. Barcode work on branch `feature/barcode-scanner` |
+| Neo4j for experiments and demo | University server `10.18.2.105`, reachable through the university VPN | Planned. Recon of May 2026 found only an outdated Neo4j 5.15 and a broken chatbot there |
+| LLM endpoint | University server, model-orchestrator at `http://10.18.2.105:8090/v1` | Running as of May 2026 |
+| Local development | Neo4j 5 Community via [`deploy/local/podman-compose.yml`](deploy/local/podman-compose.yml) | Works |
 
-## Installation
+Details and the deployment plan: [`deploy/README.md`](deploy/README.md).
 
-### Prerequisites
+## Quick start (local)
 
-- Python 3.12+
-- Podman (or Docker)
-- Neo4j 5 Community (via container)
-
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Knaeckebrothero/Graph-ETL-Pipeline.git
-   cd Graph-ETL-Pipeline
-   ```
-
-2. **Start Neo4j container**
-   ```bash
-   podman-compose -f docker/podman-compose.yml up -d
-   ```
-   The Neo4j browser will be available at http://localhost:7474
-
-3. **Configure environment**
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Verify connection**
-   ```bash
-   python src/scripts/init_db.py
-   ```
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NEO4J_URI` | `bolt://localhost:7687` | Neo4j Bolt protocol URI |
-| `NEO4J_USER` | `neo4j` | Database username |
-| `NEO4J_PASSWORD` | `neo4j_dev` | Database password |
-
-### LLM Configuration (for AI extraction)
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LLM_PROVIDER` | `openai` | LLM provider (`openai` or `groq`) |
-| `LLM_MODEL` | `gpt-4o` | Model identifier |
-| `LLM_API_KEY` | | API key for the provider |
-| `LLM_BASE_URL` | | OpenAI-compatible endpoint override (for local llama.cpp, etc.) |
-
-### Default Credentials
-
-- **URI**: `bolt://localhost:7687`
-- **User**: `neo4j`
-- **Password**: `neo4j_dev`
-
-## Usage
-
-### ETL Pipeline
-
-Import order matters: facilities must be imported before waste items.
-
-| Phase | Module | Status | Description |
-|-------|--------|--------|-------------|
-| 1 | `facilities.py` | Done | Import Facility nodes from JSON |
-| 2 | `waste_items.py` | Done | Import WasteItem nodes and relationships |
-| 3A | `waste_streams.py` | Pending | Enrich WasteStream nodes with metadata |
-| 3B | `facilities.py --enrich` | Pending | Enrich Facility nodes with addresses/hours |
+Requires Python 3.12+ and Podman.
 
 ```bash
-# Phase 1: Import facilities (creates nodes with name + uid)
-python -m src.etl.facilities
+podman-compose -f deploy/local/podman-compose.yml up -d   # Neo4j at http://localhost:7474
+python -m venv .venv && .venv/bin/pip install -r requirements.txt
+cp .env.example .env                                       # set NEO4J_PASSWORD=neo4j_dev and LLM settings
 
-# Phase 2: Import waste items (requires Phase 1)
-python -m src.etl.waste_items
-
-# Dry-run mode (no database changes)
-python -m src.etl.facilities --dry-run
-python -m src.etl.waste_items --dry-run
-
-# Verbose output
-python -m src.etl.facilities -v
-python -m src.etl.waste_items -v
+.venv/bin/python src/scripts/init_db.py --schema           # apply schemas/v5.0/schema.cql
+.venv/bin/python src/scripts/init_db.py --schema --schema-file schemas/v4.0/schema.cql
+.venv/bin/python -m src.etl.facilities --dry-run           # importers read from sources/raw/
 ```
 
-### Database Management
+Large source files are not in Git. [`sources/large/README.md`](sources/large/README.md) lists them and where to get them.
 
-```bash
-# Check connection and show stats
-python src/scripts/init_db.py
+## Working rules
 
-# Clear all data (with confirmation)
-python src/scripts/init_db.py --reset
+- **No credentials in the repository.** Keep keys and passwords in `.env` or `private/`; both are ignored by Git.
+- **No personal data.** Earlier material contains staff contact details, student numbers and persona data; see [`sources/README.md`](sources/README.md#restricted-material). Redact before committing.
+- **Every source file goes into the manifest** with its origin, licence, checksum and date, so that gold answers can be traced to a dated source.
+- **No graph dumps in Git.** Runs write to throwaway Neo4j instances; results are recorded as measurements in `experiments/`.
+- **Report claims only with run artefacts.** Earlier documentation marked steps "complete" that never ran.
 
-# Show stats only
-python src/scripts/init_db.py --stats
+## History
 
-# Verbose output
-python src/scripts/init_db.py -v
-```
-
-### Programmatic Access
-
-```python
-from src.db import neo4j_db
-
-# Run queries
-results = neo4j_db.query("MATCH (n:WasteItem) RETURN n.name LIMIT 10")
-
-# Use session context manager
-with neo4j_db.session() as session:
-    session.run("MERGE (w:WasteItem {uid: $uid})", uid="item-001")
-
-# Get database stats
-stats = neo4j_db.get_stats()
-print(f"Nodes: {stats['total_nodes']}, Relationships: {stats['relationship_count']}")
-```
-
-## Pipeline API
-
-The `Pipeline` class is the unified entry point for LLM-based extraction. It takes text + prompt + settings and returns structured entities with optional Neo4j insertion. Two modes are available:
-
-| Mode | Description | LLM Calls | Use Case |
-|------|-------------|-----------|----------|
-| `chain` | Single structured-output call | 1 | Bulk processing, clean text |
-| `agent` | ReAct loop exploring the graph, then extraction | N+1 | Complex text, needs graph context |
-
-### Quick Start
-
-```python
-from src.llm_etl import Pipeline, WasteItemExtract, SourceExtract
-
-# Create pipeline
-pipeline = Pipeline(
-    schema=WasteItemExtract,
-    prompt="Extract waste items with disposal routes",
-    mode="chain",
-    load_to_db=True,
-    source=SourceExtract(name="guide.pdf", file_type="pdf"),
-)
-
-# Run on each text passage
-result = pipeline.run("Altöl muss bei der Schadstoffannahme abgegeben werden.")
-
-print(result.entities)      # [WasteItemExtract(name='Altöl', ...)]
-print(result.load_result)   # LoadResult(entities_created=1, ...)
-```
-
-### Agent Mode
-
-When extraction benefits from understanding what's already in the graph:
-
-```python
-pipeline = Pipeline(
-    schema=WasteItemExtract,
-    prompt="Extract waste items, match disposal targets to known facilities",
-    mode="agent",
-    max_iterations=5,
-    load_to_db=True,
-    source=SourceExtract(name="brochure.pdf", file_type="pdf"),
-)
-
-for page_text in pdf_pages:
-    result = pipeline.run(page_text)
-    print(result.messages)  # Shows agent tool calls and extraction trace
-```
-
-### Custom Schemas
-
-Define your own Pydantic schema — the `GenericEntityLoader` handles DB insertion automatically:
-
-```python
-from pydantic import BaseModel, Field
-
-class ChemicalExtract(BaseModel):
-    name: str = Field(description="Chemical name")
-    cas_number: str = Field(default="", description="CAS registry number")
-    hazard_class: str = Field(default="", description="GHS hazard class")
-
-pipeline = Pipeline(
-    schema=ChemicalExtract,
-    prompt="Extract chemical substances with hazard info",
-    load_to_db=True,
-    source=SourceExtract(name="safety_sheet.pdf", file_type="pdf"),
-)
-
-result = pipeline.run(text)
-# Entities persisted as :ChemicalExtract nodes in Neo4j
-```
-
-### Pipeline Parameters
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `schema` | *required* | Pydantic model class defining what to extract |
-| `prompt` | `""` | Extraction instructions for the LLM |
-| `mode` | `"chain"` | `"chain"` or `"agent"` |
-| `max_iterations` | `10` | Max agent tool-calling rounds (agent mode) |
-| `max_retries` | `2` | Structured output retry count |
-| `temperature` | `0.0` | LLM sampling temperature |
-| `load_to_db` | `False` | Persist entities to Neo4j |
-| `dry_run` | `False` | Simulate DB writes |
-| `source` | `None` | `SourceExtract` for provenance tracking |
-| `context` | `""` | Static context passed to every `run()` call |
-
-See `notebooks/pipeline_example.ipynb` for a full walkthrough.
-
-## Project Structure
-
-```
-.
-├── src/
-│   ├── config.py                 # Environment configuration
-│   ├── db/
-│   │   ├── neo4j_db.py           # Neo4j database singleton
-│   │   └── schema.cql            # Graph schema (constraints, indexes)
-│   ├── etl/                      # Structured ETL (CSV/JSON)
-│   │   ├── facilities.py         # Phase 1: Facility import
-│   │   ├── waste_items.py        # Phase 2: WasteItem import
-│   │   ├── materials.py          # Material taxonomy import
-│   │   └── dictionary_classifier.py  # Batched LLM classification
-│   ├── llm_etl/                  # LLM-based ETL (unstructured docs)
-│   │   ├── pipeline.py           # Pipeline: unified entry point
-│   │   ├── extraction_chain.py   # Schema-driven LLM extraction
-│   │   ├── orchestrator.py       # LangGraph document processor
-│   │   ├── loader.py             # Entity loader with provenance
-│   │   ├── generic_loader.py     # Fallback loader for custom schemas
-│   │   ├── schemas.py            # Pydantic extraction schemas
-│   │   ├── config.py             # LLM provider configuration
-│   │   └── tools/                # Agent tools (DB, doc, web)
-│   ├── barcode/                  # Product barcode lookup (OFF API)
-│   └── scripts/
-│       └── init_db.py            # Database initialization CLI
-├── notebooks/
-│   └── pipeline_example.ipynb    # Pipeline usage walkthrough
-├── data/
-│   ├── disposal_map_db.json      # Facility names, addresses, hours
-│   └── Abfall-ABC_new.csv        # Waste items and disposal routes
-├── docs/                         # Technical documentation
-├── docker/
-│   └── podman-compose.yml        # Container setup
-├── requirements.txt
-└── .env.example
-```
-
-## Schema
-
-Three-layer ontology (v4.0) defined in `src/db/schema.cql`:
-
-| Layer | Nodes | Purpose |
-|-------|-------|---------|
-| Core | `WasteItem`, `WasteStream`, `AVVCode` | What is the item? What bin type? |
-| Rules | `DisposalRule`, `Condition`, `Instruction`, `Tip` | How do we decide? |
-| Infrastructure | `Container`, `Room`, `Building`, `Facility`, `Source` | Where is the bin? Data provenance? |
-
-### Key Relationships
-
-```
-(WasteItem)-[:DISPOSED_AT]->(Facility)       # Direct disposal location
-(WasteItem)-[:DISPOSED_IN]->(WasteStream)    # Bin type routing
-(WasteItem)-[:HAS_RULE]->(DisposalRule)      # Conditional logic
-(Condition)-[:IF_TRUE|IF_FALSE]->(...)       # Decision trees
-```
-
-## Data Sources
-
-| File | Description | Status |
-|------|-------------|--------|
-| `disposal_map_db.json` | Facility names, addresses, opening hours | Imported |
-| `Abfall-ABC_new.csv` | Waste items and disposal routes | Imported |
-| `*.docx` (bin guides) | Bin type metadata (colors, sizes) | Planned |
-| `*.pdf` (Abfallsatzung) | Legal disposal rules | Planned |
+- The repository began in December 2025 as the ETL pipeline of the WiSe 2025/26 fessi project. The graded state is tagged [`wise2526-submission`](../../tree/wise2526-submission).
+- Earlier fessi semesters (SoSe 2024 to SoSe 2025) and their material are described in [`docs/prior-work/`](docs/prior-work/README.md).
 
 ## License
 
-This project is licensed under the terms of the Creative Commons Attribution 4.0 International License (CC BY 4.0) and the All Rights Reserved License. See the [LICENSE](LICENSE.txt) file for details.
-
-## Contact
-
-[Github](https://github.com/Knaeckebrothero) | [Mail](mailto:OverlyGenericAddress@pm.me)
+See [LICENSE.txt](LICENSE.txt) for the project's own code and text. Third-party source files keep their own licences, recorded per file in [`sources/manifest.csv`](sources/manifest.csv); several are not cleared for publication.
