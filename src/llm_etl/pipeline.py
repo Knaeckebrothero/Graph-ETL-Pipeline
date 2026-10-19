@@ -195,11 +195,15 @@ def _build_agent_graph(
     prompt: str,
     temperature: float,
     max_iterations: int,
+    structured_output_method: str = "json_mode",
 ) -> Any:
     """Build and compile the LangGraph ReAct agent for extraction."""
     llm = get_llm(temperature=temperature)
     llm_with_tools = llm.bind_tools(AGENT_TOOLS)
-    chain = ExtractionChain(temperature=temperature)
+    chain = ExtractionChain(
+        temperature=temperature,
+        structured_output_method=structured_output_method,
+    )
     schema_hint = schema_to_prompt_hint(schema)
 
     def agent_node(state: dict) -> dict:
@@ -276,6 +280,7 @@ class Pipeline:
         max_retries: Retry count for structured output (chain mode).
         temperature: LLM sampling temperature.
         max_iterations: Max agent tool-calling rounds (agent mode only).
+        structured_output_method: "json_mode" (default, works everywhere) or "function_calling".
         load_to_db: Whether to persist entities to Neo4j.
         dry_run: Simulate DB writes without executing them.
         source: Provenance metadata (required if load_to_db=True).
@@ -290,6 +295,7 @@ class Pipeline:
         max_retries: int = 2,
         temperature: float = 0.0,
         max_iterations: int = 10,
+        structured_output_method: str = "json_mode",
         load_to_db: bool = False,
         dry_run: bool = False,
         source: SourceExtract | None = None,
@@ -304,6 +310,7 @@ class Pipeline:
         self.max_retries = max_retries
         self.temperature = temperature
         self.max_iterations = max_iterations
+        self.structured_output_method = structured_output_method
         self.load_to_db = load_to_db
         self.dry_run = dry_run
         self.context = context
@@ -334,6 +341,7 @@ class Pipeline:
             self.__chain = ExtractionChain(
                 max_retries=self.max_retries,
                 temperature=self.temperature,
+                structured_output_method=self.structured_output_method,
             )
         return self.__chain
 
@@ -357,6 +365,7 @@ class Pipeline:
                 prompt=self.prompt,
                 temperature=self.temperature,
                 max_iterations=self.max_iterations,
+                structured_output_method=self.structured_output_method,
             )
         return self.__agent_graph
 

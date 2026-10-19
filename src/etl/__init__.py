@@ -13,6 +13,8 @@ Modules:
     dictionary: Download and parse dictionary data into concept clusters
     dictionary_importer: Bulk import dictionary clusters into Neo4j
     dictionary_classifier: LLM-based classification + promotion to WasteItem
+    avv_codes: Import AVV (European Waste Catalogue) codes as 3-level hierarchy
+    avv_classification: LLM-based hierarchical AVV classification of WasteItems
 """
 
 def __getattr__(name: str):
@@ -28,6 +30,8 @@ def __getattr__(name: str):
         'parse_dictionaries': ('.dictionary', 'parse_dictionaries'),
         'import_dictionary_entries': ('.dictionary_importer', 'import_dictionary_entries'),
         'classify_dictionary_entries': ('.dictionary_classifier', 'classify_dictionary_entries'),
+        'import_avv_codes': ('.avv_codes', 'import_avv_codes'),
+        'classify_waste_items': ('.avv_classification', 'classify_waste_items'),
     }
     if name in _imports:
         module_path, attr = _imports[name]
@@ -48,4 +52,6 @@ __all__ = [
     'parse_dictionaries',
     'import_dictionary_entries',
     'classify_dictionary_entries',
+    'import_avv_codes',
+    'classify_waste_items',
 ]

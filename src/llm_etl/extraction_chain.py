@@ -37,7 +37,7 @@ class ExtractionChain:
     """Generic extraction chain with dynamic schema support."""
 
     DEFAULT_SYSTEM_PROMPT = """You are an expert data extraction system for German waste disposal information.
-Your task is to extract structured entities from the provided text.
+Your task is to extract structured entities from the provided text and return them as JSON.
 
 Guidelines:
 - Extract ALL relevant entities matching the requested type
@@ -54,16 +54,25 @@ Guidelines:
 
 {instructions}"""
 
-    def __init__(self, max_retries: int = 2, temperature: float = 0.0):
+    def __init__(
+        self,
+        max_retries: int = 2,
+        temperature: float = 0.0,
+        structured_output_method: str = "json_mode",
+    ):
         """
         Initialize the extraction chain.
 
         Args:
             max_retries: Number of retries for malformed outputs
             temperature: LLM sampling temperature (0.0 for deterministic)
+            structured_output_method: Method for structured output extraction.
+                "json_mode" (default) — works with all providers (Groq, OpenAI, local).
+                "function_calling" — uses tool/function calling (OpenAI-native, may fail on Groq).
         """
         self.max_retries = max_retries
         self.temperature = temperature
+        self.structured_output_method = structured_output_method
         self._llm = None
 
     @property
@@ -105,7 +114,9 @@ Guidelines:
         # Get structured output with retries
         for attempt in range(self.max_retries + 1):
             try:
-                structured_llm = self.llm.with_structured_output(wrapper_schema)
+                structured_llm = self.llm.with_structured_output(
+                    wrapper_schema, method=self.structured_output_method
+                )
                 result = structured_llm.invoke(prompt)
 
                 if result is None:
@@ -154,7 +165,9 @@ Guidelines:
 
         for attempt in range(self.max_retries + 1):
             try:
-                structured_llm = self.llm.with_structured_output(output_schema)
+                structured_llm = self.llm.with_structured_output(
+                    output_schema, method=self.structured_output_method
+                )
                 result = structured_llm.invoke(prompt)
 
                 if result is not None:
