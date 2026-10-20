@@ -24,7 +24,7 @@ The project starts from the sources, import code and documentation of earlier fe
 | Schemas | Curated v4.0 and v5.0 in [`schemas/`](schemas/); EAV and LLM-induced treatments not built |
 | Competency questions | 160 legacy questions as seeds in [`questions/`](questions/); about 500 needed |
 | Construction agent and runs | Not built; see [`experiments/`](experiments/) |
-| Deployment | Nothing current on the university server; see [`deploy/`](deploy/) |
+| Deployment | Local containers for Neo4j, Postgres with Apache AGE and Apache Jena Fuseki; nothing current on the university server; see [`deploy/`](deploy/) |
 
 ## Repository layout
 
@@ -38,7 +38,7 @@ src/           Python code: Neo4j access, importers (etl/), LLM extraction (llm_
 questions/     competency questions and their seeds
 experiments/   run configurations and results (shared by both theses)
 analysis/      each thesis's own analysis
-deploy/        Neo4j and chatbot deployment, locally and on the university server
+deploy/        graph backends and chatbot deployment, locally and on the university server
 docs/          documentation of the earlier semesters and of this project
 notebooks/     example notebooks from the earlier semester
 private/       local only, never committed: credentials and files with personal data
@@ -52,7 +52,7 @@ private/       local only, never committed: credentials and files with personal 
 | fessi chatbot | GitHub, [`Knaeckebrothero/Advanced-LLM-Chat`](https://github.com/Knaeckebrothero/Advanced-LLM-Chat) (public); CI builds images to `ghcr.io/knaeckebrothero/advanced-llm-chat-{backend,frontend}` | Not deployed. Barcode work on branch `feature/barcode-scanner` |
 | Neo4j for experiments and demo | University server `10.18.2.105`, reachable through the university VPN | Planned. Recon of May 2026 found only an outdated Neo4j 5.15 and a broken chatbot there |
 | LLM endpoint | University server, model-orchestrator at `http://10.18.2.105:8090/v1` | Running as of May 2026 |
-| Local development | Neo4j 5 Community via [`deploy/local/podman-compose.yml`](deploy/local/podman-compose.yml) | Works |
+| Local development | Neo4j 5 Community, Postgres 18 with Apache AGE 1.8 and Apache Jena Fuseki 6.2 via [`deploy/local/podman-compose.yml`](deploy/local/podman-compose.yml) | Works; all three checked on 20 October 2026 |
 
 Details and the deployment plan: [`deploy/README.md`](deploy/README.md).
 
@@ -61,9 +61,9 @@ Details and the deployment plan: [`deploy/README.md`](deploy/README.md).
 Requires Python 3.12+ and Podman.
 
 ```bash
-podman-compose -f deploy/local/podman-compose.yml up -d   # Neo4j at http://localhost:7474
+podman-compose -f deploy/local/podman-compose.yml up -d   # Neo4j :7474, Postgres+AGE :5432, Fuseki :3030
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-cp .env.example .env                                       # set NEO4J_PASSWORD=neo4j_dev and LLM settings
+cp .env.example .env                                       # defaults match the containers; add LLM settings
 
 .venv/bin/python src/scripts/init_db.py --schema           # apply schemas/v5.0/schema.cql
 .venv/bin/python src/scripts/init_db.py --schema --schema-file schemas/v4.0/schema.cql

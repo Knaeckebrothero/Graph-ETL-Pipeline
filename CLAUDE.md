@@ -26,13 +26,15 @@ schemas/v4.0, v5.0  curated schema versions            questions/             co
 src/db/             Neo4j connection (singleton)       src/etl/               hand-written importers
 src/llm_etl/        LLM extraction scaffolding         src/barcode/           EAN lookup (OpenGTINDB, OFF)
 src/scripts/        init_db.py                         experiments/, analysis/  runs and per-thesis analysis
-deploy/             local compose, server Quadlets     docs/prior-work/       earlier semesters, reviewed
+deploy/             3 local backends, server Quadlets  docs/prior-work/       earlier semesters, reviewed
 ```
 
 ## Commands
 
 ```bash
-podman-compose -f deploy/local/podman-compose.yml up -d     # Neo4j 5 Community, localhost:7474 / :7687
+podman-compose -f deploy/local/podman-compose.yml up -d     # Neo4j :7474/:7687, Postgres+AGE :5432, Fuseki :3030
+podman-compose -f deploy/local/podman-compose.yml up -d fuseki   # or start one service: neo4j, postgres-age, fuseki
+podman ps --format '{{.Names}} {{.Status}}'                 # all three report (healthy) when ready
 .venv/bin/pip install -r requirements.txt
 
 .venv/bin/python src/scripts/init_db.py --stats             # connection check and counts
@@ -64,7 +66,11 @@ with neo4j_db.session() as session:
 
 **IDs are inconsistent in the inherited code:** `sha256(name)[:16]` in `src/etl/`, `sha256(lower(strip(name)))[:16]` in the LLM loader, `sha256(ean)` for products, the natural code for AVV. New code should use one documented policy.
 
-**Config:** environment variables from `.env` via `src/config.py`: `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`, and `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_PROVIDER` for LLM-based modules.
+**Config:** environment variables from `.env` via `src/config.py`: `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`, and `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_PROVIDER` for LLM-based modules. `.env.example` also defines `POSTGRES_*` and `FUSEKI_URL` for the other two backends; no code reads them yet.
+
+**Postgres + AGE:** AGE is preloaded and `ag_catalog` is last on the search path, so `SELECT * FROM cypher('graph', $$ ... $$) AS (x agtype)` works in any session and plain tables still go to `public`. One instance holds many graphs (`SELECT create_graph('name')`).
+
+**Fuseki:** dataset `/fessi` with SPARQL query at `/fessi/sparql`, update at `/fessi/update`, Graph Store Protocol at `/fessi/data`; no authentication, bound to localhost.
 
 ## Validation queries
 

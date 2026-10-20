@@ -1,3 +1,10 @@
+# Local graph backends: Neo4j (property graph), Postgres with Apache AGE
+# (relational plus property graph) and Apache Jena Fuseki (RDF).
+#   podman-compose -f deploy/local/podman-compose.yml up -d            # all three
+#   podman-compose -f deploy/local/podman-compose.yml up -d fuseki     # one of them
+# Development credentials only; see deploy/README.md.
+name: graph-etl
+
 services:
   neo4j:
     image: neo4j:5-community
@@ -15,9 +22,64 @@ services:
       - neo4j-data:/data
       - neo4j-logs:/logs
       - neo4j-import:/var/lib/neo4j/import
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p neo4j_dev 'RETURN 1' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  postgres-age:
+    image: docker.io/apache/age:release_PG18_1.8.0
+    container_name: postgres-age-etl
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_DB=fessi
+      - POSTGRES_USER=fessi
+      - POSTGRES_PASSWORD=postgres_dev
+    volumes:
+      # Postgres 18 images keep their data under /var/lib/postgresql/18/
+      - postgres-data:/var/lib/postgresql
+      # Runs after the image's own 00-create-extension-age.sql, on first start only
+      - ./postgres/01-age-defaults.sql:/docker-entrypoint-initdb.d/01-age-defaults.sql:ro,z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fessi -d fessi || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  fuseki:
+    # Built from Jena's own Docker kit (jena-fuseki-docker 6.2.0), vendored unchanged in ./fuseki
+    build:
+      context: ./fuseki
+      args:
+        JENA_VERSION: "6.2.0"
+    image: localhost/fuseki:6.2.0
+    container_name: fuseki-etl
+    # Fuseki has no authentication here, so it listens on localhost only
+    ports:
+      - "127.0.0.1:3030:3030"
+    environment:
+      - JAVA_OPTIONS=-Xmx2g -Xms512m
+    # One persistent, updatable TDB2 dataset at http://localhost:3030/fessi, stored at
+    # the volume root: Fuseki 6 does not create a missing --loc directory
+    command: ["--tdb2", "--update", "--loc", "databases", "/fessi"]
+    volumes:
+      - fuseki-data:/fuseki/databases
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3030/$$/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
 
 volumes:
   neo4j-data:
   neo4j-logs:
   neo4j-import:
+  postgres-data:
+  fuseki-data:
