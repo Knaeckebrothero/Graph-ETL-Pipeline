@@ -1,0 +1,12 @@
+activity,cost_type,what_counts
+benchmark_authoring,fixed,"Writing reference assertions and competency questions; sizing annotation; anchoring in the sampled sources"
+verification,fixed,"Second, blind pass over the reference set; calibration rounds on the codebook"
+adjudication,fixed,"Resolving disagreements between the two passes"
+audit_coding,fixed,"Coding of run-output audit samples, first or second coder"
+setup_tooling,fixed,"Harness, adapters, validator, exporter, matcher, sample cutting, log schema, instrumentation"
+realisation_prep,marginal,"Preparing one schema realisation: mapping, renderer, binding table, validator rules. Name it in the column realisation"
+run_operation,marginal,"Launching, monitoring and re-running construction and querying runs. Waiting time does not count, attended time does"
+scoring_analysis,marginal,"Scoring, checks, tables and figures for the results"
+second_reading,fixed,"Reading the other thesis's material against agreed checks (Eval 2 package, stage figure)"
+coordination,fixed,"Meetings, the agreement, e-mails between the two theses and with the supervisors"
+other,fixed,"Anything else that applying the technique needed; say what in the note"
