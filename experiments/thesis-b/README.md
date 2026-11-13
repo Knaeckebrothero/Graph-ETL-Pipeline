@@ -11,6 +11,9 @@ Specifications that Thesis B contributes to the shared experiment: the instrumen
 | Indicator mapping against Thesis A's ten populatability components | 13 | `indicator-mapping.md` | — | confirmed in the Eval 2 reading |
 | Eval 2 second-reading checklist | 15 | `eval2-review-checklist.md` | — | filled in 13 to 15 Nov |
 | Example trace in `kgc-trace/1` (one prototype run, exported and validated) | 4 | — | `sample.kgc.jsonl` | — |
+| Thesis B reply to the demarcation agreement Draft 1h (Draft 1i, supersedes 8 Nov) | 1 to 20 | `reply-draft-1i.md` | — | — |
+| Freeze decisions and open items of 13 Nov | — | `DECISIONS-2026-11-13.md` | — | — |
+| Hours log template (cost ledger, point 16) | 16 | — | `hours-log-template.csv` | — |
 
 Decisions the harness owner has to make for the schema to be implementable (see `event-schema-v1.md`):
 

@@ -1,0 +1,146 @@
+# Thesis B reply to the demarcation and interface agreement (Draft 1h) — G0, 6 November 2026 (sent late)
+
+From: Rachid Yagubi (Thesis B). To: Niklas Hall (Thesis A).
+Reference: Demarcation and interface agreement Draft 1h (8 Nov 2026) and "Thesis A handoff for Rachid" (8 Nov 2026, 127 of 127 decisions, 20 open points).
+Status: drafted 3 Nov 2026 against Draft 1f; updated 8 Nov 2026 for Draft 1g (point 19 added; points 12, 15 and 17 extended); updated 9 Nov 2026 for Draft 1h (point 20 added; A0 decoding per EX-10; decoding, fingerprint and manifest fields per EX-05, EX-10, EX-16; blind-pass additions per BE-14, BE-16, BE-17). All placeholders filled; this version (11 Nov) supersedes the reply sent on 8 Nov.
+
+Everything below is written so that it can be pasted into the agreement as Draft 1i. Section numbers refer to the agreement.
+
+---
+
+## A. Section 1, Thesis B row
+
+| Field | Value |
+|---|---|
+| Author | Rachid Yagubi, 1359190 |
+| Title | *A Process Model for Evaluating Agent-Driven Knowledge Graph Construction: Design, Instrumentation, and a Case Study in the Waste-Disposal Domain* (registered wording, exposé of Aug 2026; replaces the "Multi-Layer Evaluation Methodology" wording quoted in Draft 1f) |
+| Programme | M.Sc. Wirtschaftsinformatik (PO 2022), Fb 2, Frankfurt UAS |
+| Supervisors | Prof. Fink (Betreuer), Prof. Bremm (Korreferent); same supervisors as Thesis A |
+| Registration, period | Registered 26 Sep 2026; processing period 26 Sep 2026 to 27 Feb 2027 (22 weeks; submission end of February 2027) |
+| Object of comparison | Agent configurations (the schema is a condition) — confirmed as written |
+| Primary contribution | An instrumented process model for evaluating agent-driven KG construction (stages, trace events, failure states, metric catalogue), demonstrated on the same runs; the multi-layer metric set is part of it — wording adjusted to the registered title |
+
+---
+
+## B. Answers to the 20 open points
+
+"Yes" means: Thesis A's suggested answer is accepted as written. "Yes, with addition" means: accepted, plus the sentence in the last column goes into the agreement.
+
+| # | Point | Answer | Addition to the agreement text |
+|---|---|---|---|
+| 1 | Principle and disappearance test (2) | **Yes** | Add to 2.3: *"For Thesis B the test means that SRW with A0 can be deployed and run by Thesis B alone from the shared repository: deployment instructions, the A0 image digest and the A0 configuration are committed there. Thesis B keeps a standalone fallback runner (kgbench) that can execute A1 to An outside SRW on a reduced sample if SRW becomes unavailable; kgbench results are not comparable with SRW cells and never enter Thesis A's robustness check."* |
+| 2 | Ownership table, instrumentation and operation (3, 4.7) | **Yes** | Thesis B owns A1 to An, the instrumentation specification (event schema) and its implementation in the shared harness as pull requests, and the analysis code. Add to 3.2: *"Thesis B's log extensions include the complete, untruncated model requests and responses and tool arguments and results, stored as artefacts referenced from the event records."* The deviation from Thesis B's exposé (§4.2, §4.5: logging implemented in the existing runtime; Thesis B operates the runs) is documented in Thesis B's methods chapter. |
+| 3 | Treatments and arms covered by A1 to An (4.1) | **Yes, with deviation: PG arm; all four treatments for the pre-selected configurations only** | Deviation from EX-04 stated plainly: the three pre-selected configurations (point 18) run on all four treatments in PG; the remaining seven run on S4 (and S1 as contrast) in PG only, because only the pre-selected configurations enter Thesis A's robustness check and the budget does not carry ten configurations × four treatments. RDF: only the pre-selected configurations, one repetition, after the RDF go on 20 Nov (call of 12 Nov: Thesis B takes the RDF cells). Repetitions: three for the pre-selected PG cells (call of 12 Nov, build rounds 1 to 3), up to two for the remaining configurations, fixed on 21 Nov from pilot cost (see section D). |
+| 4 | Log fields beyond the shared minimum (4.3) | **Yes, list by 13 Nov** | Preliminary list in section E. Added fields never change the meaning of the shared fields. |
+| 5 | Hardware, storage, repository access (4.7) | **Yes, with addition** | Add to 4.7: *"Thesis B's cells run in the window 23 Nov to 1 Jan in the replication-major pattern of EX-12 (scheduling in F.9). Thesis B has its own login to the orchestration and read access to the raw store. Raw logs and exports can be exported in bulk (rsync or object-store sync), not only through the SRW cockpit. API cost of Thesis B's cells: A1 (GPT-6 family) runs on Thesis B's own OpenAI credits (budget 500 USD, own key registered in the SRW catalog); the remaining Thesis B cells are paid from Thesis A's credits up to a cap fixed on 21 Nov from the pilot cost of one Thesis B cell (F.4)."* |
+| 6 | Freeze dates (4.6) | **Yes** | Clarification for F3: F3 freezes the field *specification*. Implementation fixes that do not change a field's meaning are allowed until F4 and are logged in section 7. |
+| 7 | Reference verification (3.3) | **Yes, target 100 %, minimum 15 %** | Conditions: codebook delivered by 28 Nov; the calibration round takes place 1 to 4 Dec; Thesis A provides the coding sheets blind (no Thesis A codings, no run outputs visible). Blinding rule, both directions: until Thesis B's full reference pass is complete, Thesis B inspects only counts, status and cost fields of its own cells (the `run_end`, `source_end` and `resources` records), never written assertions, model responses, tool payloads or exports; the raw artefacts stay in the write-once store until the pass is signed off. If the full set is not finished by 28 Dec, the 15 % subsample of FR-16 is the reported figure. Session-7 additions accepted: inside the full pass Thesis B also checks, per CQ, the rule-based archetype against the codebook rule, the canonical answer set with its witness and the predicted denotation per required assertion (BE-14, BE-16, BE-17); these three checks need their own codebook slots and one worked example each. The effort estimate (three to four days) is re-stated after the calibration round, because the three CQ checks were not in the 1 Nov estimate. |
+| 8 | Thesis B's title, supervisors, dates (1) | **Supplied in section A** | Title, programme and supervisors filled; registration period in section A. |
+| 9 | Who sends what to whom (6) | **Yes** | Rachid sends the settled agreement to his supervisor(s) on 13 Nov 2026, together with the F3 result (the 6 Nov date was missed; first reply sent 8 Nov, this complete version 11 Nov). |
+| 10 | Jurisdictions and strata (4.4) | **Yes** (early, due 13 Nov) | Munich and Berlin as contrast cities; shares at least 70 % Frankfurt and campus, about 15 % per city; four modality strata. Thesis B uses the same reference. Thesis B's identity and process layers do not depend on the city choice; Thesis B reports per jurisdiction where the sample allows. Prof. Fink's confirmation is Thesis A's to obtain before F2. |
+| 11 | Verification calendar (3.3) | **Yes** | Condition: Thesis B's own pilot evaluation (16 to 21 Nov) and the calibration round (1 to 4 Dec) do not overlap; codebook by 28 Nov. |
+| 12 | Shared log fields for populatability, now including the cost record (4.3, SC-14) | **Yes, provided** (due 13 Nov) | Thesis B's instrumentation emits, per source unit and realisation: fatal-failure flag, validator rejections with rule id, retries until acceptance, abandoned units, wall-clock time, tokens by category and call counts exactly as the runtime reports them, the exact model snapshot returned by the provider on every call (never an alias), the requested catalog id next to it, and the price-table id; per written assertion: the `source_id` the agent was processing. Cost record: Thesis B logs the raw quantities for every configuration; euro is computed by Thesis A from the price table frozen at F2 and is the figure reported in both theses. Thesis B's own `cost` field is a labelled lower-bound estimate for monitoring and never replaces it. Conditions: the snapshot rule (dated provider id, Hugging Face commit, tokenizer version) and the price table with its date reach Thesis B at F2 so that every record can carry the `price_table_id`; Thesis A reviews and merges Thesis B's instrumentation pull requests before the pilot; the fields are verified against pilot logs 16 to 20 Nov. Session-7 fields (point 20 b) added to the same records: per model call the requested sampling parameters (`temperature`, `top_p`, `seed`, `reasoning_budget`, `max_output_tokens`, each a value or `not_exposed`) and the provider fingerprint next to the returned model id; per source unit the manifest fields (hash, stratum, jurisdiction, authority class, bucket incl. canary, chunk rule, seed, retrieval date, source-version hash) on `source_start`. The CQ pass id lives in Thesis A's query harness, not in the construction trace. |
+| 13 | Indicator names (5) | **Yes, mapping table by 13 Nov** | Thesis B's process-quality metrics are measured on candidates *before* the validator and on identity decisions; Thesis A's ten populatability components are measured on the final graph against the reference. Only tokens, cost, wall-clock and validator-reject count share a name and a card. All other indicators carry different names. Thesis A's "pre-commit friction" (diagnostic, unscored) and Thesis B's "correction effect" (scored) are listed side by side in the mapping table with their different denominators. |
+| 14 | Oracle, fixture, equal-budget and probe runs under A0 (4.1) | **Yes** | Thesis B's cells are complete by 1 Jan. Thesis A's oracle, fixture, equal-budget and probe runs have priority in 4 to 8 Jan and in both buffers (21 Dec to 1 Jan, 9 to 16 Jan); pass 1 of Thesis B's pre-selected cells also runs in 4 to 8 Jan at query-order position 4, behind Thesis A's primary, anchor and gold-subset passes (EX-09, point 20 a). These runs stay outside Thesis B's matrix. |
+| 15 | Eval 2 second reader (EV-02, SC-13, SC-14) | **Yes, 13 to 15 Nov, at most one day** (before the pilot starts on 16 Nov, BU-06) | Scope: GQM tables, metric cards, formulas and the four scenario weight-justification paragraphs (S0 to S3), read against the four checks (unit and denominator, no double counting, forward trace, no domain constant). The package reaches Thesis B by 13 Nov. Outcome logged in Thesis A's change log; Thesis B cites the review date. Thesis B's checklist: `docs/spec/eval2-review-checklist.md`. |
+| 16 | Cost ledger hours (EV-10) | **Yes, weekly from 3 Nov** | Thesis B logs hours on shared work only (verification, instrumentation, reading, coding). Thesis A supplies the sheet; until then Thesis B logs in its own file. Thesis A may report these hours as feasibility evidence. |
+| 17 | Blind re-trace and second coding of the run-output audits (EV-11, EX-15) | **Yes, 29 Dec to 23 Jan, about 12 hours** | Scope as proposed: 8 of the 40 audited aggregates re-traced without seeing Thesis A's trace; 20 % of each run-output audit blind-coded (160 matcher decisions, 240 supportedness assertions, 40 fixture verdicts, about 450 items), A0 cells only, presented as canonicalised tuples with treatment and arm stripped, without Thesis A's verdicts. Conditions: the items arrive in batches 29 Dec to 9 Jan as the audits complete, with the codebook slots (BU-16, BE-18) and one worked example per slot; Thesis B's reference pass (point 7) is finished before the first batch; the 12 hours are logged in the cost ledger; sizes are pre-stated at F4 and not raised afterwards. |
+| 18 | Pre-selected configurations (4.1, EV-13) | **Proposal: A1, A2, A6; fallback A4** (final 13 Nov) | Rationale: two model families different from A0 first (closed API family; self-hosted open-weight family), then one tooling variant that opens the closed loop (validator log-only). If no second open-weight model is hostable by 13 Nov, A4 (zero self-corrections) replaces A2. A0 stays the sole baseline. Candidate families named now so that Thesis A can choose its anchors around them (EX-11): A1 = OpenAI GPT-6 family (alternative: Gemini 4), A2 = Qwen 3.8 27B (alternative: Gemma 4 31B), A6 = A0's model with the validator in log-only mode. Request: Thesis A names the drafting family (EX-14) before 13 Nov; none of Thesis B's configurations uses it, and A1 switches to the alternative if the GPT-6 family is the drafting family. A2 is chosen to differ from both anchors; if it cannot, the cell is run once and shared (F.8). |
+| 19 | Scored outputs and the scoring protocol (SC-19) | **Yes, timing fits** (Thesis B submits 27 Feb 2027; scored outputs by 8 Jan leave seven weeks for analysis and writing) | Thesis B computes its own layers (extraction quality, identity, process quality, cost) with its own scoring code from the raw logs, the canonical exports and the frozen reference, from 28 Dec on; it does not need the Scoring Protocol Specification and does not ask for it. Before 28 Dec Thesis B computes only instrumentation completeness checks and count-, status- and cost-level process figures on its own cells and on the pilot, under the blinding rule of point 7 (no assertions, responses or exports inspected until the reference pass is complete); no figure over any A0 primary cell against the reference before the F5 hash. Thesis A's scored outputs for Thesis B's cells (axis values, funnel, budget-scenario eligibility in euro) are used as a cross-check and cited as Thesis A's figures. Conditions: the canonical exports of Thesis B's cells, the frozen reference with equivalence table and the F5 tag reach Thesis B on 28 Dec; the scored outputs by 8 Jan (F6). |
+| 20 | Session-7 interface points (3.3, 4.1, 4.3, 4.4, 4.5, 4.7) | **Yes to (a) to (j), two additions** (due 13 Nov) | (a) Query passes (query order agreed 12 Nov, section D): pass 1 guaranteed for Thesis B's pre-selected cells (36 PG graphs; plus 12 RDF graphs if the RDF go of 20 Nov holds) at position 4, behind Thesis A's primary pass 1, anchor pass 1 and gold-subset passes 2 and 3; pass 1 for the remaining Thesis B cells best effort at position 6, behind the rest of Thesis A's passes 2 and 3; passes 2 and 3 on Thesis B's cells only if capacity remains after that. Thesis B reports which passes each cell received, computes its own figures on pass 1 only, so that its cells are comparable with each other, and reports a cell without pass 1 as `not queried`, never estimated. (b) Decoding, pass and manifest fields: `kgc-trace/1` carries them in three containers, `model_call.sampling` (Thesis A's field names `temperature`, `top_p`, `seed`, `reasoning_budget`, `max_output_tokens`), `model_call.response_fingerprint`, and `source_start.manifest` (Thesis A's field names `stratum`, `jurisdiction`, `authority_class`, `bucket`, `chunk_rule`, `seed`, `retrieval_date`, `source_version_sha256`); the field names inside the containers are Thesis A's, the values Thesis B's own; the pass id belongs to Thesis A's query harness. (c) Anchors: Thesis B names its candidate families now (point 18) so that Thesis A can choose its two anchors around them; only if an anchor and A2 cannot be kept apart is the cell run once and both theses cite the same `run_id` (addition F.8). (d) Drafting family: no Thesis B configuration uses it; Thesis B's own analysis code uses no LLM on run output either. (e) Run matrix: replication-major interleaving, one agent task per source unit with fresh context, workspace listing and per-unit budget apply to Thesis B's cells unchanged; A9 (sub-chunk delivery) is kept only if the harness can deliver sub-chunks inside one task per unit, otherwise dropped at F3. (f) Canary bucket: processed by every Thesis B cell, excluded from every Thesis B headline denominator, reported as the same leakage diagnostic per family. (g) Figures: Thesis B cites the process-deliverable diagram and the stage figure and does not redraw them; Thesis B reads the stage figure blind in the pilot week and writes down which inputs each actor sees. (h) Fixtures: Thesis B's fixtures come from Thesis A's adapters off the canonicalised JSONL master; Thesis B builds none of its own against the reference. (i) Blind pass: the archetype rule, V*(q) and the predicted denotations are checked inside the full pass (see point 7). (j) K-R: Thesis B's configuration list with each configuration's decoding fields is the condition set K-R, cited by Thesis A and never restated; Thesis B's use of the reference is reported in Thesis A as a fact. Additions: F.8 (shared cell) and F.9 (Thesis B launches its own cells). |
+
+Points 4, 10, 12, 13, 18 and 20 are answered now in preliminary form and are confirmed on 13 Nov together with A0.
+
+---
+
+## C. Thesis B's configurations A1 to A10 (preliminary; frozen 13 Nov with A0)
+
+A0 (shared): SRW agent, model DeepSeek V4.1 Flash (fixed 13 Nov; pinned snapshot via the provider-returned model id per call; fallback Claude Sonnet 5.5 only if the pilot shows weak tool calling; EX-11), write tools per arm, validator in reject mode, read tools, at most two self-corrections per turn, three frozen templates (construction, querying, S2 induction) with only the schema slot varying, decoding per EX-10 (construction and S2 induction T = 0.2, top-p = 1, one fixed seed per replication; querying T = 0 with pass-specific seeds; every exposed parameter recorded per call), one agent task per source unit with fresh context, per-unit tool-call and token budget, workspace-listing rule, one retry with resume from snapshot (EX-12). Thesis B accepts Thesis A's decoding values; they are identical for A0 to A10 (checked by `tests/test_agent_configs.py`).
+
+Every configuration differs from A0 in exactly one documented way. The schema input format is unchanged.
+
+| ID | Difference from A0 | Block | Stage affected | Pre-registered expectation | Needs from Thesis A |
+|---|---|---|---|---|---|
+| A1 | Second API model family (candidate: OpenAI GPT-6 family, alternative Gemini 4; switches to the alternative if GPT-6 is the drafting family) | model | — | Treatment ranking stable; different cost per token | catalog entry; drafting-family name before 13 Nov |
+| A2 | Open-weight model, self-hosted (candidate: Qwen 3.8 27B, alternative Gemma 4 31B, on the university endpoint; chosen to differ from both of Thesis A's anchors, fallback shared cell F.8) | model | — | More validator rejects, more aborted items, lower cost | catalog entry, GPU time, anchor names (F2) |
+| A3 | Third API family (candidate: Gemini 4) | model | — | As A1 | catalog entry; optional |
+| A4 | Zero self-corrections | tooling | validation | Validity after = before correction; more abandoned items | `max_self_corrections` exposed |
+| A5 | One self-correction | tooling | validation | Between A4 and A0 (dose response) | same |
+| A6 | Validator in log-only mode | tooling | validation | Higher write rate, lower conformance, errors visible in export | offered by Thesis A in 4.1 |
+| A7 | No read tools (no graph query, no schema introspection before writing) | tooling | reconciliation | Duplicates and wrong reuse; strict score drops, lenient does not | tool group switchable |
+| A8 | Few-shot template (2 to 3 examples from the development bucket only, never from pilot, held-out or canary units; schema slot identical) | prompting | extraction | Fewer first-attempt rejects | template variant permitted |
+| A9 | Source unit delivered in sub-chunks inside one agent task (unit itself unchanged, EX-05/EX-12) | prompting | intake | Qualifiers lost across chunk boundaries | sub-chunk delivery inside one task; dropped at F3 if not possible |
+| A10 | Half the per-source budget (tool calls, turns) | resources | — | More limit aborts, lower cost | budget parameter |
+
+Dropped: fixed-pipeline controller (needs an own harness image), schema retrieval (changes the schema input), pass/fail-only validator feedback (changes Thesis A's validator), reasoning level (not comparable across families).
+
+---
+
+## D. Thesis B's cells (point 3; build queue and query order agreed in the call of 12 Nov, numbers confirmed 21 Nov)
+
+```
+Pre-selected A1, A2, A6 (★):  3 configs × 4 treatments × PG  × 3 reps      = 36 graphs   guaranteed (build rounds 1–3)
+RDF, pre-selected:            3 configs × 4 treatments × RDF × 1 rep       = 12 graphs   guaranteed if the RDF go of 20 Nov holds
+Remaining A3–A5, A7–A10:      7 configs × S4 (+S1) × PG × up to 2 reps     = up to 28    best effort
+                                                                            max. 76 graphs
+```
+
+Each run processes the whole frozen sample, canary units included.
+
+**Build queue** (Thesis A's table, 12 Nov): one queue, replication-major. Rounds 1 to 3 each build Thesis A's 8 A0 graphs (4 treatments × 2 arms) first, then Thesis B's 12 (A1, A2, A6 × S1 to S4, PG): 8 + 12 guaranteed per round, 24 + 36 after round 3. Then Thesis A's 16 anchor graphs (guaranteed), Thesis B's 12 RDF graphs (conditional on the RDF go), Thesis B's other seven configurations (up to 28, best effort), Thesis A's anchor builds 2 and 3 (up to 32, best effort). At most one configuration per model family runs at a time; families on different providers (A0 DeepSeek, A1 GPT-6.1 Sol, A2 Qwen on the university GPU) run in parallel lanes. The lane split is fixed after the pilot (21 Nov), not now.
+
+**Query order** (Thesis A's table, 12 Nov; about 500 CQs per graph and pass):
+
+| Position | What | Query tasks | Status |
+|---|---|---|---|
+| 1 | Thesis A's 24 primary graphs, pass 1 | 12,000 | guaranteed |
+| 2 | Thesis A's 16 anchor graphs, pass 1 | 8,000 | guaranteed |
+| 3 | Gold subset (60 CQs), passes 2 and 3, Thesis A's 24 graphs | 2,880 | guaranteed |
+| 4 | Thesis B's A1, A2, A6, pass 1: 36 PG graphs (18,000) + 12 RDF graphs (6,000) | 24,000 | guaranteed (RDF part conditional on the 20 Nov go) |
+| 5 | Rest of Thesis A's passes 2 and 3 | about 21,000 | best effort |
+| 6 | Thesis B's other seven configurations, pass 1 | about 14,000 | best effort |
+
+Thesis B computes its headline figures on pass 1 only; passes 2 and 3 on Thesis B's cells only if capacity remains after position 5. A cell without pass 1 by 8 Jan is reported as `not queried`, never estimated. Request unchanged: the pilot (16 to 20 Nov) includes at least one Thesis B configuration (A6 or A4) on S4-PG, so that Thesis B's log fields and cell cost are known on 21 Nov.
+
+---
+
+## E. Preliminary list of Thesis B's log extensions (point 4; final 13 Nov)
+
+JSON Lines, one record per event; `run_id` and `source_id` on every record; every numeric field with unit and origin (`provider_reported`, `computed`, `unavailable`); missing means unknown, never zero.
+
+| Level | Fields |
+|---|---|
+| Model call | `operation_id`, `attempt_id`, provider-returned model id and fingerprint, requested sampling parameters (`temperature`, `top_p`, `seed`, `reasoning_budget`, `max_output_tokens`; `not_exposed` where the snapshot has none), tokens in / out / reasoning / cached, `usage_source`, latency, `stop_reason`, tools offered, artefact references to the full request and response |
+| Tool call | tool name, full arguments and result as artefacts (SRW truncates to 200/500 characters today), `is_error`, duration, step index, `source_id` in progress |
+| Candidate | `candidate_id`, revision, produced by (extract / revise), evidence (`source_id`, locator, quote), validator result per revision with rule ids, persisted assertion ids, correction attempts and outcome (repaired / still invalid / abandoned) |
+| Reconciliation | mention → decision (existing entity reused / new entity / contained), candidate list with scores, method (exact / fuzzy / graph query) |
+| Source unit | manifest fields on `source_start`: hash, stratum, jurisdiction, authority class, bucket (development, pilot, held-out, canary), chunk rule, seed, retrieval date, source-version hash (EX-05, EX-16) |
+| Intake | source opened, segments read, read coverage, unit boundaries |
+| Gap triggers | schema re-requested, source re-read, graph queried |
+| Termination | `run_end.status` (completed, step_limit, tool_limit, transport_failed, provider_error, agent_exception, cancelled), final status per source, failure class from Thesis B's taxonomy |
+| Cost | price-table id, computed cost, completeness flag |
+
+Thesis B's event schema exists as JSON Schema (`kgc-trace/1`, with a reference exporter and tests) and is handed over with this reply or, at the latest, on 10 Nov; the prose specification and the coverage table of Thesis A's shared minimum are in `docs/spec/event-schema-v1.md`.
+
+---
+
+## F. Thesis B's additions to the agreement (requested wording)
+
+1. **4.7 Access:** Thesis B has its own login to the SRW orchestration on the university server and to the raw store from F3 on; write access to the Graph-ETL-Pipeline repository (given, handoff 8 Nov); Thesis B's instrumentation goes into the SRW harness as pull requests that Thesis A reviews.
+2. **4.3 Review:** Thesis A reviews and merges Thesis B's instrumentation pull requests before the pilot starts (16 Nov); the pilot is the acceptance test of the shared and extended fields.
+3. **4.1 Pilot:** the pilot includes at least one Thesis B configuration on S4-PG.
+4. **4.7 Cost:** A1 (GPT-6 family) runs on Thesis B's own OpenAI credits (budget 500 USD; own key registered in the SRW catalog, cost recorded per call like every other cell). Thesis A's credits cover Thesis B's remaining cells up to a cap agreed on 21 Nov from the pilot cost of one Thesis B cell; cells beyond the cap run only if Thesis B registers further own keys and bears their cost; euro per cell is reported from the F2 price table in both theses.
+5. **4.7 Export:** raw logs and exports can be pulled in bulk by either author.
+6. **3.3 Codebook:** Thesis A delivers the codebook by 28 Nov.
+7. **4.6 F3:** freezes the field specification; non-semantic implementation fixes allowed until F4, logged.
+8. **4.1 Shared cell:** a cell in which one of Thesis A's anchor families coincides with a pre-selected Thesis B configuration is executed once; both theses cite the same `run_id`, the cost is booked once in the cost ledger under the author who scheduled it.
+9. **4.7 Operation:** Thesis B launches and monitors its own cells through SRW. Construction follows the build queue of 12 Nov (one queue, replication-major, each round Thesis A's 8 A0 graphs before Thesis B's 12, Thesis A's primary cells never displaced, one configuration per model family at a time); querying follows the query order of 12 Nov (section D). The launcher is recorded in the manifest.
+
+## G. Change-log row
+
+| Date | Change | Agreed by |
+|---|---|---|
+| 8 Nov 2026 | First reply sent (against Draft 1g): points 1 to 19 answered, section 1 row and cost rule still open, decoding T = 0, no point 20 | Yagubi |
+| 12 Nov 2026 | Call with Thesis A: A0 model proposal changed to DeepSeek V4.1 Flash (pilot-conditional, fallback Claude Sonnet 5.5); A1 = GPT-6.1 Sol (SRW catalog `gpt-6.1-sol`); Thesis A's anchor candidates DeepSeek V4.1 Flash, Kimi K3 / K3.1, GLM-5.3-flash noted; no collision with A1 or A2 Qwen 3.8 27B. Pre-selected cells confirmed as A1, A2, A6 × S1 to S4 × PG × 3 reps = 36 graphs; RDF 12 graphs × 1 rep taken by Thesis B; build queue (3 rounds of 8 + 12) and query order (Thesis B's ★ pass 1 at position 4, 24,000 tasks guaranteed; other seven best effort) agreed; section D, points 3, 14, 20 a and F.9 rewritten accordingly, resolving the contradiction Thesis A pointed out between 20 a and the old section D | both, orally |
+| 13 Nov 2026 | Freeze decisions (written, before/with the 17:30 call): A0 = DeepSeek V4.1 Flash, catalog row added by Thesis A; A0 runs on SRW's openai-chat path, not the Claude-Code image; A1 = `gpt-6.1-sol`, temperature/top_p not settable for this model, logged per call as `not_exposed` (documented deviation from EX-10, reasoning effort `medium` recorded); A3 best effort; harness commitments: stable `item_id` across self-corrections, `attempt_id` = `{run_id}:s{step}:{item_id}:r{retry}`, validator rejections with `rule_id`, `element`, `expected`, `found`. F3 package on branch `thesis-b/f3-spec`, `experiments/thesis-b/` | both |
+| 11 Nov 2026 | Draft 1i, supersedes the 8 Nov reply: section 1 Thesis B row filled; open points 1 to 20 of Draft 1h answered (points 4, 10, 12, 13, 18, 20 preliminary until 13 Nov; 7, 17 and 19 with conditions); additions F.1 to F.9 proposed (F.4: A1 on Thesis B's own OpenAI credits, rest from Thesis A's credits up to the 21 Nov cap); A1 to A10 attached as preliminary list; F3 package (event schema `kgc-trace/1`, configurations, A0 and template proposals, indicator mapping, Eval 2 checklist) attached | Yagubi |
