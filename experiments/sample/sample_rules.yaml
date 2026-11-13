@@ -1,0 +1,380 @@
+# Sample rules, DRAFT 0.1 of 12 November 2026. Not frozen. Every value marked "proposal" is to be
+# confirmed by the author before the manifest is hashed (planned: development and pilot buckets
+# 14 Nov, full manifest 18 Nov 2026). Register: EX-05 (units), BE-01 (strata), BE-02 (jurisdictions),
+# BE-05 (buckets), BE-06 (authority classes), EX-16 (canary bucket).
+version: draft-0.2
+seed: 20261113                     # proposal
+pdf_extractor: "pdftotext -layout" # version is written into the manifest at cut time
+
+chunk:                              # proposals; one fixed size per modality (EX-05)
+  rows_per_unit: 20                 # table segment: header row plus this many data records
+  records_per_unit: 10              # nested records rendered as a JSON list
+  catalogue_universe_cap: 200       # seeded draw of eligible entries per catalogue source; one entry per unit
+
+buckets:                            # decided 13 Nov 2026; units per modality stratum, drawn round-robin over sources
+  development_per_stratum: 8        # read by the schema induction (EX-06), template work and probes
+  pilot_per_stratum: 3              # read by the pilot only; disjoint from development
+                                    # a stratum with too few free units fills its pilot from sources marked pilot_allowed
+                                    # (decided 13 Nov: the numeric pilot units come from the Munich or Berlin fee statutes)
+shares:                             # decided 13 Nov 2026 (BE-02): the shares apply to units tied to a city or the campus;
+  frankfurt_and_campus_min: 0.70    # federal and product units are reported as their own groups
+  contrast_city_each: 0.15
+  # every other cut unit is "candidate": it becomes held-out or stays unselected at the full freeze
+
+# stratum: numeric tabular | tabular-categorical | catalogue | free text
+# authority_class: A federal or state law | B binding municipal or institutional | C official guidance | D derivative
+# display_title, display_publisher, applies_to: the only source identity the agent sees. Keep them in the
+# source's language and free of curator remarks.
+sources:
+  - id: fes-abfall-abc
+    include: true
+    reader: csv_rows
+    delimiter: ","
+    stratum: tabular-categorical
+    jurisdiction: Frankfurt
+    authority_class: C              # provisional: who merged the list is undocumented; C or D
+    display_title: "Abfall-ABC"
+    display_publisher: "FES Frankfurter Entsorgungs- und Service GmbH"   # to verify: list may merge two publishers
+    applies_to: "Frankfurt am Main"
+  - id: recyclingzentrum-abfall-abc
+    include: true
+    reader: csv_rows
+    delimiter: ","
+    stratum: tabular-categorical
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Abfall-ABC"
+    display_publisher: "Recyclingzentrum Frankfurt"
+    applies_to: "Frankfurt am Main"
+  - id: group3-abfall-abc-csv
+    include: true                   # to decide: the first data rows hold placeholder text in three columns
+    reader: csv_rows
+    delimiter: ";"
+    stratum: tabular-categorical
+    jurisdiction: campus
+    authority_class: D
+    display_title: "Abfall-ABC mit Entsorgungswegen FES und Frankfurt UAS"
+    display_publisher: ""
+    applies_to: "Frankfurt University of Applied Sciences, Frankfurt am Main"
+  - id: avv-workbook
+    include: true                   # to decide: chapters 21 and 22 are invented pseudo-codes (sources/README.md)
+    reader: csv_rows
+    delimiter: ";"
+    stratum: tabular-categorical
+    jurisdiction: campus
+    authority_class: D
+    display_title: "Abfallverzeichnis mit Entsorgungswegen Frankfurt und Frankfurt UAS"
+    display_publisher: ""
+    applies_to: "Frankfurt University of Applied Sciences, Frankfurt am Main"
+  - id: fes-facility-map
+    include: true                   # to decide: generated from FES pages by a student script; stratum unclear
+    reader: json_facilities
+    stratum: tabular-categorical
+    jurisdiction: Frankfurt
+    authority_class: D
+    display_title: "Entsorgungsstellen: Adressen und Öffnungszeiten"
+    display_publisher: ""
+    applies_to: "Frankfurt am Main"
+  - id: fes-bin-alltagscontainer
+    include: true
+    reader: docx_document
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Informationen – Alltagscontainer"
+    display_publisher: "FES Frankfurter Entsorgungs- und Service GmbH"
+    applies_to: "Frankfurt am Main"
+  - id: fes-bin-altpapiertonne
+    include: true
+    reader: docx_document
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Informationen – Altpapiertonne"
+    display_publisher: "FES Frankfurter Entsorgungs- und Service GmbH"
+    applies_to: "Frankfurt am Main"
+  - id: fes-bin-restabfalltonne
+    include: true
+    reader: docx_document
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Informationen – Restabfalltonne"
+    display_publisher: "FES Frankfurter Entsorgungs- und Service GmbH"
+    applies_to: "Frankfurt am Main"
+  - id: fes-bin-verpackungstonne
+    include: true
+    reader: docx_document
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Informationen – Verpackungstonne"
+    display_publisher: "FES Frankfurter Entsorgungs- und Service GmbH"
+    applies_to: "Frankfurt am Main"
+  - id: fes-sorting-flyer
+    include: true
+    reader: pdf_pages
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Was kommt wo hinein? Abfall richtig trennen"
+    display_publisher: "FES Frankfurter Entsorgungs- und Service GmbH"
+    applies_to: "Frankfurt am Main"
+  - id: frankfurt-abfallsatzung
+    include: true                   # to decide: sources/README.md (19 Oct) kept statutes out of the sample; BE-03 (24 Oct) allows them as inputs
+    reader: pdf_statute
+    drop_lines: '^\s*Seite \d+ von \d+\s*$'   # page footer of this file
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: B
+    display_title: "Satzung der Stadt Frankfurt am Main über die Vermeidung, Verwertung und Beseitigung von Abfällen (Abfallsatzung - AbfS)"
+    display_publisher: "Stadt Frankfurt am Main"
+    applies_to: "Frankfurt am Main"
+  - id: frankfurt-zero-waste-city
+    include: true                   # to decide: a strategy report, 72 pages; rules are sparse in it
+    reader: pdf_pages
+    stratum: free text
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Auf dem Weg zur Zero Waste City"
+    display_publisher: "Stadt Frankfurt am Main"
+    applies_to: "Frankfurt am Main"
+  - id: open-beauty-facts
+    include: true
+    reader: json_catalogue
+    eligible: [product_name, packaging]   # proposal: an entry is eligible when these fields are non-empty
+    category_field: categories
+    stratum: catalogue
+    jurisdiction: none
+    authority_class: D
+    display_title: "Open Beauty Facts"
+    display_publisher: "Open Beauty Facts"
+    applies_to: ""
+
+  # ---- snapshots of 12 November 2026 (statutes, federal law, open data); all proposals
+  # held_out_only: never in the development or pilot bucket (contrast cities; law reserved for held-out question families, BE-05)
+  # stratum_overrides: a unit whose locator starts with the key gets that stratum instead of the source's
+  - id: frankfurt-abfallgebuehrensatzung-2024
+    include: true
+    reader: pdf_statute
+    drop_lines: '^\s*Seite \d+ von \d+\s*$'
+    stratum: free text
+    stratum_overrides: {"section 5": numeric tabular, "section 6": numeric tabular}   # the fee tables; to decide: one table per unit instead
+    jurisdiction: Frankfurt
+    authority_class: B
+    display_title: "Abfallgebührensatzung der Stadt Frankfurt am Main"
+    display_publisher: "Stadt Frankfurt am Main"
+    applies_to: "Frankfurt am Main"
+  - id: frankfurt-stat-haushaltsabfaelle
+    include: false                  # decided 13 Nov 2026: out; city totals, not rules for a household
+    reader: csv_rows
+    delimiter: ";"
+    stratum: numeric tabular
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Haushaltsabfälle"
+    display_publisher: "Stadt Frankfurt am Main"
+    applies_to: "Frankfurt am Main"
+  - id: frankfurt-stat-separierte-wertstoffe
+    include: false                  # decided 13 Nov 2026: out, as above
+    reader: csv_rows
+    delimiter: ";"
+    stratum: numeric tabular
+    jurisdiction: Frankfurt
+    authority_class: C
+    display_title: "Separierte Wertstoffe"
+    display_publisher: "Stadt Frankfurt am Main"
+    applies_to: "Frankfurt am Main"
+  - id: muenchen-abfallsatzung-270
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    jurisdiction: Munich
+    authority_class: B
+    display_title: "Allgemeine Abfallsatzung der Landeshauptstadt München"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-hausmuellentsorgungssatzung-271
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    jurisdiction: Munich
+    authority_class: B
+    display_title: "Hausmüllentsorgungssatzung der Landeshauptstadt München"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-sperrmuellsatzung-277
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    jurisdiction: Munich
+    authority_class: B
+    display_title: "Hausratsperrmüll-, Wertstoff- und Problemmüllsatzung der Landeshauptstadt München"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-gebuehrensatzung-272
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
+    pilot_allowed: true             # may fill the numeric pilot units; never development
+    jurisdiction: Munich
+    authority_class: B
+    display_title: "Hausmüllentsorgungsgebührensatzung der Landeshauptstadt München"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-gartenabfallgebuehren-276
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
+    pilot_allowed: true             # may fill the numeric pilot units; never development
+    jurisdiction: Munich
+    authority_class: B
+    display_title: "Gartenabfallgebührensatzung der Landeshauptstadt München"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-sperrmuellgebuehren-278
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
+    pilot_allowed: true             # may fill the numeric pilot units; never development
+    jurisdiction: Munich
+    authority_class: B
+    display_title: "Hausratsperrmüllgebührensatzung der Landeshauptstadt München"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-od-wertstoffhoefe
+    include: true
+    held_out_only: true
+    reader: csv_rows
+    delimiter: ","
+    stratum: numeric tabular
+    jurisdiction: Munich
+    authority_class: C
+    display_title: "Wertstoffhöfe"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-od-container
+    include: true
+    held_out_only: true
+    reader: csv_rows
+    delimiter: ","
+    stratum: numeric tabular
+    jurisdiction: Munich
+    authority_class: C
+    display_title: "Wertstoffinseln"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: muenchen-od-container-barrierefrei
+    include: true
+    held_out_only: true
+    reader: csv_rows
+    delimiter: ","
+    stratum: numeric tabular
+    jurisdiction: Munich
+    authority_class: C
+    display_title: "Barrierefreie Glascontainer"
+    display_publisher: "Landeshauptstadt München"
+    applies_to: "München"
+  - id: berlin-abfallgebuehrensatzung-2025
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    stratum_overrides: {"section 5": numeric tabular, "section 7": numeric tabular}   # the sections that hold the fee tables
+    pilot_allowed: true             # may fill the numeric pilot units; never development
+    jurisdiction: Berlin
+    authority_class: B
+    display_title: "Abfallgebührensatzung der Berliner Stadtreinigungsbetriebe"
+    display_publisher: "Berliner Stadtreinigungsbetriebe"
+    applies_to: "Berlin"
+  - id: berlin-abfallwirtschaftssatzung-2025
+    include: true
+    held_out_only: true
+    reader: pdf_statute
+    stratum: free text
+    jurisdiction: Berlin
+    authority_class: B
+    display_title: "Abfallwirtschaftssatzung der Berliner Stadtreinigungsbetriebe"
+    display_publisher: "Berliner Stadtreinigungsbetriebe"
+    applies_to: "Berlin"
+  - id: bund-avv
+    include: true                   # the official list; "waste code facts" count as development material (BE-05)
+    reader: gii_xml
+    stratum: free text
+    stratum_overrides: {"Anlage": tabular-categorical}
+    jurisdiction: federal
+    authority_class: A
+    display_title: "Verordnung über das Europäische Abfallverzeichnis (Abfallverzeichnis-Verordnung - AVV)"
+    display_publisher: ""
+    applies_to: "Deutschland"
+  - id: bund-krwg
+    include: true
+    held_out_only: true             # legal provisions are a held-out question family (BE-05, BE-14)
+    reader: gii_xml
+    stratum: free text
+    jurisdiction: federal
+    authority_class: A
+    display_title: "Kreislaufwirtschaftsgesetz (KrWG)"
+    display_publisher: ""
+    applies_to: "Deutschland"
+  - id: bund-battdg
+    include: true
+    held_out_only: true
+    reader: gii_xml
+    stratum: free text
+    jurisdiction: federal
+    authority_class: A
+    display_title: "Batterierecht-Durchführungsgesetz (BattDG)"
+    display_publisher: ""
+    applies_to: "Deutschland"
+  - id: bund-verpackdg
+    include: true
+    held_out_only: true
+    reader: gii_xml
+    stratum: free text
+    jurisdiction: federal
+    authority_class: A
+    display_title: "Verpackungsrecht-Durchführungsgesetz (VerpackDG)"
+    display_publisher: ""
+    applies_to: "Deutschland"
+  - id: bund-elektrog
+    include: true
+    held_out_only: true
+    reader: gii_xml
+    stratum: free text
+    jurisdiction: federal
+    authority_class: A
+    display_title: "Elektro- und Elektronikgerätegesetz (ElektroG)"
+    display_publisher: ""
+    applies_to: "Deutschland"
+
+excluded:   # on disk, not cut; each with its reason
+  - {id: fes-bin-alltagscontainer-pdf, reason: "PDF render of the DOCX of the same text (format control, not a second source)"}
+  - {id: fes-bin-altpapiertonne-pdf, reason: "PDF render of the DOCX"}
+  - {id: fes-bin-restabfalltonne-pdf, reason: "PDF render of the DOCX"}
+  - {id: fes-bin-verpackungstonne-pdf, reason: "PDF render of the DOCX"}
+  - {id: group3-abfall-abc, reason: "XLSX of the same table as group3-abfall-abc-csv"}
+  - {id: group3-abfall-bereinigt, reason: "earlier cleaning stage of the same table, placeholder rows"}
+  - {id: off-materials, reason: "mapping from packaging tags to waste streams written for the earlier importer: a design artefact of the curated schema, not a source"}
+  - {id: product-sample, reason: "three hand-picked products; replaced by the frozen Open Food Facts subsample"}
+  - {id: off-food-parquet, reason: "needs the subsample rule (seeded draw, eligibility filter, country filter) before it can be cut"}
+  - {id: off-food-jsonl, reason: "same content as the parquet dump"}
+  - {id: kaikki-de, reason: "dictionary for the earlier baseline, not a waste source"}
+  - {id: concepts-derived, reason: "derived dictionary data, not a source"}
+  - {id: odenet-oewn, reason: "no file"}
+  - {id: eu-ecolabel, reason: "no snapshot on disk; fetch and freeze first"}
+  - {id: frankfurt-m152-abfs-9-aenderung, reason: "draft amendment, not adopted; to decide with the question family on temporal validity"}
+  - {id: frankfurt-m152-abfs-synopse, reason: "as above"}
+  - {id: frankfurt-m152-abfgs-13-aenderung, reason: "as above"}
+  - {id: frankfurt-m152-abfgs-synopse, reason: "as above"}
+  - {id: frankfurt-m152-herleitung-gebuehren, reason: "as above"}
+  - {id: frankfurt-m152-gebuehrenbedarf, reason: "as above"}
