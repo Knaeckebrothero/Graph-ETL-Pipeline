@@ -10,7 +10,8 @@ Specifications that Thesis B contributes to the shared experiment: the instrumen
 | A0 prompt template, construction role (slot list, per-arm binding, hash rule, A8 variant) | A0 agreed (templates: both, F3) | `a0-prompt-templates-proposal.md` | — | ids and hashes recorded at F3 |
 | Indicator mapping against Thesis A's ten populatability components | 13 | `indicator-mapping.md` | — | confirmed in the Eval 2 reading |
 | Eval 2 second-reading checklist | 15 | `eval2-review-checklist.md` | — | filled in 13 to 15 Nov |
-| Example trace in `kgc-trace/1` (one prototype run, exported and validated) | 4 | — | `sample.kgc.jsonl` | — |
+| Example trace in `kgc-trace/1` (one prototype run, exported and validated) | 4 | — | `sample.kgc.jsonl` | `validate_trace.py` |
+| Checker: schema plus cross-record rules (ordering, counts, stable `item_id`, `attempt_id` scheme, rejections on reject); `--shared-minimum` also runs Thesis A's schema and reports the differences | 4, 12 | — | `validate_trace.py` | `pip install jsonschema` |
 | Thesis B reply to the demarcation agreement Draft 1h (Draft 1i, supersedes 8 Nov) | 1 to 20 | `reply-draft-1i.md` | — | — |
 | Freeze decisions and open items of 13 Nov | — | `DECISIONS-2026-11-13.md` | — | — |
 | Written confirmations for the signature of Draft 1i (six items, three corrections) | — | `CONFIRMATIONS-2026-11-13.md` | — | — |
@@ -28,3 +29,14 @@ Decisions of 12/13 Nov 2026:
 - A2 = Qwen 3.8 27B on the university GPU. A3 (Gemini 4 family) stays in the list as best effort.
 - All other configurations share A0's decoding (temperature 0.2, top-p 1, one seed per replication).
 - Harness commitments accepted: stable `item_id`, the `attempt_id` scheme above, validator rejections with `rule_id`, `element`, `expected`, `found`.
+
+## Checking a trace
+
+```bash
+pip install jsonschema
+python3 experiments/thesis-b/validate_trace.py experiments/thesis-b/sample.kgc.jsonl            # 0 errors
+python3 experiments/thesis-b/validate_trace.py RUN.jsonl \
+    --shared-minimum experiments/log-schema/shared-minimum-log.v1.schema.json                 # plus Thesis A's view
+```
+
+State on 13 Nov 2026: the sample passes kgc-trace/1 with 0 errors. Against `shared-minimum-log/1` it fails on every record, because kgc-trace/1 says `kind` where Thesis A's schema says `record_type` and the shared fields are not yet under Thesis A's names. The realignment (kgc-trace/1 version 1.1, a superset of shared-minimum-log/1 so that one file passes both checkers) is Thesis B's pull request by Sunday 15 Nov.
