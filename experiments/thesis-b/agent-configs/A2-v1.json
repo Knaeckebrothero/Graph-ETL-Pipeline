@@ -1,0 +1,47 @@
+{
+  "agent_config_id": "A2-v1",
+  "label": "open-weight model, self-hosted",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "model",
+  "varies": "model.family",
+  "preselected": true,
+  "fallback_for": null,
+  "process_stage": null,
+  "model": {
+    "family": "open-weight",
+    "model_id": "TBD (candidate: qwen-3.8-27b or gemma-4-31b)",
+    "protocol": "openai-chat",
+    "hosting": "university-endpoint",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "provider_default",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "more validator rejects and more abandoned items than A0; lower cost; more transport failures",
+  "requires_from_harness": [
+    "catalog entry pointing at the university OpenAI-compatible endpoint or Thesis A's GPUs",
+    "GPU time in the run window"
+  ],
+  "notes": "Candidate named 9 Nov so that Thesis A can choose its anchors around it: Qwen 3.8 27B, alternative Gemma 4 31B; whichever is hostable with tool calling by 13 Nov. If none, A4 replaces A2 in the pre-selection. Must not be the drafting family (EX-14). Chosen to differ from both of Thesis A's open-weight anchors (EX-11); only if that is impossible is the cell executed once and shared, same run_id in both theses (F.8)."
+}

@@ -1,0 +1,53 @@
+{
+  "agent_config_id": "A0-v1",
+  "label": "shared baseline (Thesis A fixed instrument, Thesis B baseline)",
+  "status": "proposal",
+  "baseline": null,
+  "block": null,
+  "varies": null,
+  "preselected": false,
+  "fallback_for": null,
+  "process_stage": null,
+  "model": {
+    "family": "deepseek",
+    "model_id": "deepseek-v4.1-flash (fixed 13 Nov; catalog row to be added by Thesis A; pinned snapshot = provider-returned model id recorded per call; fallback claude-sonnet-5-5 only if the pilot shows weak tool calling)",
+    "protocol": "openai-chat",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "provider_default",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "none (baseline)",
+  "requires_from_harness": [
+    "pinned model id and provider-returned model id per call",
+    "validator in reject mode",
+    "max_self_corrections exposed as a parameter",
+    "three frozen templates (construction, querying, S2 induction) with schema slot",
+    "untruncated tool and model payloads as artifacts",
+    "stable item id across self-corrections",
+    "requested sampling parameters and provider fingerprint per call",
+    "source-unit manifest fields (stratum, jurisdiction, authority class, bucket, chunk rule, seed, retrieval date, source-version hash)"
+  ],
+  "notes": "Agreed by both authors before F3 (13 Nov). Model, absolute budgets and template ids are filled in then. Decoding per Thesis A's EX-10 (4 Nov): construction temperature 0.2, top-p 1, one fixed seed per replication; every exposed parameter recorded per call, 'not_exposed' otherwise. One agent task per source unit with fresh context, per-unit tool-call and token budget, one retry with resume from snapshot (EX-12). Model proposal changed 12 Nov in the call with Thesis A: DeepSeek V4.1 Flash (open-weight, hosted, openai-chat) instead of Claude Sonnet 5.5; condition: the pilot 16 to 20 Nov shows reliable tool calling on S4-PG, else Sonnet 5.5. Consequence: A0 does not run on the Claude-Code harness image (anthropic-messages only); the harness path for openai-chat is decided on 13 Nov. SRW catalog (checked 13 Nov) has rows `deepseek-v4-flash` and `deepseek-v4-pro` under one `deepseek` block; a V4.1 Flash row would need a catalog entry first. Variant fixed 13 Nov: DeepSeek V4.1 Flash (Thesis B confirmed; Thesis A's proposal)."
+}

@@ -1,0 +1,46 @@
+{
+  "agent_config_id": "A3-v1",
+  "label": "third API model family",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "model",
+  "varies": "model.family",
+  "preselected": false,
+  "fallback_for": null,
+  "process_stage": null,
+  "model": {
+    "family": "google",
+    "model_id": "TBD (candidate: Gemini 4 family, pinned)",
+    "protocol": "openai-chat",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "provider_default",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "as A1",
+  "requires_from_harness": [
+    "catalog entry for the model"
+  ],
+  "notes": "Optional; only if pilot cost allows. Candidate: Gemini 4."
+}

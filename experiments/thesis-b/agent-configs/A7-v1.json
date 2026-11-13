@@ -1,0 +1,46 @@
+{
+  "agent_config_id": "A7-v1",
+  "label": "no read tools",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "tooling",
+  "varies": "tooling.read_tools",
+  "preselected": false,
+  "fallback_for": null,
+  "process_stage": "reconciliation",
+  "model": {
+    "family": "deepseek",
+    "model_id": "deepseek-v4.1-flash (fixed 13 Nov; catalog row to be added by Thesis A; pinned snapshot = provider-returned model id recorded per call; fallback claude-sonnet-5-5 only if the pilot shows weak tool calling)",
+    "protocol": "openai-chat",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "provider_default",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": false,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "more duplicate entities and wrong reuse; identity-strict scores drop while lenient scores do not",
+  "requires_from_harness": [
+    "read-tool group switchable per configuration"
+  ],
+  "notes": ""
+}

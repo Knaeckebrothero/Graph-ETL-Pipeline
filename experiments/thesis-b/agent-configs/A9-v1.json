@@ -1,0 +1,46 @@
+{
+  "agent_config_id": "A9-v1",
+  "label": "source unit delivered in sub-chunks inside one agent task",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "prompting",
+  "varies": "prompting.source_delivery",
+  "preselected": false,
+  "fallback_for": null,
+  "process_stage": "intake",
+  "model": {
+    "family": "deepseek",
+    "model_id": "deepseek-v4.1-flash (fixed 13 Nov; catalog row to be added by Thesis A; pinned snapshot = provider-returned model id recorded per call; fallback claude-sonnet-5-5 only if the pilot shows weak tool calling)",
+    "protocol": "openai-chat",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "provider_default",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "chunked"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "qualifiers lost across unit boundaries (e.g. fee without container size); more items, lower precision",
+  "requires_from_harness": [
+    "source delivery mode (whole vs fixed-size chunks) exposed per configuration"
+  ],
+  "notes": "Chunk size fixed with A0. The source unit itself is unchanged (EX-05: cut once at F2, byte-identical); only the delivery inside the one task per unit (EX-12) changes. Dropped at F3 if the harness cannot deliver sub-chunks inside one task."
+}
