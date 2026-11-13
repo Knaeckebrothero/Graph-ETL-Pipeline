@@ -9,7 +9,16 @@ Written so that the freeze can be closed in writing. Items under "decided" come 
 3. **A2** = Qwen 3.8 27B on the university GPU. **A3** (Gemini 4 family) stays in the list as best effort. A4 to A10 use the A0 model.
 4. **Log fields**: `kgc-trace/1` (`event-schema-v1.md`, `kgc-trace-v1.schema.json`). Thesis A's minimum is covered field by field (§3). Harness commitments accepted: stable `item_id` across self-corrections; `attempt_id` = `{run_id}:s{step}:{item_id}:r{retry}`; validator rejections carry `rule_id`, `element`, `expected`, `found`.
 5. **Cells** (Thesis A's build queue and query order of 12 Nov): A1, A2, A6 × S1 to S4 × PG × 3 repetitions = 36 graphs, guaranteed in build rounds 1 to 3 (each round: Thesis A's 8 A0 graphs, then Thesis B's 12). RDF: the same three × S1 to S4 × 1 repetition = 12 graphs after the RDF go of 20 Nov. Remaining seven configurations: S4 (+S1) PG, up to 2 repetitions, up to 28 graphs, best effort. Query order: Thesis B's pre-selected cells get pass 1 at position 4 (18,000 + 6,000 tasks, guaranteed); the other seven at position 6, best effort; passes 2 and 3 only after Thesis A's. Cells without pass 1 are reported as `not queried`.
-6. **Cost**: A1 on Thesis B's credits; the other Thesis B cells on Thesis A's credits up to a cap fixed on 21 Nov from the pilot cost of one Thesis B cell.
+6. **Cost** (agreement 4.7, F.4 as accepted): Thesis A's credits cover Thesis B's cells on A0's model (A6, A4, A5, A7 to A10) up to a cap fixed on 21 Nov; A1 and A3 on Thesis B's own keys; A2 on Thesis A's local GPUs.
+
+## Answered by Draft 1i of 13 Nov
+
+- a) Pilot includes A6 on S4-PG: in the text (4.1, F.3).
+- c) Dates: dev/pilot bucket hashes 14 Nov, full manifest 18 Nov; effort ledger in `docs/effort-ledger/`; Eval 2 package still to be sent.
+- Drafting family: Claude Sonnet 5.5 (3.3). No collision with A1 to A10.
+- Instrumentation pull requests due Sunday 15 Nov.
+
+See `CONFIRMATIONS-2026-11-13.md` for the six [to confirm] items and three corrections.
 
 ## Open (Thesis A)
 

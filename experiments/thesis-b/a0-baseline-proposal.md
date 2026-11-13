@@ -13,12 +13,11 @@ that speaks the model's API shape (the Claude-Code image speaks anthropic-messag
 | Option | For | Against |
 |---|---|---|
 | **DeepSeek V4.1 Flash, pinned snapshot** (proposal since the call of 12 Nov, Thesis A's suggestion) | open weights (reproducible by weights hash); cheapest per token, so A4 to A10 and Thesis A's 24 cells stay within the credits; openai-chat, exposes temperature and top-p | tool-calling reliability unknown until the pilot; does not run on the Claude-Code harness image (anthropic-messages only), so the harness path is decided on 13 Nov; provider fingerprint only if the host exposes it |
-| Claude Sonnet 5.5, pinned snapshot (fallback) | tool calling reliable; usage incl. cache tokens reported; runs on the Claude-Code harness today (4 Nov check); pilot continuity | about 10× the token price; one family only; A1 must be another family |
 | Claude Opus 5.5 | highest quality | 24 + ~60 full-sample runs likely exceed the budget; quality ceiling hides configuration effects |
 | GPT-6 family | second family available as A0 instead of A1 | less pilot continuity; usage fields differ (reasoning tokens) |
 | Open-weight on the university endpoint | free per token; reproducible weights | tool-calling reliability unknown until the pilot; GPU scheduling; would make A2 the baseline and lose the "mainstream API" baseline |
 
-Decision 13 Nov: DeepSeek V4.1 Flash is A0 (both authors). Fallback rule kept: it stays if the pilot (16 to 20 Nov) runs it on all four treatments in the PG arm with complete usage reporting and a tolerable first-attempt reject rate; otherwise Claude Sonnet 5.5. If the chosen model is not pinnable to a snapshot in the catalog, record the catalog entry and the provider-returned model id on every call instead. With Flash as A0, Thesis A's two open-weight anchors must be other families (e.g. Kimi K3.1 hosted, Gemma 4 26B on the university server); A2 (Qwen 3.8 27B) differs from all of them.
+Decision 13 Nov (agreement Draft 1i, 4.5): A0 is DeepSeek V4.1 Flash through the DeepSeek API, alias `deepseek-flash`, served version DeepSeek-V4.1-Flash-1017, thinking mode enabled (temperature not effective, no seed; effort level proposed high), top-p 1. There is no fallback model: Claude Sonnet 5.5 is the drafting family (EX-14) and excluded from every run agent. If the pilot shows weak tool calling, both authors decide on 21 Nov; the shared-cell rule F.8 and the anchor families GLM-5.3-Flash and Gemma 4 31B stay untouched.
 
 ## 2. Decoding
 

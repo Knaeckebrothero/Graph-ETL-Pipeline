@@ -10,14 +10,14 @@
   "process_stage": "intake",
   "model": {
     "family": "deepseek",
-    "model_id": "deepseek-v4.1-flash (fixed 13 Nov; catalog row to be added by Thesis A; pinned snapshot = provider-returned model id recorded per call; fallback claude-sonnet-5-5 only if the pilot shows weak tool calling)",
+    "model_id": "deepseek-flash (alias as sent; served version DeepSeek-V4.1-Flash-1017 on 12 Nov 2026; published weights deepseek-ai/DeepSeek-V4.1-Flash-1017 @ 08c8657f02291e11b6f6b63e0e16014f8e748518; agreement 4.5; returned model string and fingerprint recorded per call; no fallback model: the drafting family Claude Sonnet 5.5 is excluded from every run agent)",
     "protocol": "openai-chat",
     "hosting": "vendor-api",
     "decoding": {
       "temperature": 0.2,
       "top_p": 1.0,
       "seed": null,
-      "reasoning": "provider_default",
+      "reasoning": "high",
       "max_output_tokens": null
     }
   },

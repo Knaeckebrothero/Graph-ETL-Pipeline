@@ -17,7 +17,7 @@
       "temperature": 0.2,
       "top_p": 1.0,
       "seed": null,
-      "reasoning": "provider_default",
+      "reasoning": "high",
       "max_output_tokens": null
     }
   },

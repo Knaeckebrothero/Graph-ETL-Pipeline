@@ -10,14 +10,14 @@
   "process_stage": null,
   "model": {
     "family": "deepseek",
-    "model_id": "deepseek-v4.1-flash (fixed 13 Nov; catalog row to be added by Thesis A; pinned snapshot = provider-returned model id recorded per call; fallback claude-sonnet-5-5 only if the pilot shows weak tool calling)",
+    "model_id": "deepseek-flash (alias as sent; served version DeepSeek-V4.1-Flash-1017 on 12 Nov 2026; published weights deepseek-ai/DeepSeek-V4.1-Flash-1017 @ 08c8657f02291e11b6f6b63e0e16014f8e748518; agreement 4.5; returned model string and fingerprint recorded per call; no fallback model: the drafting family Claude Sonnet 5.5 is excluded from every run agent)",
     "protocol": "openai-chat",
     "hosting": "vendor-api",
     "decoding": {
       "temperature": 0.2,
       "top_p": 1.0,
       "seed": null,
-      "reasoning": "provider_default",
+      "reasoning": "high",
       "max_output_tokens": null
     }
   },
@@ -49,5 +49,5 @@
     "requested sampling parameters and provider fingerprint per call",
     "source-unit manifest fields (stratum, jurisdiction, authority class, bucket, chunk rule, seed, retrieval date, source-version hash)"
   ],
-  "notes": "Agreed by both authors before F3 (13 Nov). Model, absolute budgets and template ids are filled in then. Decoding per Thesis A's EX-10 (4 Nov): construction temperature 0.2, top-p 1, one fixed seed per replication; every exposed parameter recorded per call, 'not_exposed' otherwise. One agent task per source unit with fresh context, per-unit tool-call and token budget, one retry with resume from snapshot (EX-12). Model proposal changed 12 Nov in the call with Thesis A: DeepSeek V4.1 Flash (open-weight, hosted, openai-chat) instead of Claude Sonnet 5.5; condition: the pilot 16 to 20 Nov shows reliable tool calling on S4-PG, else Sonnet 5.5. Consequence: A0 does not run on the Claude-Code harness image (anthropic-messages only); the harness path for openai-chat is decided on 13 Nov. SRW catalog (checked 13 Nov) has rows `deepseek-v4-flash` and `deepseek-v4-pro` under one `deepseek` block; a V4.1 Flash row would need a catalog entry first. Variant fixed 13 Nov: DeepSeek V4.1 Flash (Thesis B confirmed; Thesis A's proposal)."
+  "notes": "Agreed by both authors before F3 (13 Nov). Model, absolute budgets and template ids are filled in then. Decoding per Thesis A's EX-10 (4 Nov): construction temperature 0.2, top-p 1, one fixed seed per replication; every exposed parameter recorded per call, 'not_exposed' otherwise. One agent task per source unit with fresh context, per-unit tool-call and token budget, one retry with resume from snapshot (EX-12). Model proposal changed 12 Nov in the call with Thesis A: DeepSeek V4.1 Flash (open-weight, hosted, openai-chat) instead of Claude Sonnet 5.5; Agreement Draft 1i (13 Nov): A0 runs with the provider's thinking mode enabled; temperature and seed are requested but recorded as not_effective; effort level proposed high (to confirm 13 Nov); A1 to A10 copy the thinking setting. No fallback model: Claude Sonnet 5.5 is the drafting family (EX-14) and excluded from every run agent. Consequence: A0 does not run on the Claude-Code harness image (anthropic-messages only); the harness path for openai-chat is decided on 13 Nov. SRW catalog (checked 13 Nov) has rows `deepseek-v4-flash` and `deepseek-v4-pro` under one `deepseek` block; a V4.1 Flash row would need a catalog entry first. Variant fixed 13 Nov: DeepSeek V4.1 Flash (Thesis B confirmed; Thesis A's proposal)."
 }
