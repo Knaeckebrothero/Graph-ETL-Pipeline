@@ -23,6 +23,8 @@ Answers to the six places marked [to confirm 13 Nov] in the agreement, plus thre
 
 ## Also noted
 
+- Draft 1i v2 (13 Nov, 25 pages): the only change against the first PDF is the local anchor, Gemma 4 26B A4B (`google/gemma-4-26B-A4B-it`, L40S GPUs) instead of Gemma 4 31B. Consequence for Thesis B: A2 is Qwen3.8-27B without the Gemma alternative; no collision with either anchor.
+
 - Pull requests for Thesis B's instrumentation are due Sunday 15 Nov (4.7, F.2); otherwise the pilot runs on the shared minimum and the extensions follow before F4.
 - A9 (sub-chunk delivery) is dropped at F3 if SRW cannot deliver sub-chunks inside one task per unit (4.1). Thesis A states which.
 - The Eval 2 package ("Technique v0.1", 12 Nov) is due to Thesis B by 13 Nov (3.3); Thesis B reads it 14 or 15 Nov.

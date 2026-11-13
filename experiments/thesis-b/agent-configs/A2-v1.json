@@ -10,7 +10,7 @@
   "process_stage": null,
   "model": {
     "family": "open-weight",
-    "model_id": "TBD (candidate: qwen-3.8-27b or gemma-4-31b)",
+    "model_id": "Qwen3.8-27B (fixed 13 Nov, agreement 4.1; open weights, self-hosted on Thesis A's local GPUs in build rounds 1 to 3; Hugging Face revision commit recorded in run_start.models; no alternative: the Gemma 4 family is Thesis A's local anchor, 26B A4B)",
     "protocol": "openai-chat",
     "hosting": "university-endpoint",
     "decoding": {
@@ -43,5 +43,5 @@
     "catalog entry pointing at the university OpenAI-compatible endpoint or Thesis A's GPUs",
     "GPU time in the run window"
   ],
-  "notes": "Candidate named 9 Nov so that Thesis A can choose its anchors around it: Qwen 3.8 27B, alternative Gemma 4 31B; whichever is hostable with tool calling by 13 Nov. If none, A4 replaces A2 in the pre-selection. Must not be the drafting family (EX-14). Chosen to differ from both of Thesis A's open-weight anchors (EX-11); only if that is impossible is the cell executed once and shared, same run_id in both theses (F.8)."
+  "notes": "Candidate named 9 Nov so that Thesis A can choose its anchors around it: Qwen 3.8 27B, alternative Gemma 4 31B; whichever is hostable with tool calling by 13 Nov. If none, A4 replaces A2 in the pre-selection. Must not be the drafting family (EX-14). Chosen to differ from both of Thesis A's open-weight anchors (EX-11); only if that is impossible is the cell executed once and shared, same run_id in both theses (F.8). Fixed 13 Nov: Qwen3.8-27B. The alternative Gemma 4 is withdrawn because Thesis A's local anchor is Gemma 4 26B A4B (Draft 1i v2, changed from 31B on 13 Nov); A2 must differ from both anchors (GLM-5.3-Flash, Gemma 4)."
 }
