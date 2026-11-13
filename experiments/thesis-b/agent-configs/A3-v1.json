@@ -42,5 +42,5 @@
   "requires_from_harness": [
     "catalog entry for the model"
   ],
-  "notes": "Optional; only if pilot cost allows. Candidate: Gemini 4."
+  "notes": "Optional; only if pilot cost allows. Candidate: Gemini 4. Decided 13 Nov: A3 stays in the list as best effort (built only if capacity remains after the pre-selected cells), model Gemini 4 family, pinned."
 }

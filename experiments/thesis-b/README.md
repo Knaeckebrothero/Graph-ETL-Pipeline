@@ -18,4 +18,10 @@ Decisions the harness owner has to make for the schema to be implementable (see 
 2. `attempt_id` = `{run_id}:s{step}:{item_id}:r{retry}`.
 3. Validator rejections carry `rule_id`, `element`, `expected`, `found`.
 
-Model decisions of 12/13 Nov 2026: A0 DeepSeek V4.1 Flash (pinned snapshot; catalog row to be added), A1 `gpt-6.1-sol` (Thesis B's own key), A2 Qwen 3.8 27B (university GPU). All configurations share A0's decoding (temperature 0.2, top-p 1, one seed per replication); where a provider does not expose a parameter, the per-call record says `not_exposed`.
+Decisions of 12/13 Nov 2026:
+
+- A0 = DeepSeek V4.1 Flash, pinned snapshot; Thesis A adds the catalog row; A0 runs on SRW's openai-chat path, not on the Claude-Code image.
+- A1 = `gpt-6.1-sol` on Thesis B's own key. Temperature and top-p cannot be set for this model, so A1 deviates from EX-10 by necessity; every call records `temperature: not_exposed`, `top_p: not_exposed` and the reasoning effort actually sent (`medium`).
+- A2 = Qwen 3.8 27B on the university GPU. A3 (Gemini 4 family) stays in the list as best effort.
+- All other configurations share A0's decoding (temperature 0.2, top-p 1, one seed per replication).
+- Harness commitments accepted: stable `item_id`, the `attempt_id` scheme above, validator rejections with `rule_id`, `element`, `expected`, `found`.
