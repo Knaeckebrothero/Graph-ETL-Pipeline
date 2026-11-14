@@ -1,15 +1,15 @@
 # fessi knowledge-graph theses
 
-Shared workspace for two master's theses at Frankfurt University of Applied Sciences (M.Sc. Wirtschaftsinformatik). Both use the **fessi** waste-disposal chatbot as their case study and analyse the same construction runs: LLM agents import heterogeneous waste-disposal sources into a Neo4j graph under different schemas.
+Shared workspace for two master's theses at Frankfurt University of Applied Sciences (M.Sc. Wirtschaftsinformatik). Both use the **fessi** waste-disposal chatbot as their case study and analyse the same construction runs: LLM agents populate graphs from heterogeneous waste-disposal sources under four schema treatments, each in two data models: a property graph (Neo4j) and RDF (Apache Jena Fuseki). Who owns which contribution, what is shared and the technical interface between the theses are fixed in [`docs/demarcation-agreement.md`](docs/demarcation-agreement.md).
 
 | | Thesis A | Thesis B |
 |---|---|---|
-| Title | A Technique for Evaluating Knowledge-Graph Schema Fitness across Coverage, Populatability, and Queryability | A Multi-Layer Evaluation Methodology for Agent-Driven Knowledge Graph Construction: Design, Instrumentation, and Case Study in the Waste-Disposal Domain |
+| Title | A Technique for Evaluating Knowledge-Graph Schema Fitness across Coverage, Populatability, and Queryability | A Process Model for Evaluating Agent-Driven Knowledge Graph Construction: Design, Instrumentation, and a Case Study in the Waste-Disposal Domain |
 | Author | [@Knaeckebrothero](https://github.com/Knaeckebrothero) | Rachid Yagubi |
-| Compares | schema treatments (curated fessi schema, raw-triple/EAV, LLM-induced) | agent configurations |
+| Compares | four schema treatments (raw triples, LLM-induced, flat fessi, curated fessi v5.0), each in both data models, with one fixed agent configuration | agent configurations, with the schema as a condition |
 | Supplies to the other | competency questions, reference benchmark | run instrumentation and process data |
-| Supervision | Prof. Dr. Josef Fink, second examiner Prof. Dr. Sebastian Bremm | to be added |
-| Submission | 16 February 2027 (hard deadline) | to be added |
+| Supervision | Prof. Dr. Josef Fink, second examiner Prof. Dr. Sebastian Bremm | same |
+| Submission | 16 February 2027 (hard deadline) | 27 February 2027 |
 
 Both theses are graded as individual work. Keep authorship traceable: commit under your own name, and put each thesis's own analysis under [`analysis/`](analysis/).
 
