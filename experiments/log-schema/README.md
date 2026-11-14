@@ -1,6 +1,6 @@
 # Shared minimum log fields, version 1 (draft)
 
-**Status: draft of 13 November 2026, not frozen.** The field specification is frozen at F3. Until then this file is the proposal of Thesis A; Thesis B says what is missing or wrong, and its own event schema (kgc-trace/1) carries these fields under the same names.
+**Status: draft of 14 November 2026, not frozen.** The field specification is frozen on 16 November 2026, before the pilot. Thesis B agreed to the fields on 13 November and asked for one addition, `item_id`, which is in since 14 November. Its own event schema (kgc-trace/1) carries these fields under the same names from its version 1.1.
 
 Thesis A computes its populatability and queryability figures from these fields with its own code, which is why Thesis A specifies them (agreement, section 4.3).
 
@@ -36,7 +36,7 @@ python3 experiments/log-schema/validate_log.py experiments/log-schema/examples/i
 | `source_start` | per unit | per source | the unit's row of the sample manifest, under the manifest's column names |
 | `source_end` | per unit | per source | final status, fatal flag, reason for giving up, attempts, rejects, wall-clock time |
 | `model_call` | per call | cost record | requested sampling, returned model string, fingerprint, tokens by category, finish reason. **The only place where tokens are recorded** |
-| `insert_attempt` | per write-tool call | per insert attempt | validator result with rule id, element, expected and found; engine result; retry index |
+| `insert_attempt` | per fact candidate in a write-tool call | per insert attempt | `item_id` of the candidate; validator result with rule id, element, expected and found; engine result; retry index |
 | `cq_attempt` | per query attempt | per CQ attempt | pass, attempt index, query text, parses, executes, result hash |
 | `provider_snapshot` | daily, own file | snapshot rule | stored copy of a provider's update page or model list |
 
@@ -51,10 +51,15 @@ Field-level descriptions are in the schema file.
 5. `source_end` follows a `source_start` of the same unit. `fatal` is true and `abandon_reason` is set exactly when `final_status` is `abandoned`. `rejects` never exceeds `attempts`.
 6. In a `model_call`, `cq_id` and `pass_id` are set exactly when `stage` is `querying`.
 7. In a `cq_attempt` without a query (`produced` false), `parses` and `executes` are `null`. A query that executes has parsed.
+8. Attempts that share an `item_id` lie in one unit and carry the retry indices 0, 1, 2 in a row.
+
+## The item id
+
+Every fact candidate gets an `item_id` when it is first written. If the validator rejects the write, the rejection message returns the id, and the model resends the corrected write with it. All attempts at one candidate therefore share one id, which is what "retries until acceptance" and the comparison of configurations with zero, one or two self-corrections need. The `attempt_id` keeps its form (run id, step index, attempt index) and does not contain the item id. A harness without an item concept writes `null`.
 
 ## Where this draft departs from the field list of the agreement
 
-These five points need a yes or a change before F3.
+Thesis B agreed to these five points on 13 November 2026; the agreement states them in its sections 4.2 and 4.3.
 
 1. **Tokens per call, not per attempt.** The agreement lists "tokens in and out" per insert attempt. Here the attempt points to its model call. Reason: one call can issue several writes, and copied tokens would be counted twice.
 2. **No `cost` field.** The older field list names a cost per insert attempt; the later cost-record paragraph of the same section says no euro field is logged. This draft follows the later paragraph.

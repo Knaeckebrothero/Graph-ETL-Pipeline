@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "shared-minimum-log/1",
   "title": "Shared minimum log fields of Thesis A and Thesis B, version 1",
-  "description": "DRAFT of 13 November 2026 for the F3 freeze; not frozen. One JSON object per line. A record whose record_type is listed here must satisfy its definition. Any other record_type is an extension and only needs record_type and ts. Extra fields are allowed on every record and never change the meaning of the fields defined here. null means unknown or not reported, never zero. No euro amount is logged: euro is computed afterwards from the tokens and the dated price table.",
+  "description": "DRAFT of 14 November 2026 for the F3 freeze; not frozen. One JSON object per line. A record whose record_type is listed here must satisfy its definition. Any other record_type is an extension and only needs record_type and ts. Extra fields are allowed on every record and never change the meaning of the fields defined here. null means unknown or not reported, never zero. No euro amount is logged: euro is computed afterwards from the tokens and the dated price table.",
   "type": "object",
   "required": [
     "record_type",
@@ -994,7 +994,7 @@
       }
     },
     "insert_attempt": {
-      "description": "One call of a write tool, judged by the shared validator and then by the engine.",
+      "description": "One fact candidate in one call of a write tool, judged by the shared validator and then by the engine. A tool call that carries several candidates gives one record per candidate.",
       "type": "object",
       "required": [
         "record_type",
@@ -1002,6 +1002,7 @@
         "run_id",
         "attempt_id",
         "call_id",
+        "item_id",
         "unit_id",
         "source_id",
         "stratum",
@@ -1027,12 +1028,19 @@
           "$ref": "#/$defs/run_id"
         },
         "attempt_id": {
-          "description": "run_id, step index and attempt index.",
+          "description": "run_id, step index and attempt index (agreement 4.2); it does not contain the item_id.",
           "type": "string"
         },
         "call_id": {
           "description": "The model call that issued this write. Tokens are read from that record, never copied here.",
           "type": "string"
+        },
+        "item_id": {
+          "description": "Identifier of the fact candidate this attempt writes; the same for every attempt at the same candidate, so that corrections can be followed per item. The harness assigns it at the first write, returns it in the rejection message, and the model resends it with the corrected write. null for a harness without an item concept.",
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "unit_id": {
           "type": "string"

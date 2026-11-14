@@ -84,6 +84,15 @@ def check(path):
                 errors.append(f"line {number} [cq_attempt] parses and executes are null when no query was produced")
             if r.get("executes") and not r.get("parses"):
                 errors.append(f"line {number} [cq_attempt] a query that executes has parsed")
+    by_item = {}
+    for number, r in records:
+        if r.get("record_type") == "insert_attempt" and r.get("item_id") is not None:
+            by_item.setdefault((r.get("run_id"), r["item_id"]), []).append((number, r))
+    for (_, item), rows in by_item.items():
+        if len({r.get("unit_id") for _, r in rows}) > 1:
+            errors.append(f"line {rows[0][0]} [insert_attempt] item_id {item!r} is used in more than one unit")
+        if sorted(r.get("retry_index") for _, r in rows if isinstance(r.get("retry_index"), int)) != list(range(len(rows))):
+            errors.append(f"line {rows[0][0]} [insert_attempt] the attempts at item_id {item!r} do not carry the retry indices 0, 1, 2 in a row")
     return list(dict.fromkeys(errors)), counts
 
 
