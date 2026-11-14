@@ -1,0 +1,715 @@
+{
+  "realisation": "S4-curated/pg",
+  "treatment": "S4",
+  "arm": "pg",
+  "status": "draft",
+  "rules_version": "draft-0.1",
+  "schema_file": "schema.cql",
+  "derived_from": {
+    "file": "schemas/v5.0/schema.cql",
+    "sha256": "e0c1acf69b6692c81d6d164eaed7c5c076393fe664c4123bb8c3e00a1d96d151"
+  },
+  "counts": {
+    "node_types": 17,
+    "relationship_types": 21,
+    "relationship_patterns": 33,
+    "uniqueness_constraints": 21,
+    "indexes": 11
+  },
+  "node_types": [
+    {
+      "name": "WasteItem",
+      "layer": 1,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "name",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "synonyms",
+          "declared_by": "index"
+        }
+      ],
+      "unique": [
+        "uid",
+        "name"
+      ],
+      "indexed": [
+        "synonyms"
+      ]
+    },
+    {
+      "name": "WasteStream",
+      "layer": 1,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "name",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "uid",
+        "name"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "DictionaryEntry",
+      "layer": 0,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "name",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "lang",
+          "declared_by": "index"
+        },
+        {
+          "name": "synset_id",
+          "declared_by": "index"
+        }
+      ],
+      "unique": [
+        "uid",
+        "name"
+      ],
+      "indexed": [
+        "lang",
+        "synset_id"
+      ]
+    },
+    {
+      "name": "AVVCode",
+      "layer": 1,
+      "properties": [
+        {
+          "name": "code",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "level",
+          "declared_by": "index",
+          "note": "1|2|3"
+        },
+        {
+          "name": "is_hazardous",
+          "declared_by": "index",
+          "note": "codes ending with * are hazardous"
+        },
+        {
+          "name": "name",
+          "declared_by": "comment"
+        }
+      ],
+      "unique": [
+        "code"
+      ],
+      "indexed": [
+        "level",
+        "is_hazardous"
+      ]
+    },
+    {
+      "name": "Product",
+      "layer": 2,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "ean",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "name",
+          "declared_by": "index"
+        },
+        {
+          "name": "brand",
+          "declared_by": "index"
+        },
+        {
+          "name": "quantity",
+          "declared_by": "comment"
+        },
+        {
+          "name": "categories_tags",
+          "declared_by": "comment"
+        },
+        {
+          "name": "labels_tags",
+          "declared_by": "comment"
+        },
+        {
+          "name": "countries_tags",
+          "declared_by": "comment"
+        },
+        {
+          "name": "packaging_tags",
+          "declared_by": "comment"
+        },
+        {
+          "name": "image_url",
+          "declared_by": "comment"
+        },
+        {
+          "name": "source_api",
+          "declared_by": "comment"
+        }
+      ],
+      "unique": [
+        "uid",
+        "ean"
+      ],
+      "indexed": [
+        "name",
+        "brand"
+      ]
+    },
+    {
+      "name": "PackagingComponent",
+      "layer": 2,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "shape",
+          "declared_by": "index",
+          "note": "pot|lid|bottle|wrapper|..."
+        },
+        {
+          "name": "weight_g",
+          "declared_by": "comment"
+        },
+        {
+          "name": "food_contact",
+          "declared_by": "comment"
+        },
+        {
+          "name": "recycling_hint",
+          "declared_by": "comment"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": [
+        "shape"
+      ]
+    },
+    {
+      "name": "Material",
+      "layer": 2,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "tag",
+          "declared_by": "constraint",
+          "note": "e.g., \"en:clear-glass\""
+        },
+        {
+          "name": "name",
+          "declared_by": "index"
+        },
+        {
+          "name": "name_de",
+          "declared_by": "comment"
+        }
+      ],
+      "unique": [
+        "uid",
+        "tag"
+      ],
+      "indexed": [
+        "name"
+      ]
+    },
+    {
+      "name": "DisposalRule",
+      "layer": 3,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Condition",
+      "layer": 3,
+      "properties": [
+        {
+          "name": "key",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "key"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Instruction",
+      "layer": 3,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Tip",
+      "layer": 3,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "type",
+          "declared_by": "index",
+          "note": "sorting_hint|exception|best_practice"
+        },
+        {
+          "name": "text",
+          "declared_by": "comment"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": [
+        "type"
+      ]
+    },
+    {
+      "name": "Container",
+      "layer": 4,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Building",
+      "layer": 4,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Room",
+      "layer": 4,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Facility",
+      "layer": 4,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "name",
+          "declared_by": "comment"
+        },
+        {
+          "name": "address",
+          "declared_by": "comment"
+        },
+        {
+          "name": "opening_hours",
+          "declared_by": "comment"
+        },
+        {
+          "name": "contact_name",
+          "declared_by": "comment"
+        },
+        {
+          "name": "contact_phone",
+          "declared_by": "comment"
+        },
+        {
+          "name": "contact_email",
+          "declared_by": "comment"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Source",
+      "layer": 4,
+      "properties": [
+        {
+          "name": "uid",
+          "declared_by": "constraint"
+        },
+        {
+          "name": "name",
+          "declared_by": "comment"
+        },
+        {
+          "name": "type",
+          "declared_by": "comment",
+          "note": "pdf|csv|docx|llm"
+        },
+        {
+          "name": "file_path",
+          "declared_by": "comment"
+        },
+        {
+          "name": "extraction_date",
+          "declared_by": "comment"
+        },
+        {
+          "name": "model_id",
+          "declared_by": "comment",
+          "note": "for LLM sources"
+        }
+      ],
+      "unique": [
+        "uid"
+      ],
+      "indexed": []
+    },
+    {
+      "name": "Location",
+      "layer": 4,
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "index"
+        }
+      ],
+      "unique": [],
+      "indexed": [
+        "name"
+      ]
+    }
+  ],
+  "relationship_patterns": [
+    {
+      "type": "HAS_COMPONENT",
+      "from": "Product",
+      "to": [
+        "PackagingComponent"
+      ],
+      "properties": [
+        "qty",
+        "weight_g"
+      ]
+    },
+    {
+      "type": "MADE_OF",
+      "from": "PackagingComponent",
+      "to": [
+        "Material"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DEFAULT_STREAM",
+      "from": "Material",
+      "to": [
+        "WasteStream"
+      ],
+      "properties": []
+    },
+    {
+      "type": "IS_A",
+      "from": "Material",
+      "to": [
+        "Material"
+      ],
+      "properties": []
+    },
+    {
+      "type": "CLASSIFIED_AS",
+      "from": "Material",
+      "to": [
+        "AVVCode"
+      ],
+      "properties": []
+    },
+    {
+      "type": "IS_A",
+      "from": "Product",
+      "to": [
+        "WasteItem"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_RULE",
+      "from": "PackagingComponent",
+      "to": [
+        "DisposalRule"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "Product",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_RULE",
+      "from": "WasteItem",
+      "to": [
+        "DisposalRule"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_CONDITION",
+      "from": "DisposalRule",
+      "to": [
+        "Condition"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_INSTRUCTION",
+      "from": "DisposalRule",
+      "to": [
+        "Instruction"
+      ],
+      "properties": []
+    },
+    {
+      "type": "ROUTES_TO",
+      "from": "DisposalRule",
+      "to": [
+        "WasteStream"
+      ],
+      "properties": []
+    },
+    {
+      "type": "IF_TRUE",
+      "from": "Condition",
+      "to": [
+        "DisposalRule",
+        "WasteStream"
+      ],
+      "properties": []
+    },
+    {
+      "type": "IF_FALSE",
+      "from": "Condition",
+      "to": [
+        "DisposalRule",
+        "WasteStream"
+      ],
+      "properties": []
+    },
+    {
+      "type": "CLASSIFIED_AS",
+      "from": "WasteItem",
+      "to": [
+        "AVVCode"
+      ],
+      "properties": []
+    },
+    {
+      "type": "REQUIRES_AVV",
+      "from": "WasteStream",
+      "to": [
+        "AVVCode"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_PARENT",
+      "from": "AVVCode",
+      "to": [
+        "AVVCode"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_TIP",
+      "from": "WasteStream",
+      "to": [
+        "Tip"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_TIP",
+      "from": "WasteItem",
+      "to": [
+        "Tip"
+      ],
+      "properties": []
+    },
+    {
+      "type": "HAS_TIP",
+      "from": "Container",
+      "to": [
+        "Tip"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "DisposalRule",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "Condition",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "Instruction",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "WasteItem",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "Tip",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "SYNONYM_OF",
+      "from": "DictionaryEntry",
+      "to": [
+        "DictionaryEntry"
+      ],
+      "properties": []
+    },
+    {
+      "type": "TRANSLATION_OF",
+      "from": "DictionaryEntry",
+      "to": [
+        "DictionaryEntry"
+      ],
+      "properties": []
+    },
+    {
+      "type": "IS_A",
+      "from": "DictionaryEntry",
+      "to": [
+        "DictionaryEntry"
+      ],
+      "properties": []
+    },
+    {
+      "type": "DERIVED_FROM",
+      "from": "DictionaryEntry",
+      "to": [
+        "Source"
+      ],
+      "properties": []
+    },
+    {
+      "type": "COLLECTED_IN",
+      "from": "WasteStream",
+      "to": [
+        "Container"
+      ],
+      "properties": []
+    },
+    {
+      "type": "LOCATED_IN",
+      "from": "Container",
+      "to": [
+        "Room"
+      ],
+      "properties": []
+    },
+    {
+      "type": "PART_OF",
+      "from": "Room",
+      "to": [
+        "Building"
+      ],
+      "properties": []
+    },
+    {
+      "type": "LOCATED_AT",
+      "from": "Container",
+      "to": [
+        "Facility"
+      ],
+      "properties": []
+    }
+  ]
+}

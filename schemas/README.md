@@ -1,6 +1,6 @@
 # Schemas
 
-The curated fessi schema in its two versions. They are the starting material for the curated treatment of Thesis A. The other planned treatments, a minimally constrained raw-triple/EAV representation and an LLM-induced schema, do not exist yet; add each as its own folder here.
+The curated fessi schema in its two versions. They are the starting material for the curated treatment of Thesis A. The four treatments of Thesis A, each for the property graph and for RDF, are in [`treatments/`](treatments/README.md) (drafts of 14 November 2026, derived from v5.0 by a script; the LLM-induced schema is a placeholder).
 
 | Folder | Date | Content |
 |---|---|---|

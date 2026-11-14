@@ -1,0 +1,18 @@
+{
+  "realisation": "S1-raw-triples/rdf",
+  "treatment": "S1",
+  "arm": "rdf",
+  "status": "draft",
+  "rules_version": "draft-0.1",
+  "schema_file": null,
+  "derived_from": null,
+  "counts": {
+    "node_types": 0,
+    "relationship_types": 0,
+    "relationship_patterns": 0,
+    "uniqueness_constraints": 0,
+    "indexes": 0
+  },
+  "node_types": [],
+  "relationship_patterns": []
+}

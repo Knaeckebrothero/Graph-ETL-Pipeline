@@ -1,0 +1,9 @@
+{
+  "realisation": "S2-induced/pg",
+  "treatment": "S2",
+  "arm": "pg",
+  "status": "placeholder",
+  "rules_version": "draft-0.1",
+  "schema_file": "schema.cql",
+  "derived_from": null
+}

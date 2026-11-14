@@ -1,0 +1,4 @@
+# PLACEHOLDER. S2 (induced), RDF realisation.
+# The induced schema does not exist yet. The main agent model produces it once per
+# arm from the development units; the result replaces this file and is frozen.
+# Do not build on the content of this file.

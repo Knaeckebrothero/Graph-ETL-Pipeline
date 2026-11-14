@@ -1,0 +1,59 @@
+{
+  "realisation": "S1-raw-triples/pg",
+  "treatment": "S1",
+  "arm": "pg",
+  "status": "draft",
+  "rules_version": "draft-0.1",
+  "schema_file": "schema.cql",
+  "derived_from": null,
+  "counts": {
+    "node_types": 2,
+    "relationship_types": 2,
+    "relationship_patterns": 2,
+    "uniqueness_constraints": 0,
+    "indexes": 0
+  },
+  "node_types": [
+    {
+      "name": "Entity",
+      "layer": null,
+      "properties": [],
+      "unique": [],
+      "indexed": []
+    },
+    {
+      "name": "Assertion",
+      "layer": null,
+      "properties": [
+        {
+          "name": "predicate",
+          "declared_by": "pattern"
+        },
+        {
+          "name": "value",
+          "declared_by": "pattern"
+        }
+      ],
+      "unique": [],
+      "indexed": []
+    }
+  ],
+  "relationship_patterns": [
+    {
+      "type": "SUBJECT",
+      "from": "Assertion",
+      "to": [
+        "Entity"
+      ],
+      "properties": []
+    },
+    {
+      "type": "OBJECT",
+      "from": "Assertion",
+      "to": [
+        "Entity"
+      ],
+      "properties": []
+    }
+  ]
+}

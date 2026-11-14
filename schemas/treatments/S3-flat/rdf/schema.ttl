@@ -1,0 +1,224 @@
+# Fessi flat (S3), RDF realisation
+# Derived from schemas/v5.0/schema.cql (sha256 e0c1acf69b6692c8...)
+# by schemas/treatments/derive.py, rules draft-0.1. Generated; do not edit by hand.
+# Status: draft, not reviewed, not frozen.
+
+@prefix fessi: <https://fessi.example/schema/s3#> .
+@prefix map:   <https://fessi.example/mapping#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+
+<https://fessi.example/schema/s3> a owl:Ontology .
+map:edgeProperty a owl:AnnotationProperty .
+
+# Classes: one per node label
+fessi:AVVCode a owl:Class .
+fessi:Building a owl:Class .
+fessi:Container a owl:Class .
+fessi:DictionaryEntry a owl:Class .
+fessi:Facility a owl:Class .
+fessi:Instruction a owl:Class .
+fessi:Location a owl:Class .
+fessi:Material a owl:Class .
+fessi:PackagingComponent a owl:Class .
+fessi:Product a owl:Class .
+fessi:Room a owl:Class .
+fessi:Source a owl:Class .
+fessi:Tip a owl:Class .
+fessi:WasteItem a owl:Class .
+fessi:WasteStream a owl:Class .
+
+# Datatype properties: one per property name; the domain lists the classes that carry it
+fessi:code a owl:DatatypeProperty ;
+    rdfs:domain fessi:AVVCode .
+fessi:level a owl:DatatypeProperty ;
+    rdfs:domain fessi:AVVCode .
+fessi:is_hazardous a owl:DatatypeProperty ;
+    rdfs:domain fessi:AVVCode .
+fessi:name a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:AVVCode fessi:DictionaryEntry fessi:Facility fessi:Location fessi:Material fessi:Product fessi:Source fessi:WasteItem fessi:WasteStream ) ] .
+fessi:uid a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:Building fessi:Container fessi:DictionaryEntry fessi:Facility fessi:Instruction fessi:Material fessi:PackagingComponent fessi:Product fessi:Room fessi:Source fessi:Tip fessi:WasteItem fessi:WasteStream ) ] .
+fessi:lang a owl:DatatypeProperty ;
+    rdfs:domain fessi:DictionaryEntry .
+fessi:synset_id a owl:DatatypeProperty ;
+    rdfs:domain fessi:DictionaryEntry .
+fessi:address a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:opening_hours a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:contact_name a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:contact_phone a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:contact_email a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:tag a owl:DatatypeProperty ;
+    rdfs:domain fessi:Material .
+fessi:name_de a owl:DatatypeProperty ;
+    rdfs:domain fessi:Material .
+fessi:shape a owl:DatatypeProperty ;
+    rdfs:domain fessi:PackagingComponent .
+fessi:weight_g a owl:DatatypeProperty ;
+    rdfs:domain fessi:PackagingComponent .
+fessi:food_contact a owl:DatatypeProperty ;
+    rdfs:domain fessi:PackagingComponent .
+fessi:recycling_hint a owl:DatatypeProperty ;
+    rdfs:domain fessi:PackagingComponent .
+fessi:ean a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:brand a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:quantity a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:categories_tags a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:labels_tags a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:countries_tags a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:packaging_tags a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:image_url a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:source_api a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:type a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:Source fessi:Tip ) ] .
+fessi:file_path a owl:DatatypeProperty ;
+    rdfs:domain fessi:Source .
+fessi:extraction_date a owl:DatatypeProperty ;
+    rdfs:domain fessi:Source .
+fessi:model_id a owl:DatatypeProperty ;
+    rdfs:domain fessi:Source .
+fessi:text a owl:DatatypeProperty ;
+    rdfs:domain fessi:Tip .
+fessi:synonyms a owl:DatatypeProperty ;
+    rdfs:domain fessi:WasteItem .
+fessi:qty a owl:DatatypeProperty .
+
+# Object properties: one per relationship type; domain and range are the union over its patterns
+fessi:HAS_PARENT a owl:ObjectProperty ;
+    rdfs:domain fessi:AVVCode ;
+    rdfs:range fessi:AVVCode .
+fessi:HAS_TIP a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:Container fessi:WasteItem fessi:WasteStream ) ] ;
+    rdfs:range fessi:Tip .
+fessi:LOCATED_AT a owl:ObjectProperty ;
+    rdfs:domain fessi:Container ;
+    rdfs:range fessi:Facility .
+fessi:LOCATED_IN a owl:ObjectProperty ;
+    rdfs:domain fessi:Container ;
+    rdfs:range fessi:Room .
+fessi:DERIVED_FROM a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:DictionaryEntry fessi:Instruction fessi:PackagingComponent fessi:Product fessi:Tip fessi:WasteItem ) ] ;
+    rdfs:range fessi:Source .
+fessi:IS_A a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:DictionaryEntry fessi:Material fessi:Product ) ] ;
+    rdfs:range [ a owl:Class ; owl:unionOf ( fessi:DictionaryEntry fessi:Material fessi:WasteItem ) ] .
+fessi:SYNONYM_OF a owl:ObjectProperty ;
+    rdfs:domain fessi:DictionaryEntry ;
+    rdfs:range fessi:DictionaryEntry .
+fessi:TRANSLATION_OF a owl:ObjectProperty ;
+    rdfs:domain fessi:DictionaryEntry ;
+    rdfs:range fessi:DictionaryEntry .
+fessi:CLASSIFIED_AS a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:Material fessi:WasteItem ) ] ;
+    rdfs:range fessi:AVVCode .
+fessi:DEFAULT_STREAM a owl:ObjectProperty ;
+    rdfs:domain fessi:Material ;
+    rdfs:range fessi:WasteStream .
+fessi:HAS_INSTRUCTION a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:PackagingComponent fessi:WasteItem ) ] ;
+    rdfs:range fessi:Instruction .
+fessi:MADE_OF a owl:ObjectProperty ;
+    rdfs:domain fessi:PackagingComponent ;
+    rdfs:range fessi:Material .
+fessi:ROUTES_TO a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:PackagingComponent fessi:WasteItem ) ] ;
+    rdfs:range fessi:WasteStream .
+fessi:HAS_COMPONENT a owl:ObjectProperty ;
+    rdfs:domain fessi:Product ;
+    rdfs:range fessi:PackagingComponent .
+fessi:PART_OF a owl:ObjectProperty ;
+    rdfs:domain fessi:Room ;
+    rdfs:range fessi:Building .
+fessi:COLLECTED_IN a owl:ObjectProperty ;
+    rdfs:domain fessi:WasteStream ;
+    rdfs:range fessi:Container .
+fessi:REQUIRES_AVV a owl:ObjectProperty ;
+    rdfs:domain fessi:WasteStream ;
+    rdfs:range fessi:AVVCode .
+
+# Relationship properties: carried by statements of the object property
+fessi:HAS_COMPONENT map:edgeProperty fessi:qty , fessi:weight_g .
+
+# Keys: one per uniqueness constraint
+fessi:AVVCode owl:hasKey ( fessi:code ) .
+fessi:Building owl:hasKey ( fessi:uid ) .
+fessi:Container owl:hasKey ( fessi:uid ) .
+fessi:DictionaryEntry owl:hasKey ( fessi:uid ) , ( fessi:name ) .
+fessi:Facility owl:hasKey ( fessi:uid ) .
+fessi:Instruction owl:hasKey ( fessi:uid ) .
+fessi:Material owl:hasKey ( fessi:uid ) , ( fessi:tag ) .
+fessi:PackagingComponent owl:hasKey ( fessi:uid ) .
+fessi:Product owl:hasKey ( fessi:uid ) , ( fessi:ean ) .
+fessi:Room owl:hasKey ( fessi:uid ) .
+fessi:Source owl:hasKey ( fessi:uid ) .
+fessi:Tip owl:hasKey ( fessi:uid ) .
+fessi:WasteItem owl:hasKey ( fessi:uid ) , ( fessi:name ) .
+fessi:WasteStream owl:hasKey ( fessi:uid ) , ( fessi:name ) .
+
+# Shapes: the exact relationship patterns, per source class
+fessi:AVVCodeShape a sh:NodeShape ;
+    sh:targetClass fessi:AVVCode ;
+    sh:property [ sh:path fessi:HAS_PARENT ; sh:class fessi:AVVCode ] .
+fessi:ContainerShape a sh:NodeShape ;
+    sh:targetClass fessi:Container ;
+    sh:property [ sh:path fessi:HAS_TIP ; sh:class fessi:Tip ] ;
+    sh:property [ sh:path fessi:LOCATED_AT ; sh:class fessi:Facility ] ;
+    sh:property [ sh:path fessi:LOCATED_IN ; sh:class fessi:Room ] .
+fessi:DictionaryEntryShape a sh:NodeShape ;
+    sh:targetClass fessi:DictionaryEntry ;
+    sh:property [ sh:path fessi:DERIVED_FROM ; sh:class fessi:Source ] ;
+    sh:property [ sh:path fessi:IS_A ; sh:class fessi:DictionaryEntry ] ;
+    sh:property [ sh:path fessi:SYNONYM_OF ; sh:class fessi:DictionaryEntry ] ;
+    sh:property [ sh:path fessi:TRANSLATION_OF ; sh:class fessi:DictionaryEntry ] .
+fessi:InstructionShape a sh:NodeShape ;
+    sh:targetClass fessi:Instruction ;
+    sh:property [ sh:path fessi:DERIVED_FROM ; sh:class fessi:Source ] .
+fessi:MaterialShape a sh:NodeShape ;
+    sh:targetClass fessi:Material ;
+    sh:property [ sh:path fessi:CLASSIFIED_AS ; sh:class fessi:AVVCode ] ;
+    sh:property [ sh:path fessi:DEFAULT_STREAM ; sh:class fessi:WasteStream ] ;
+    sh:property [ sh:path fessi:IS_A ; sh:class fessi:Material ] .
+fessi:PackagingComponentShape a sh:NodeShape ;
+    sh:targetClass fessi:PackagingComponent ;
+    sh:property [ sh:path fessi:DERIVED_FROM ; sh:class fessi:Source ] ;
+    sh:property [ sh:path fessi:HAS_INSTRUCTION ; sh:class fessi:Instruction ] ;
+    sh:property [ sh:path fessi:MADE_OF ; sh:class fessi:Material ] ;
+    sh:property [ sh:path fessi:ROUTES_TO ; sh:class fessi:WasteStream ] .
+fessi:ProductShape a sh:NodeShape ;
+    sh:targetClass fessi:Product ;
+    sh:property [ sh:path fessi:DERIVED_FROM ; sh:class fessi:Source ] ;
+    sh:property [ sh:path fessi:HAS_COMPONENT ; sh:class fessi:PackagingComponent ] ;
+    sh:property [ sh:path fessi:IS_A ; sh:class fessi:WasteItem ] .
+fessi:RoomShape a sh:NodeShape ;
+    sh:targetClass fessi:Room ;
+    sh:property [ sh:path fessi:PART_OF ; sh:class fessi:Building ] .
+fessi:TipShape a sh:NodeShape ;
+    sh:targetClass fessi:Tip ;
+    sh:property [ sh:path fessi:DERIVED_FROM ; sh:class fessi:Source ] .
+fessi:WasteItemShape a sh:NodeShape ;
+    sh:targetClass fessi:WasteItem ;
+    sh:property [ sh:path fessi:CLASSIFIED_AS ; sh:class fessi:AVVCode ] ;
+    sh:property [ sh:path fessi:DERIVED_FROM ; sh:class fessi:Source ] ;
+    sh:property [ sh:path fessi:HAS_INSTRUCTION ; sh:class fessi:Instruction ] ;
+    sh:property [ sh:path fessi:HAS_TIP ; sh:class fessi:Tip ] ;
+    sh:property [ sh:path fessi:ROUTES_TO ; sh:class fessi:WasteStream ] .
+fessi:WasteStreamShape a sh:NodeShape ;
+    sh:targetClass fessi:WasteStream ;
+    sh:property [ sh:path fessi:COLLECTED_IN ; sh:class fessi:Container ] ;
+    sh:property [ sh:path fessi:HAS_TIP ; sh:class fessi:Tip ] ;
+    sh:property [ sh:path fessi:REQUIRES_AVV ; sh:class fessi:AVVCode ] .
