@@ -1,0 +1,46 @@
+{
+  "agent_config_id": "A10-v1",
+  "label": "half the per-source budget",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "resources",
+  "varies": "resources.budget_scale",
+  "preselected": false,
+  "fallback_for": null,
+  "process_stage": null,
+  "model": {
+    "family": "deepseek",
+    "model_id": "deepseek-flash (alias as sent; served version DeepSeek-V4.1-Flash-1017 on 12 Nov 2026; published weights deepseek-ai/DeepSeek-V4.1-Flash-1017 @ 08c8657f02291e11b6f6b63e0e16014f8e748518; agreement 4.5; returned model string and fingerprint recorded per call; no fallback model: the drafting family Claude Sonnet 5.5 is excluded from every run agent)",
+    "protocol": "openai-chat",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "high",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 0.5,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "more budget aborts, lower recall, lower cost",
+  "requires_from_harness": [
+    "per-source tool-call and turn budget exposed as parameters"
+  ],
+  "notes": "Absolute values follow from A0's budgets."
+}

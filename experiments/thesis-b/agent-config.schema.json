@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kgbench.local/spec/agent-config-v1.schema.json",
+  "title": "Agent configuration A0..An (Thesis B), harness-neutral, version 1",
+  "description": "One file per configuration. A0 is the shared baseline. Every other configuration names its baseline and differs from it in exactly one block (model | tooling | prompting | resources); inside the tooling, prompting and resources blocks exactly one key differs. The model block may change family, model_id, protocol and hosting together, never decoding. Checked by tests/test_agent_configs.py.",
+  "type": "object",
+  "required": [
+    "agent_config_id",
+    "label",
+    "status",
+    "baseline",
+    "block",
+    "varies",
+    "preselected",
+    "fallback_for",
+    "process_stage",
+    "model",
+    "tooling",
+    "prompting",
+    "resources",
+    "expectation",
+    "requires_from_harness",
+    "notes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "agent_config_id": {
+      "type": "string",
+      "pattern": "^A[0-9]+-v[0-9]+$"
+    },
+    "label": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "proposal",
+        "frozen",
+        "dropped"
+      ]
+    },
+    "baseline": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^A0-v[0-9]+$"
+    },
+    "block": {
+      "enum": [
+        "model",
+        "tooling",
+        "prompting",
+        "resources",
+        null
+      ]
+    },
+    "varies": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "dotted path of the knob that differs from the baseline; null for A0"
+    },
+    "preselected": {
+      "type": "boolean",
+      "description": "proposed for Thesis A's agent-robustness check (open point 18)"
+    },
+    "fallback_for": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "process_stage": {
+      "enum": [
+        "intake",
+        "extraction",
+        "reconciliation",
+        "validation",
+        null
+      ]
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family",
+        "model_id",
+        "protocol",
+        "hosting",
+        "decoding"
+      ],
+      "properties": {
+        "family": {
+          "type": "string",
+          "description": "provider family as in the SRW catalog: anthropic | openai | google | open-weight"
+        },
+        "model_id": {
+          "type": "string",
+          "description": "pinned model id; 'TBD' until 13 Nov"
+        },
+        "protocol": {
+          "enum": [
+            "anthropic-messages",
+            "openai-chat",
+            "openai-responses"
+          ]
+        },
+        "hosting": {
+          "enum": [
+            "vendor-api",
+            "university-endpoint",
+            "self-hosted"
+          ]
+        },
+        "decoding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "temperature",
+            "top_p",
+            "seed",
+            "reasoning",
+            "max_output_tokens"
+          ],
+          "properties": {
+            "temperature": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "EX-10: construction 0.2 for A0 and every variant"
+            },
+            "top_p": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "EX-10: 1"
+            },
+            "seed": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "one fixed seed per replication, set at F3; null = not yet set"
+            },
+            "reasoning": {
+              "enum": [
+                "provider_default",
+                "off",
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "max_output_tokens": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "tooling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "write_tools",
+        "read_tools",
+        "validator_mode",
+        "max_self_corrections"
+      ],
+      "properties": {
+        "write_tools": {
+          "enum": [
+            "per-arm"
+          ],
+          "description": "Cypher in PG, SPARQL in RDF; owned by Thesis A"
+        },
+        "read_tools": {
+          "type": "boolean",
+          "description": "graph query and schema introspection before writing"
+        },
+        "validator_mode": {
+          "enum": [
+            "reject",
+            "log_only"
+          ]
+        },
+        "max_self_corrections": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "per item; then the item is logged as failed"
+        }
+      }
+    },
+    "prompting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template_id",
+        "schema_slot",
+        "examples",
+        "source_delivery"
+      ],
+      "properties": {
+        "template_id": {
+          "type": "string",
+          "description": "Thesis A's frozen template id; a variant gets its own id"
+        },
+        "schema_slot": {
+          "enum": [
+            "renderer"
+          ],
+          "description": "schema package filled by Thesis A's renderer; never varied"
+        },
+        "examples": {
+          "enum": [
+            "none",
+            "dev_set_v1"
+          ]
+        },
+        "source_delivery": {
+          "enum": [
+            "whole",
+            "chunked"
+          ]
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "budget_scale",
+        "max_tool_calls_per_source",
+        "max_turns_per_source"
+      ],
+      "properties": {
+        "budget_scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_tool_calls_per_source": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "absolute values set with A0 on 13 Nov"
+        },
+        "max_turns_per_source": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      }
+    },
+    "expectation": {
+      "type": "string",
+      "description": "pre-registered expectation relative to the baseline"
+    },
+    "requires_from_harness": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

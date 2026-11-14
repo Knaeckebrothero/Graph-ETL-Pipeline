@@ -1,0 +1,46 @@
+{
+  "agent_config_id": "A6-v1",
+  "label": "validator in log-only mode",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "tooling",
+  "varies": "tooling.validator_mode",
+  "preselected": true,
+  "fallback_for": null,
+  "process_stage": "validation",
+  "model": {
+    "family": "deepseek",
+    "model_id": "deepseek-flash (alias as sent; served version DeepSeek-V4.1-Flash-1017 on 12 Nov 2026; published weights deepseek-ai/DeepSeek-V4.1-Flash-1017 @ 08c8657f02291e11b6f6b63e0e16014f8e748518; agreement 4.5; returned model string and fingerprint recorded per call; no fallback model: the drafting family Claude Sonnet 5.5 is excluded from every run agent)",
+    "protocol": "openai-chat",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "high",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "log_only",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "higher write rate, lower conformance in the export; errors that reject mode hides become visible",
+  "requires_from_harness": [
+    "validator log-only switch (offered by Thesis A in agreement 4.1)"
+  ],
+  "notes": "Opens the closed loop; the only tooling variant Thesis A explicitly offered."
+}

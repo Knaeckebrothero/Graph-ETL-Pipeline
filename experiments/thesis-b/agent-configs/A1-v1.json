@@ -1,0 +1,48 @@
+{
+  "agent_config_id": "A1-v1",
+  "label": "second API model family",
+  "status": "proposal",
+  "baseline": "A0-v1",
+  "block": "model",
+  "varies": "model.family",
+  "preselected": true,
+  "fallback_for": null,
+  "process_stage": null,
+  "model": {
+    "family": "openai",
+    "model_id": "gpt-6.1-sol (SRW catalog row `gpt-6.1-sol`; pinned snapshot id recorded from the provider-returned model id in the pilot)",
+    "protocol": "openai-responses",
+    "hosting": "vendor-api",
+    "decoding": {
+      "temperature": 0.2,
+      "top_p": 1.0,
+      "seed": null,
+      "reasoning": "high",
+      "max_output_tokens": null
+    }
+  },
+  "tooling": {
+    "write_tools": "per-arm",
+    "read_tools": true,
+    "validator_mode": "reject",
+    "max_self_corrections": 2
+  },
+  "prompting": {
+    "template_id": "A-frozen-v1",
+    "schema_slot": "renderer",
+    "examples": "none",
+    "source_delivery": "whole"
+  },
+  "resources": {
+    "budget_scale": 1.0,
+    "max_tool_calls_per_source": null,
+    "max_turns_per_source": null
+  },
+  "expectation": "treatment ranking stable relative to A0; cost per token and reject rate differ",
+  "requires_from_harness": [
+    "catalog entry for the model (present: `gpt-6.1-sol`, Responses API)",
+    "protocol openai-responses",
+    "decoding record: the SRW factories do not send temperature/top_p for this row, so `model_call.requested` must record `not_exposed` for them and the effort level actually sent"
+  ],
+  "notes": "Fixed in the call of 12 Nov: OpenAI GPT-6.1 Sol (SRW catalog `gpt-6.1-sol`, Responses API). The drafting family named in Draft 1i (3.3) is Claude Sonnet 5.5, so the Gemini 4 alternative is not needed and A1 stays on OpenAI. Runs on Thesis B's own OpenAI credits (budget 500 USD, own key in the SRW catalog); see F.4. Decoding deviation to record, not hide: the catalog comment says sampling controls are omitted on the wire for this row, so the EX-10 values T 0.2 / top-p 1 are requested in the config but logged as `not_exposed` per call; reasoning effort `high` is the exposed knob (same level as A0's thinking mode, agreement 4.5)."
+}
