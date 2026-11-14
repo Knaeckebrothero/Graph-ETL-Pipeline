@@ -1,0 +1,66 @@
+# Graph stores for the experiment harness: Neo4j (property graph) and Apache Jena
+# Fuseki (RDF). Development setup: one Neo4j database, Fuseki datasets created over
+# HTTP. Separate from deploy/local/ (other names, ports and volumes), so both can
+# exist on one machine.
+#   podman-compose -f deploy/harness/podman-compose.yml up -d
+#   podman-compose -f deploy/harness/podman-compose.yml down        # add -v to delete the data
+# Both stores listen on localhost only. Development passwords; see deploy/harness/README.md.
+name: harness
+
+services:
+  neo4j:
+    # Community edition holds one user database per instance. The runs need one
+    # database per cell: Enterprise edition, or one instance per cell.
+    image: docker.io/library/neo4j:5-community
+    container_name: harness-neo4j
+    ports:
+      - "127.0.0.1:17474:7474"  # HTTP (Browser)
+      - "127.0.0.1:17687:7687"  # Bolt
+    environment:
+      - NEO4J_AUTH=neo4j/${HARNESS_NEO4J_PASSWORD:-harness_dev}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_server_memory_heap_max__size=1G
+      - NEO4J_server_memory_pagecache_size=512M
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p $${NEO4J_AUTH#neo4j/} 'RETURN 1' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  fuseki:
+    # Same image as deploy/local/: Jena's own Docker kit (jena-fuseki-docker 6.2.0)
+    build:
+      context: ../local/fuseki
+      args:
+        JENA_VERSION: "6.2.0"
+    image: localhost/fuseki:6.2.0
+    container_name: harness-fuseki
+    ports:
+      - "127.0.0.1:13030:3030"
+    environment:
+      - JAVA_OPTIONS=-Xmx2g -Xms512m
+    # No dataset on the command line: datasets are created and deleted over HTTP
+    # (POST and DELETE on /$/datasets) and stored under /fuseki/run. Logins come
+    # from shiro.ini.
+    command: ["--shiro", "/fuseki/shiro.ini", "--ping", "--compact"]
+    volumes:
+      - ./fuseki/shiro.ini:/fuseki/shiro.ini:ro,z
+      # U: Podman hands the volume to the container's user, which the image needs
+      - fuseki-run:/fuseki/run:U
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3030/$$/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  neo4j-data:
+  neo4j-logs:
+  fuseki-run:

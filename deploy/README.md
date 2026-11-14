@@ -4,6 +4,7 @@
 |---|---|
 | [`local/`](local/podman-compose.yml) | Three graph backends for development, via `podman-compose`; see below |
 | [`server/`](server/README.md) | Neo4j as a rootless Podman Quadlet (systemd unit), with install and dump-import scripts |
+| [`harness/`](harness/README.md) | Neo4j and Fuseki for the experiment harness: development setup, Fuseki datasets created over HTTP |
 | [`history/`](history/) | Earlier deployment plans, kept for their recon |
 
 ## Local backends
