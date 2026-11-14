@@ -1,6 +1,6 @@
 # Experiments
 
-The shared empirical substrate of both theses: a construction agent populates a fresh graph from one sampled source under one schema treatment, about three times per source and treatment. Thesis A compares the treatments; Thesis B compares agent configurations and instruments the runs.
+The shared empirical substrate of both theses. One run is one cell: a construction agent populates a fresh graph from the whole frozen sample of source units, one unit per task, under one schema treatment in one data model (a Neo4j property graph or RDF in Apache Jena Fuseki). Thesis A builds every treatment in both data models three times with one fixed agent configuration; Thesis B runs further agent configurations on the same sample. Thesis A compares the treatments; Thesis B compares agent configurations and instruments the runs. The run matrix, the identifiers and the log fields are in [`docs/demarcation-agreement.md`](../docs/demarcation-agreement.md), section 4.
 
 Nothing is built yet. This folder will hold:
 
