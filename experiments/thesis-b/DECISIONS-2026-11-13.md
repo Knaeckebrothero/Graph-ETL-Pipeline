@@ -32,5 +32,5 @@ See `CONFIRMATIONS-2026-11-13.md` for the six [to confirm] items and three corre
 ## Next from Thesis B
 
 - After the items above: all configuration files set to `status: frozen`, template ids and hashes recorded, change-log row; Thesis A makes the freeze commit.
-- Instrumentation code for the openai-chat path in SRW and kgc-trace/1 version 1.1 (Thesis A's field names) as pull requests by Sunday 15 Nov (F.2).
+- kgc-trace/1 version 1.1 (Thesis A's field names, one file passes both checkers): delivered 14 Nov on this branch (`kgc-trace-v1.1.schema.json`, `shared-minimum-review.md`). Instrumentation code for the openai-chat path in SRW: pull request by Sunday 15 Nov (F.2), waits for the write-tool hook (see validator questions).
 - Offered drafts to relieve Thesis A: catalog row for `deepseek-v4.1-flash`, sample-manifest JSON schema with the point-20 b fields, validator reject vocabulary, pilot job manifest for A6/A4 on S4-PG. Thesis A keeps ownership and decides.

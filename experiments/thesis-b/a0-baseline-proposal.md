@@ -27,7 +27,7 @@ pass-specific seeds (Thesis A's query harness). Every sampling parameter the pin
 and recorded per call; a parameter the snapshot does not expose is recorded as `not_exposed, provider default in
 force`. Reasoning setting: provider default, identical for A0 and every A1 to A10 (model variants keep A0 decoding;
 checked by `tests/test_agent_configs.py`). `max_output_tokens`: set with the templates. The returned model id and
-fingerprint are logged per call (`model_call.response_model_id`, `model_call.response_fingerprint`); a mid-run change
+fingerprint are logged per call (`model_call.returned_model`, `model_call.system_fingerprint`); a mid-run change
 is a deviation. Goal is auditability, not bit-level reproducibility.
 
 ## 3. Tool set

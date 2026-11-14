@@ -11,8 +11,8 @@ cards arrive on 13 Nov, so the right-hand column is confirmed in the Eval 2 read
 | `tokens_in`, `tokens_out` (plus cache/reasoning tokens where reported) | A | model call attempt | — (sums over all attempts, failed included; `complete` flag) | `model_call.usage` |
 | `cost` | A | run / source | — (known tokens × price table; lower bound if incomplete) | `*.resources.cost` |
 | `wall_clock_ms` | A | run / source | — | `run_end.resources`, `source_end.resources` |
-| `validator_rejects` | A | insert attempt | — (count) | `insert_attempt.validator.result = reject` |
-| `insert_attempts`, `retries_until_acceptance`, `abandoned_units`, `fatal_failure` | A | source unit | — | `source_end.*` |
+| `validator_rejects` | A | insert attempt | — (count) | `insert_attempt.validator_result = reject` |
+| `insert_attempts`, `retries_until_acceptance`, `abandoned_units`, `fatal` | A | source unit | — | `source_end.*` (Thesis A's names since version 1.1) |
 
 Thesis B reports these with Thesis A's names and cites Thesis A's cards.
 
