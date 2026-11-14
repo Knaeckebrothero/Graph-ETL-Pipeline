@@ -1,0 +1,1269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shared-minimum-log/1",
+  "title": "Shared minimum log fields of Thesis A and Thesis B, version 1",
+  "description": "DRAFT of 14 November 2026 for the F3 freeze; not frozen. One JSON object per line. A record whose record_type is listed here must satisfy its definition. Any other record_type is an extension and only needs record_type and ts. Extra fields are allowed on every record and never change the meaning of the fields defined here. null means unknown or not reported, never zero. No euro amount is logged: euro is computed afterwards from the tokens and the dated price table.",
+  "type": "object",
+  "required": [
+    "record_type",
+    "ts"
+  ],
+  "properties": {
+    "record_type": {
+      "type": "string"
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "run_start"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/run_start"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "run_end"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/run_end"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "run_resume"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/run_resume"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "source_start"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/source_start"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "source_end"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/source_end"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "model_call"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/model_call"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "insert_attempt"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/insert_attempt"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "cq_attempt"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/cq_attempt"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "provider_snapshot"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/provider_snapshot"
+      }
+    }
+  ],
+  "$defs": {
+    "timestamp": {
+      "description": "UTC, RFC 3339, with the letter Z.",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "run_id": {
+      "description": "{arm}-{treatment}-{agent}-r{replication}, plus -pilot or -probe{n} (agreement 4.2). A re-run gets a new id.",
+      "type": "string",
+      "pattern": "^(PG|RDF)-S[1-4]-[A-Z][A-Za-z0-9.]*-r[0-9]+(-pilot|-probe[0-9]+)?$"
+    },
+    "requested_parameter": {
+      "description": "The value sent to the provider, or the string not_exposed when the snapshot has no such parameter (provider default in force).",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "stage": {
+      "enum": [
+        "construction",
+        "induction",
+        "querying"
+      ]
+    },
+    "stratum": {
+      "enum": [
+        "numeric tabular",
+        "tabular-categorical",
+        "catalogue",
+        "free text"
+      ]
+    },
+    "bucket": {
+      "enum": [
+        "development",
+        "pilot",
+        "held-out",
+        "canary"
+      ]
+    },
+    "authority_class": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "sampling": {
+      "description": "Requested sampling parameters. Every key is present; a parameter the snapshot does not expose carries not_exposed.",
+      "type": "object",
+      "required": [
+        "temperature",
+        "top_p",
+        "seed",
+        "thinking",
+        "reasoning_effort",
+        "max_output_tokens"
+      ],
+      "properties": {
+        "temperature": {
+          "$ref": "#/$defs/requested_parameter"
+        },
+        "top_p": {
+          "$ref": "#/$defs/requested_parameter"
+        },
+        "seed": {
+          "$ref": "#/$defs/requested_parameter"
+        },
+        "thinking": {
+          "enum": [
+            "enabled",
+            "disabled",
+            "not_exposed"
+          ]
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/requested_parameter"
+        },
+        "max_output_tokens": {
+          "$ref": "#/$defs/requested_parameter"
+        },
+        "not_effective": {
+          "description": "Names of requested parameters that the provider documents as having no effect in this mode, e.g. temperature in thinking mode.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "tokens": {
+      "description": "Token counts as the runtime reports them. cached_input is a part of input; reasoning is a part of output. null means not reported, never zero.",
+      "type": "object",
+      "required": [
+        "input",
+        "cached_input",
+        "output",
+        "reasoning"
+      ],
+      "properties": {
+        "input": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cached_input": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "output": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reasoning": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": [
+        "role",
+        "family",
+        "access_type",
+        "identifier_sent",
+        "served_version",
+        "published_weights",
+        "tokenizer_sha256",
+        "runtime"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "population",
+            "induction",
+            "querying",
+            "sub_model"
+          ]
+        },
+        "family": {
+          "type": "string"
+        },
+        "access_type": {
+          "enum": [
+            "open_weights_local",
+            "open_weights_hosted_alias",
+            "closed"
+          ]
+        },
+        "identifier_sent": {
+          "type": "string"
+        },
+        "served_version": {
+          "description": "Version the provider's documentation names on the run date; null for local weights.",
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "name",
+                "documentation_url",
+                "retrieved"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "documentation_url": {
+                  "type": "string"
+                },
+                "retrieved": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          ]
+        },
+        "published_weights": {
+          "description": "Repository and commit of the open weights; null for a closed model. verified_as_served is true only for weights the harness loaded itself.",
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "repository",
+                "commit",
+                "verified_as_served"
+              ],
+              "properties": {
+                "repository": {
+                  "type": "string"
+                },
+                "commit": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "verified_as_served": {
+                  "type": "boolean"
+                }
+              }
+            }
+          ]
+        },
+        "tokenizer_sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runtime": {
+          "description": "Serving runtime for local weights (name, version, quantisation); null otherwise.",
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "name",
+                "version",
+                "quantisation"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "quantisation": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "validator_rejection": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "element",
+        "expected",
+        "found"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "element": {
+          "type": "string"
+        },
+        "expected": {},
+        "found": {}
+      }
+    },
+    "run_start": {
+      "description": "First record of a run. Together with run_end it is the run manifest.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "log_schema",
+        "schema_id",
+        "arm",
+        "treatment",
+        "agent_config_id",
+        "replication",
+        "run_kind",
+        "launcher",
+        "sample_manifest_sha256",
+        "unit_order_sha256",
+        "harness_commit",
+        "container_digests",
+        "tool_versions",
+        "prompt_sha256",
+        "schema_rendering_sha256",
+        "models",
+        "sampling",
+        "budgets"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "run_start"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "log_schema": {
+          "const": "shared-minimum-log/1"
+        },
+        "schema_id": {
+          "type": "string"
+        },
+        "arm": {
+          "enum": [
+            "PG",
+            "RDF"
+          ]
+        },
+        "treatment": {
+          "enum": [
+            "S1",
+            "S2",
+            "S3",
+            "S4"
+          ]
+        },
+        "agent_config_id": {
+          "type": "string"
+        },
+        "replication": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_kind": {
+          "enum": [
+            "main",
+            "pilot",
+            "probe"
+          ]
+        },
+        "launcher": {
+          "description": "Who started the run: A or B.",
+          "enum": [
+            "A",
+            "B"
+          ]
+        },
+        "sample_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "unit_order_sha256": {
+          "description": "Hash of the unit ids in processing order.",
+          "$ref": "#/$defs/sha256"
+        },
+        "harness_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "container_digests": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tool_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "prompt_sha256": {
+          "description": "One hash per frozen template used in the run.",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/sha256"
+          },
+          "minProperties": 1
+        },
+        "schema_rendering_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "models": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/model"
+          }
+        },
+        "sampling": {
+          "description": "Configured sampling per stage; the per-call record repeats what was actually sent.",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/sampling"
+          },
+          "minProperties": 1
+        },
+        "budgets": {
+          "type": "object",
+          "required": [
+            "tool_calls_per_unit",
+            "tokens_per_unit",
+            "self_corrections_per_turn",
+            "query_timeout_s"
+          ],
+          "properties": {
+            "tool_calls_per_unit": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "tokens_per_unit": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "self_corrections_per_turn": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "query_timeout_s": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "run_end": {
+      "description": "Last record of a run.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "status",
+        "final_graph_state_sha256",
+        "global_validator",
+        "export",
+        "resume_count"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "run_end"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "void"
+          ]
+        },
+        "void_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "final_graph_state_sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "global_validator": {
+          "description": "Whole-graph checks after the last unit.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "checked_rules",
+            "violations"
+          ],
+          "properties": {
+            "checked_rules": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "violations": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "by_rule": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "export": {
+          "description": "Canonical assertion form of the final graph, one file per run, written by the read-only exporter of the arm.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "path",
+            "sha256",
+            "exporter_version"
+          ],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "exporter_version": {
+              "type": "string"
+            }
+          }
+        },
+        "resume_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "run_resume": {
+      "description": "The cell resumed from a snapshot after a VM crash.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "snapshot_graph_state_sha256",
+        "resumed_before_unit_id"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "run_resume"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "snapshot_graph_state_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "resumed_before_unit_id": {
+          "type": "string"
+        }
+      }
+    },
+    "source_start": {
+      "description": "The agent starts one source unit. Carries the unit's row of the frozen sample manifest under the manifest's own column names.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "unit_id",
+        "order_index",
+        "unit_sha256",
+        "source_id",
+        "source_sha256",
+        "stratum",
+        "jurisdiction",
+        "authority_class",
+        "bucket",
+        "chunk_rule",
+        "selection_seed",
+        "retrieval_date"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "source_start"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "unit_id": {
+          "type": "string"
+        },
+        "order_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unit_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stratum": {
+          "$ref": "#/$defs/stratum"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "authority_class": {
+          "$ref": "#/$defs/authority_class"
+        },
+        "bucket": {
+          "$ref": "#/$defs/bucket"
+        },
+        "chunk_rule": {
+          "type": "string"
+        },
+        "selection_seed": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "retrieval_date": {
+          "type": "string"
+        }
+      }
+    },
+    "source_end": {
+      "description": "The unit is finished or given up.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "unit_id",
+        "final_status",
+        "fatal",
+        "abandon_reason",
+        "retried_from_snapshot",
+        "attempts",
+        "rejects",
+        "accepted_writes",
+        "model_calls",
+        "wall_clock_s",
+        "graph_state_sha256"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "source_end"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "unit_id": {
+          "type": "string"
+        },
+        "final_status": {
+          "enum": [
+            "completed",
+            "abandoned"
+          ]
+        },
+        "fatal": {
+          "description": "true exactly when final_status is abandoned.",
+          "type": "boolean"
+        },
+        "abandon_reason": {
+          "enum": [
+            "budget_exhausted",
+            "crashed_twice",
+            "resumed_cell",
+            null
+          ]
+        },
+        "retried_from_snapshot": {
+          "description": "The unit crashed once and was retried from the pre-unit snapshot.",
+          "type": "boolean"
+        },
+        "attempts": {
+          "description": "Write attempts in this unit.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejects": {
+          "description": "Write attempts the shared validator rejected.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_writes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "model_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wall_clock_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "graph_state_sha256": {
+          "description": "Graph-state hash after the unit.",
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "model_call": {
+      "description": "One call to a model, sub-model calls included. The only place where tokens are recorded.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "call_id",
+        "stage",
+        "unit_id",
+        "cq_id",
+        "pass_id",
+        "step_index",
+        "requested",
+        "returned_model",
+        "system_fingerprint",
+        "tokens",
+        "finish_reason",
+        "latency_ms",
+        "error"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "model_call"
+        },
+        "ts": {
+          "description": "Time the request was sent.",
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "call_id": {
+          "type": "string"
+        },
+        "stage": {
+          "$ref": "#/$defs/stage"
+        },
+        "unit_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cq_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pass_id": {
+          "enum": [
+            1,
+            2,
+            3,
+            null
+          ]
+        },
+        "step_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requested": {
+          "$ref": "#/$defs/sampling"
+        },
+        "returned_model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "system_fingerprint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tokens": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/tokens"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finish_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latency_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error": {
+          "description": "null on success; otherwise the error class as the gateway reports it.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "insert_attempt": {
+      "description": "One fact candidate in one call of a write tool, judged by the shared validator and then by the engine. A tool call that carries several candidates gives one record per candidate.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "attempt_id",
+        "call_id",
+        "item_id",
+        "unit_id",
+        "source_id",
+        "stratum",
+        "step_index",
+        "retry_index",
+        "tool_name",
+        "payload_sha256",
+        "validator_mode",
+        "validator_result",
+        "rejections",
+        "engine_result",
+        "accepted",
+        "latency_ms"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "insert_attempt"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "attempt_id": {
+          "description": "run_id, step index and attempt index (agreement 4.2); it does not contain the item_id.",
+          "type": "string"
+        },
+        "call_id": {
+          "description": "The model call that issued this write. Tokens are read from that record, never copied here.",
+          "type": "string"
+        },
+        "item_id": {
+          "description": "Identifier of the fact candidate this attempt writes; the same for every attempt at the same candidate, so that corrections can be followed per item. The harness assigns it at the first write, returns it in the rejection message, and the model resends it with the corrected write. null for a harness without an item concept.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unit_id": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "stratum": {
+          "$ref": "#/$defs/stratum"
+        },
+        "step_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_index": {
+          "description": "0 for a first attempt, 1 and 2 for self-corrections.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "validator_mode": {
+          "enum": [
+            "reject",
+            "log_only"
+          ]
+        },
+        "validator_result": {
+          "enum": [
+            "pass",
+            "reject"
+          ]
+        },
+        "rejections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/validator_rejection"
+          }
+        },
+        "engine_result": {
+          "description": "not_sent when the validator rejected the write in reject mode.",
+          "enum": [
+            "ok",
+            "error",
+            "not_sent"
+          ]
+        },
+        "engine_error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "accepted": {
+          "description": "true when the write is in the graph.",
+          "type": "boolean"
+        },
+        "latency_ms": {
+          "description": "Validator plus engine time.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "cq_attempt": {
+      "description": "One query attempt for one competency question in one pass (query harness, Thesis A).",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "run_id",
+        "cq_id",
+        "pass_id",
+        "attempt_index",
+        "is_final",
+        "call_id",
+        "produced",
+        "query_text",
+        "parses",
+        "executes",
+        "error_class",
+        "result_sha256",
+        "result_path",
+        "result_rows",
+        "latency_ms"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "cq_attempt"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "cq_id": {
+          "type": "string"
+        },
+        "pass_id": {
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "attempt_index": {
+          "description": "0 for the first attempt.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "is_final": {
+          "type": "boolean"
+        },
+        "call_id": {
+          "type": "string"
+        },
+        "produced": {
+          "description": "A query string was returned within the budget.",
+          "type": "boolean"
+        },
+        "query_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parses": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "executes": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "error_class": {
+          "enum": [
+            "parse",
+            "runtime",
+            "timeout",
+            null
+          ]
+        },
+        "result_sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "result_rows": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "latency_ms": {
+          "description": "Execution time of the query.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "provider_snapshot": {
+      "description": "Daily in the run window: a stored copy of a provider's update page or model list. Kept in its own file; carries no run_id.",
+      "type": "object",
+      "required": [
+        "record_type",
+        "ts",
+        "provider",
+        "page",
+        "url",
+        "stored_path",
+        "sha256"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "provider_snapshot"
+        },
+        "ts": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "page": {
+          "enum": [
+            "updates",
+            "model_list",
+            "pricing"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "stored_path": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}
