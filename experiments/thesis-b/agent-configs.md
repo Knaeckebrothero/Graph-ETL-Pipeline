@@ -11,9 +11,9 @@ configurations are pre-selected and they include a model family other than A0's.
 | ID | Block | Knob (`varies`) | Value vs A0 | Stage | Pre-registered expectation | Harness must expose |
 |---|---|---|---|---|---|---|
 | A0-v1 | — | — | baseline | — | — | see `a0-baseline-proposal.md` §6 |
-| **A1-v1** | model | `model.family` | openai (GPT-6 family, pinned) | — | treatment ranking stable; cost/token and reject rate differ | catalog entry |
+| **A1-v1** | model | `model.family` | openai `gpt-6.1-sol` (fixed 13 Nov; T/top-p `not_exposed`, effort `high`) | — | treatment ranking stable; cost/token and reject rate differ | catalog entry |
 | **A2-v1** | model | `model.family` | open-weight Qwen3.8-27B, self-hosted (fixed 13 Nov; Gemma 4 is Thesis A's anchor family and no longer an alternative) | — | more rejects, more abandoned items, lower cost, more transport failures | catalog entry, GPU time |
-| A3-v1 | model | `model.family` | google (Gemini 4), optional | — | as A1 | catalog entry |
+| A3-v1 | model | `model.family` | google (Gemini 4), best effort, Thesis B's own key | — | as A1 | catalog entry |
 | A4-v1 | tooling | `tooling.max_self_corrections` | 0 | validation | validity after = before; more abandoned; fewer calls | `max_self_corrections` |
 | A5-v1 | tooling | `tooling.max_self_corrections` | 1 | validation | between A4 and A0 (dose) | same |
 | **A6-v1** | tooling | `tooling.validator_mode` | log_only | validation | higher write rate, lower conformance; hidden errors visible | log-only switch (offered by A) |

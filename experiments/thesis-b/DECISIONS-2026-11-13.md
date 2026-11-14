@@ -20,15 +20,17 @@ Written so that the freeze can be closed in writing. Items under "decided" come 
 
 See `CONFIRMATIONS-2026-11-13.md` for the six [to confirm] items and three corrections.
 
-## Open (Thesis A)
+## Open (Thesis A, state 14 Nov)
 
-- a) **Pilot 16 to 20 Nov** includes one Thesis B configuration (A6 or A4) on S4-PG, so that the cap of 21 Nov has a measured cell cost and the log fields are exercised once.
-- b) **Drafting family**: which model family drafts the competency questions? It must not be OpenAI, Qwen, DeepSeek or Gemini (all used by Thesis B).
-- c) **Delivery dates**: F2 sample manifest with bucket labels, Eval 2 package (metric cards), hours template (a proposal is in `hours-log-template.csv`), validator rule list.
-- d) Merge `thesis-b/f3-spec` directly or via pull request?
+- Eval 2 package ("Technique v0.1", metric cards), due per 3.3; Thesis B reads it 14 or 15 Nov.
+- A9: can SRW deliver sub-chunks inside one task per unit? If not, A9 is dropped at F3 (4.1).
+- Catalog row for DeepSeek V4.1 Flash (`deepseek-flash`) in `model_config_matrix.yaml`.
+- Validator rule list (rule ids) for the reject vocabulary.
+- `item_id` added to `insert_attempt` in `shared-minimum-log/1` (accepted orally 13 Nov, Thesis A implements).
+- Merge `thesis-b/f3-spec` directly or via pull request?
 
 ## Next from Thesis B
 
-- After a) to d): all configuration files set to `status: frozen`, template ids and hashes recorded, change-log row; Thesis A makes the freeze commit.
-- Instrumentation code for the openai-chat path in SRW as a pull request before 16 Nov.
+- After the items above: all configuration files set to `status: frozen`, template ids and hashes recorded, change-log row; Thesis A makes the freeze commit.
+- Instrumentation code for the openai-chat path in SRW and kgc-trace/1 version 1.1 (Thesis A's field names) as pull requests by Sunday 15 Nov (F.2).
 - Offered drafts to relieve Thesis A: catalog row for `deepseek-v4.1-flash`, sample-manifest JSON schema with the point-20 b fields, validator reject vocabulary, pilot job manifest for A6/A4 on S4-PG. Thesis A keeps ownership and decides.

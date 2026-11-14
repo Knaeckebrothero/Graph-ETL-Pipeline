@@ -61,8 +61,8 @@ Every configuration differs from A0 in exactly one documented way. The schema in
 
 | ID | Difference from A0 | Block | Stage affected | Pre-registered expectation | Needs from Thesis A |
 |---|---|---|---|---|---|
-| A1 | Second API model family (candidate: OpenAI GPT-6 family, alternative Gemini 4; switches to the alternative if GPT-6 is the drafting family) | model | — | Treatment ranking stable; different cost per token | catalog entry; drafting-family name before 13 Nov |
-| A2 | Open-weight model, self-hosted (candidate: Qwen 3.8 27B, alternative Gemma 4 31B, on the university endpoint; chosen to differ from both of Thesis A's anchors, fallback shared cell F.8) | model | — | More validator rejects, more aborted items, lower cost | catalog entry, GPU time, anchor names (F2) |
+| A1 | Second API model family: `gpt-6.1-sol` (fixed 12/13 Nov; Responses API; temperature and top-p not settable for this row, logged `not_exposed`, reasoning effort `high` as for A0; the drafting family is Claude Sonnet 5.5, so no switch to Gemini 4) | model | — | Treatment ranking stable; different cost per token | catalog entry (present) |
+| A2 | Open-weight model, self-hosted: Qwen3.8-27B on Thesis A's local GPUs (fixed 13 Nov; no alternative, the Gemma 4 family is Thesis A's local anchor; differs from both anchors GLM-5.3-Flash and Gemma 4 26B A4B, so F.8 is not needed) | model | — | More validator rejects, more aborted items, lower cost | catalog entry, GPU time |
 | A3 | Third API family (candidate: Gemini 4) | model | — | As A1 | catalog entry; optional |
 | A4 | Zero self-corrections | tooling | validation | Validity after = before correction; more abandoned items | `max_self_corrections` exposed |
 | A5 | One self-correction | tooling | validation | Between A4 and A0 (dose response) | same |
@@ -127,9 +127,9 @@ Thesis B's event schema exists as JSON Schema (`kgc-trace/1`, with a reference e
 ## F. Thesis B's additions to the agreement (requested wording)
 
 1. **4.7 Access:** Thesis B has its own login to the SRW orchestration on the university server and to the raw store from F3 on; write access to the Graph-ETL-Pipeline repository (given, handoff 8 Nov); Thesis B's instrumentation goes into the SRW harness as pull requests that Thesis A reviews.
-2. **4.3 Review:** Thesis A reviews and merges Thesis B's instrumentation pull requests before the pilot starts (16 Nov); the pilot is the acceptance test of the shared and extended fields.
+2. **4.3 Review:** Thesis A reviews and merges Thesis B's instrumentation pull requests (cut-off Sunday 15 Nov, agreement F.2) before the pilot starts (16 Nov); the pilot is the acceptance test of the shared and extended fields.
 3. **4.1 Pilot:** the pilot includes at least one Thesis B configuration on S4-PG.
-4. **4.7 Cost:** A1 (GPT-6 family) runs on Thesis B's own OpenAI credits (budget 500 USD; own key registered in the SRW catalog, cost recorded per call like every other cell). Thesis A's credits cover Thesis B's remaining cells up to a cap agreed on 21 Nov from the pilot cost of one Thesis B cell; cells beyond the cap run only if Thesis B registers further own keys and bears their cost; euro per cell is reported from the F2 price table in both theses.
+4. **4.7 Cost (as narrowed in Draft 1i, accepted 13 Nov):** A1 (`gpt-6.1-sol`) and A3 (Gemini 4, best effort) run on Thesis B's own keys and cost (A1 budget 500 USD; keys registered in the SRW catalog, cost recorded per call like every other cell). A2 runs on Thesis A's local GPUs. Thesis A's credits cover Thesis B's cells on A0's model (A6, A4, A5, A7 to A10) up to a cap agreed on 21 Nov from the pilot cost of one Thesis B cell; cells beyond the cap run only if Thesis B registers further own keys and bears their cost; euro per cell is reported from the F2 price table in both theses.
 5. **4.7 Export:** raw logs and exports can be pulled in bulk by either author.
 6. **3.3 Codebook:** Thesis A delivers the codebook by 28 Nov.
 7. **4.6 F3:** freezes the field specification; non-semantic implementation fixes allowed until F4, logged.
