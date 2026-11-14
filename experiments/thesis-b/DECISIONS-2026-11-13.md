@@ -28,8 +28,11 @@ See `CONFIRMATIONS-2026-11-13.md` for the six [to confirm] items and three corre
 - Validator rule list (rule ids) for the reject vocabulary.
 - `item_id` added to `insert_attempt` in `shared-minimum-log/1` (accepted orally 13 Nov, Thesis A implements).
 - Merge `thesis-b/f3-spec` directly or via pull request?
+- **Validator (new 14 Nov, Thesis B's since agreement 1.0):** Thesis A's inputs so that the core in `validator/` can be wired into the harness: (1) canonical form confirmed (`validator/canonical.schema.json`), (2) the handover point in the write tool (today `cypher_execute(statement)` runs raw Cypher; proposal: a structured `write_assertions` tool in canonical form, rendered per realisation by the harness), (3) mapping canonical form to each realisation, (4) equivalence table and unit list in their final format, (5) duplicate identity and qualifier set confirmed, (6) S2 declaration after induction. Asked for 1, 2 by Mon 17 Nov and 3 to 5 by 20 Nov; the validator's F4 freeze moves with them.
 
 ## Next from Thesis B
+
+- Validator core delivered 14 Nov (`validator/`, 26 tests, runs against Thesis A's draft declarations S1/S3/S4 in both arms). Wiring into SRW and the pilot mode (log-only until the hook exists) follow Thesis A's answers above.
 
 - After the items above: all configuration files set to `status: frozen`, template ids and hashes recorded, change-log row; Thesis A makes the freeze commit.
 - kgc-trace/1 version 1.1 (Thesis A's field names, one file passes both checkers): delivered 14 Nov on this branch (`kgc-trace-v1.1.schema.json`, `shared-minimum-review.md`). Instrumentation code for the openai-chat path in SRW: pull request by Sunday 15 Nov (F.2), waits for the write-tool hook (see validator questions).

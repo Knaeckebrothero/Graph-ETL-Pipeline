@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kgbench.local/spec/canonical-assertion.draft.schema.json",
+  "title": "Canonical assertion (DRAFT by Thesis B, 14 Nov 2026, to be confirmed by Thesis A)",
+  "description": "One full proposition in schema-neutral canonical form, as Thesis A's technique defines it in prose (Eval 2 package v0.1, section 1.2): subject, predicate, object, qualifiers (scope, validity time, condition or exception, modality, priority) and provenance (anchor into a source unit plus authority record). The shared validator checks this object (common scope, agreement 3.2). This file is Thesis B's machine-readable reading of the prose; Thesis A owns the canonical form and confirms or corrects it before the freeze on 23 Nov. Additional fields are allowed everywhere.",
+  "type": "object",
+  "required": ["subject", "predicate", "object", "qualifiers", "provenance"],
+  "properties": {
+    "assertion_id": {"type": ["string", "null"], "description": "id in the export; null before the write"},
+    "item_id": {"type": ["string", "null"], "description": "the fact candidate's item_id of the log (shared-minimum-log/1)"},
+    "subject": {"$ref": "#/$defs/entity_ref"},
+    "predicate": {"type": "string", "minLength": 1, "description": "surface predicate as written; CS-02 maps it to the canonical vocabulary through the equivalence table"},
+    "object": {
+      "oneOf": [
+        {"$ref": "#/$defs/entity_ref"},
+        {"$ref": "#/$defs/literal"}
+      ]
+    },
+    "qualifiers": {
+      "type": "object",
+      "description": "every key optional; absent or null means the source documents no such qualifier",
+      "properties": {
+        "scope": {"type": ["string", "null"], "description": "jurisdiction or institution the proposition holds for"},
+        "validity_time": {
+          "type": ["object", "null"],
+          "properties": {
+            "from": {"type": ["string", "null"], "description": "ISO 8601 date"},
+            "to": {"type": ["string", "null"], "description": "ISO 8601 date, null = open"}
+          }
+        },
+        "condition": {"type": ["string", "null"]},
+        "exception": {"type": ["string", "null"]},
+        "modality": {"enum": ["must", "must_not", "may", "should", "is", null]},
+        "priority": {"type": ["integer", "null"], "description": "where a source documents one (e.g. override order)"}
+      },
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["unit_id"],
+      "properties": {
+        "unit_id": {"type": ["string", "null"], "description": "the source unit the agent was processing (sample manifest)"},
+        "source_id": {"type": ["string", "null"], "description": "the source file the unit was cut from"},
+        "locator": {"type": ["string", "null"], "description": "anchor inside the unit: section, row, cell, character range"},
+        "quote": {"type": ["string", "null"]},
+        "authority_class": {"enum": ["A", "B", "C", "D", null]}
+      }
+    }
+  },
+  "$defs": {
+    "entity_ref": {
+      "type": "object",
+      "description": "a reference to an entity by id and/or by surface label with a type",
+      "properties": {
+        "kind": {"const": "entity"},
+        "id": {"type": ["string", "null"], "description": "graph element id when known (existing entity); null for a new entity"},
+        "label": {"type": ["string", "null"], "description": "surface name as written in the source"},
+        "type": {"type": ["string", "null"], "description": "surface type as written; CS-02 maps it through the equivalence table"}
+      },
+      "anyOf": [
+        {"required": ["id"], "properties": {"id": {"type": "string", "minLength": 1}}},
+        {"required": ["label"], "properties": {"label": {"type": "string", "minLength": 1}}}
+      ]
+    },
+    "literal": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "literal"},
+        "value": {},
+        "datatype": {"enum": ["string", "integer", "decimal", "boolean", "date", "datetime", "duration", null]},
+        "unit": {"type": ["string", "null"], "description": "unit symbol for quantities; CS-04 checks it against the unit list"}
+      }
+    }
+  }
+}
