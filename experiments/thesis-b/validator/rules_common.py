@@ -1,30 +1,26 @@
-"""Common-scope rules CS-01 to CS-07, applied to canonical assertions identically in both arms.
+"""Common-scope rules CS1 to CS7 on the export: the stored graph turned back into schema-neutral assertions after the
+run (Thesis A's common-scope rule list v0.2, section 4, "On the export, counts"). Identical in both arms.
 
-The rule list is Thesis A's (Eval 2 package v0.1, card P.3, "Common scope"):
-  subject, predicate and object well formed; predicate and type mapped or mappable under the equivalence table;
-  no dangling reference; datatypes and units parse; qualifiers well formed; provenance pointer present;
-  no duplicate assertion.
-Thesis B implements the rules (agreement 3.2). A rule that some realisation cannot satisfy structurally is removed by
-Thesis A, not relaxed here.
+The write-time statements of CS1, CS3 and CS4 are in `rules_write.py`, on items. CS0 (a write that cannot be read)
+exists only at the write.
 
 Every rule returns a list of Rejection objects; an empty list is a pass. A rule that cannot be decided because a
-binding is missing (equivalence table, unit list) returns one Rejection with `status = not_checkable`, which the
-validator reports separately and never counts as a reject.
+binding is missing (equivalence table, unit list, write log) returns one Rejection with `status = not_checkable`, which
+the validator reports separately and never counts as a reject.
 """
 from __future__ import annotations
 
 import re
-from dataclasses import asdict, dataclass, field
-from datetime import date, datetime
+from dataclasses import dataclass, field
 from typing import Any, Iterable
 
-from .vocabulary import EquivalenceTable, UnitList
+from .vocabulary import DATATYPES, ISO_DATE, EquivalenceTable, FormatTable
 
 QUALIFIER_KEYS = {"scope", "validity_time", "condition", "exception", "modality", "priority"}
-MODALITIES = {"must", "must_not", "may", "should", "is"}
-DATATYPES = {"string", "integer", "decimal", "boolean", "date", "datetime", "duration"}
-ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-ISO_DURATION = re.compile(r"^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$")
+# BE-08: must, may, must not. "must_not" and "must-not" are read as "must not".
+MODALITIES = {"must", "may", "must not"}
+SCOPE_STATE = re.compile(r"^DE-[A-Z]{2}$")
+SCOPE_KEY = re.compile(r"^\d{8}$")
 
 
 @dataclass
@@ -45,12 +41,13 @@ class Rejection:
 
 @dataclass
 class Context:
-    """What a rule may look at beyond the assertion itself."""
+    """What an export rule may look at beyond the assertion itself."""
     equivalence: EquivalenceTable = field(default_factory=EquivalenceTable)
-    units: UnitList = field(default_factory=UnitList)
-    known_entity_ids: set[str] = field(default_factory=set)      # entities already in the graph
-    batch: list[dict] = field(default_factory=list)              # the other assertions of the same write / export
-    known_assertion_keys: set[tuple] = field(default_factory=set)  # identities already in the graph (CS-07)
+    formats: FormatTable = field(default_factory=FormatTable)
+    batch: list[dict] = field(default_factory=list)              # the other assertions of the same export
+    known_entity_ids: set[str] = field(default_factory=set)      # entities with an identifying value anywhere in the export
+    known_assertion_keys: set[tuple] = field(default_factory=set)
+    write_log: dict[str, str] | None = None                      # element id -> unit_id of the accepted write (CS6 chain)
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -66,8 +63,12 @@ def _nonempty(s: Any) -> bool:
     return isinstance(s, str) and s.strip() != ""
 
 
+def normalise_modality(m: Any) -> Any:
+    return re.sub(r"[_\-]+", " ", m.strip().lower()) if isinstance(m, str) else m
+
+
 def entity_key(ref: dict, ctx: Context) -> str:
-    """Identity of an entity reference for CS-07: id when known, else canonical type + normalised label."""
+    """Identity of an entity reference for CS7: id when known, else canonical type + normalised label."""
     if _nonempty(ref.get("id")):
         return f"id:{ref['id']}"
     typ = ref.get("type")
@@ -78,18 +79,18 @@ def entity_key(ref: dict, ctx: Context) -> str:
 def _qualifier_key(q: dict | None) -> tuple:
     q = q or {}
     vt = q.get("validity_time") or {}
-    return (q.get("scope"), vt.get("from"), vt.get("to"), q.get("condition"), q.get("exception"), q.get("modality"),
-            q.get("priority"))
+    return (q.get("scope"), vt.get("from"), vt.get("to"), q.get("condition"), q.get("exception"),
+            normalise_modality(q.get("modality")), q.get("priority"))
 
 
 def assertion_key(a: dict, ctx: Context) -> tuple:
-    """Identity of an assertion (Eval 2 package, P.8: the qualifiers are part of an assertion's identity; provenance is
-    not). Duplicate = same subject, canonical predicate, object and qualifiers."""
+    """Identity of an assertion (list v0.2, CS7): subject, predicate, object and every qualifier after normalisation.
+    Provenance is not part of the comparison."""
     pred = a.get("predicate")
     canon = ctx.equivalence.canonical_predicate(pred) if pred and ctx.equivalence.loaded else pred
     obj = a.get("object")
     if _is_literal(obj):
-        okey = ("lit", str(obj.get("value")), obj.get("datatype"), obj.get("unit"))
+        okey = ("lit", str(obj.get("value")).strip().lower() if obj.get("value") is not None else None, obj.get("datatype"), obj.get("unit"))
     elif isinstance(obj, dict):
         okey = ("ent", entity_key(obj, ctx))
     else:
@@ -98,179 +99,166 @@ def assertion_key(a: dict, ctx: Context) -> tuple:
     return (entity_key(subj, ctx), canon or "?", okey, _qualifier_key(a.get("qualifiers")))
 
 
+def _has_identity(ref: dict) -> bool:
+    return _nonempty(ref.get("label")) or _nonempty(ref.get("key")) or _nonempty(ref.get("type"))
+
+
 # ----------------------------------------------------------------------------- rules
-def cs01_well_formed(a: dict, ctx: Context) -> list[Rejection]:
+def cs1_well_formed(a: dict, ctx: Context) -> list[Rejection]:
+    """Subject, predicate or object missing or empty after spelling normalisation."""
     out = []
     subj = a.get("subject")
     if not isinstance(subj, dict) or not (_nonempty(subj.get("id")) or _nonempty(subj.get("label"))):
-        out.append(Rejection("CS-01", "subject", "entity reference with id or label", subj, "subject missing or empty"))
+        out.append(Rejection("CS1", "subject", "entity reference with id or label", subj, "subject missing or empty"))
     if not _nonempty(a.get("predicate")):
-        out.append(Rejection("CS-01", "predicate", "non-empty string", a.get("predicate"), "predicate missing or empty"))
+        out.append(Rejection("CS1", "predicate", "non-empty string", a.get("predicate"), "predicate missing or empty"))
     obj = a.get("object")
     if _is_literal(obj):
         if obj.get("value") is None or (isinstance(obj.get("value"), str) and obj["value"].strip() == ""):
-            out.append(Rejection("CS-01", "object.value", "non-null literal value", obj.get("value"), "literal object without a value"))
+            out.append(Rejection("CS1", "object.value", "non-null literal value", obj.get("value"), "literal object without a value"))
     elif _is_entity(obj):
         if not (_nonempty(obj.get("id")) or _nonempty(obj.get("label"))):
-            out.append(Rejection("CS-01", "object", "entity reference with id or label", obj, "object entity missing id and label"))
+            out.append(Rejection("CS1", "object", "entity reference with id or label", obj, "object entity missing id and label"))
     else:
-        out.append(Rejection("CS-01", "object", "entity reference or literal", obj, "object missing"))
+        out.append(Rejection("CS1", "object", "entity reference or literal", obj, "object missing"))
     return out
 
 
-def cs02_vocabulary(a: dict, ctx: Context) -> list[Rejection]:
+def cs2_vocabulary(a: dict, ctx: Context) -> list[Rejection]:
+    """Predicate or type resolves neither through the mapping nor the equivalence table nor an adjudication."""
     if not ctx.equivalence.loaded:
-        return [Rejection("CS-02", "predicate", "equivalence table", None,
-                          "no equivalence table loaded (Thesis A's Domain Binding); rule not checkable", status="not_checkable")]
+        return [Rejection("CS2", "predicate", "equivalence table", None,
+                          "no equivalence table loaded (Thesis A, 28 Dec); rule not checkable", status="not_checkable")]
     out = []
     pred = a.get("predicate")
     if _nonempty(pred) and ctx.equivalence.canonical_predicate(pred) is None:
-        out.append(Rejection("CS-02", "predicate", "a predicate of the canonical vocabulary or an alias in the equivalence table",
+        out.append(Rejection("CS2", "predicate", "a predicate of the canonical vocabulary or an alias in the equivalence table",
                              pred, f"predicate {pred!r} is not mapped and not mappable"))
     for role in ("subject", "object"):
         ref = a.get(role)
         if _is_entity(ref) and _nonempty(ref.get("type")) and ctx.equivalence.canonical_type(ref["type"]) is None:
-            out.append(Rejection("CS-02", f"{role}.type", "a type of the canonical vocabulary or an alias", ref["type"],
+            out.append(Rejection("CS2", f"{role}.type", "a type of the canonical vocabulary or an alias", ref["type"],
                                  f"type {ref['type']!r} is not mapped and not mappable"))
     return out
 
 
-def cs03_no_dangling(a: dict, ctx: Context) -> list[Rejection]:
-    """An entity referenced by id must exist: in the graph, or be introduced in the same batch (as a subject, or as an
-    object with a label that names it)."""
+def cs3_no_dangling(a: dict, ctx: Context) -> list[Rejection]:
+    """Subject or entity-valued object has no identifying value anywhere in the export (an empty node; a bare resource
+    without name, key or type)."""
     out = []
-    introduced = set()
-    for b in ctx.batch:
-        for role in ("subject", "object"):
-            ref = b.get(role)
-            if _is_entity(ref) and _nonempty(ref.get("id")) and _nonempty(ref.get("label")):
-                introduced.add(ref["id"])
     for role in ("subject", "object"):
         ref = a.get(role)
-        if _is_entity(ref) and _nonempty(ref.get("id")) and not _nonempty(ref.get("label")):
-            if ref["id"] not in ctx.known_entity_ids and ref["id"] not in introduced:
-                out.append(Rejection("CS-03", f"{role}.id", "an entity that exists in the graph or is introduced in this write",
-                                     ref["id"], f"{role} refers to unknown entity {ref['id']!r}"))
+        if not _is_entity(ref):
+            continue
+        if _has_identity(ref):
+            continue
+        rid = ref.get("id")
+        if _nonempty(rid) and rid in ctx.known_entity_ids:
+            continue
+        out.append(Rejection("CS3", f"{role}", "an entity with an identifying value (name, key or type) somewhere in the export",
+                             ref, f"{role} refers to an entity without an identifying value"))
     return out
 
 
-def _parse_literal(value: Any, datatype: str | None) -> str | None:
-    """None when the value parses as the datatype, else what was expected."""
-    if datatype in (None, "string"):
-        return None if isinstance(value, str) or value is not None else "string"
-    if datatype == "integer":
-        if isinstance(value, bool) or not (isinstance(value, int) or (isinstance(value, str) and re.fullmatch(r"[+-]?\d+", value.strip()))):
-            return "integer"
-    elif datatype == "decimal":
-        if isinstance(value, bool):
-            return "decimal"
-        try:
-            float(str(value).replace(",", ".")) if not isinstance(value, (int, float)) else None
-        except ValueError:
-            return "decimal number"
-    elif datatype == "boolean":
-        if not (isinstance(value, bool) or str(value).lower() in ("true", "false", "yes", "no", "ja", "nein")):
-            return "boolean"
-    elif datatype == "date":
-        if not (isinstance(value, str) and ISO_DATE.match(value)):
-            return "ISO 8601 date"
-        try:
-            date.fromisoformat(value)
-        except ValueError:
-            return "ISO 8601 date"
-    elif datatype == "datetime":
-        try:
-            datetime.fromisoformat(str(value).replace("Z", "+00:00"))
-        except ValueError:
-            return "ISO 8601 datetime"
-    elif datatype == "duration":
-        if not (isinstance(value, str) and ISO_DURATION.match(value)):
-            return "ISO 8601 duration"
-    return None
-
-
-def cs04_datatypes_units(a: dict, ctx: Context) -> list[Rejection]:
+def cs4_datatypes_units(a: dict, ctx: Context) -> list[Rejection]:
+    """An object value that does not normalise to the value type its predicate expects, under the format table."""
     obj = a.get("object")
     if not _is_literal(obj):
         return []
     out = []
     dt = obj.get("datatype")
     if dt is not None and dt not in DATATYPES:
-        out.append(Rejection("CS-04", "object.datatype", sorted(DATATYPES), dt, f"unknown datatype {dt!r}"))
+        out.append(Rejection("CS4", "object.datatype", sorted(DATATYPES), dt, f"unknown datatype {dt!r}"))
     else:
-        expected = _parse_literal(obj.get("value"), dt)
+        expected = ctx.formats.check(obj.get("value"), dt)
         if expected:
-            out.append(Rejection("CS-04", "object.value", expected, obj.get("value"), f"value does not parse as {dt}"))
+            out.append(Rejection("CS4", "object.value", expected, obj.get("value"), f"value does not parse as {dt}"))
     unit = obj.get("unit")
     if _nonempty(unit):
-        if not ctx.units.loaded:
-            out.append(Rejection("CS-04", "object.unit", "unit list", unit,
-                                 "no unit list loaded (Thesis A's Domain Binding); unit not checkable", status="not_checkable"))
-        elif not ctx.units.known(unit):
-            out.append(Rejection("CS-04", "object.unit", "a unit of the unit list", unit, f"unknown unit {unit!r}"))
+        status = ctx.formats.unit_status(unit)
+        if status == "not_checkable":
+            out.append(Rejection("CS4", "object.unit", "format and unit table", unit,
+                                 "no unit table yet (Thesis A, 23 Nov); unit not checkable", status="not_checkable"))
+        elif status == "unknown":
+            out.append(Rejection("CS4", "object.unit", "a unit of the format and unit table", unit, f"unknown unit {unit!r}"))
     return out
 
 
-def cs05_qualifiers(a: dict, ctx: Context) -> list[Rejection]:
+def cs5_qualifiers(a: dict, ctx: Context) -> list[Rejection]:
+    """A qualifier that is present and not in the form BE-08 fixes. A missing qualifier is no violation."""
     q = a.get("qualifiers")
     if q is None:
-        return [Rejection("CS-05", "qualifiers", "object (may be empty)", None, "qualifiers missing; use {} when the source documents none")]
+        return []
     if not isinstance(q, dict):
-        return [Rejection("CS-05", "qualifiers", "object", q, "qualifiers is not an object")]
+        return [Rejection("CS5", "qualifiers", "object", q, "qualifiers is not an object")]
     out = []
     for k in q:
         if k not in QUALIFIER_KEYS:
-            out.append(Rejection("CS-05", f"qualifiers.{k}", sorted(QUALIFIER_KEYS), k, f"unknown qualifier {k!r}"))
+            out.append(Rejection("CS5", f"qualifiers.{k}", sorted(QUALIFIER_KEYS), k, f"unknown qualifier {k!r}"))
+    scope = q.get("scope")
+    if scope is not None:
+        if not _nonempty(scope):
+            out.append(Rejection("CS5", "qualifiers.scope", "DE, a federal-state code, an 8-digit municipality key or an institution id", scope, "scope is empty"))
+        elif scope.strip().isdigit() and not SCOPE_KEY.match(scope.strip()):
+            out.append(Rejection("CS5", "qualifiers.scope", "8-digit municipality key as text", scope, "numeric scope is not an 8-digit key"))
     vt = q.get("validity_time")
     if vt is not None:
         if not isinstance(vt, dict):
-            out.append(Rejection("CS-05", "qualifiers.validity_time", "object with from/to", vt, "validity_time is not an object"))
+            out.append(Rejection("CS5", "qualifiers.validity_time", "closed-open ISO 8601 interval {from, to}", vt, "validity_time is not an object"))
         else:
             for k in ("from", "to"):
                 v = vt.get(k)
-                if v is not None and _parse_literal(v, "date"):
-                    out.append(Rejection("CS-05", f"qualifiers.validity_time.{k}", "ISO 8601 date", v, f"validity_time.{k} is not a date"))
-            if vt.get("from") and vt.get("to") and ISO_DATE.match(str(vt["from"])) and ISO_DATE.match(str(vt["to"])) and vt["from"] > vt["to"]:
-                out.append(Rejection("CS-05", "qualifiers.validity_time", "from <= to", vt, "validity_time ends before it starts"))
-    if q.get("modality") is not None and q["modality"] not in MODALITIES:
-        out.append(Rejection("CS-05", "qualifiers.modality", sorted(MODALITIES), q["modality"], "unknown modality"))
+                if v is not None and ctx.formats.check(v, "date"):
+                    out.append(Rejection("CS5", f"qualifiers.validity_time.{k}", "ISO 8601 date", v, f"validity_time.{k} is not a date"))
+            f, t = vt.get("from"), vt.get("to")
+            if f and t and ISO_DATE.match(str(f)) and ISO_DATE.match(str(t)) and f >= t:
+                out.append(Rejection("CS5", "qualifiers.validity_time", "start before end (closed-open interval)", vt, "validity_time does not start before it ends"))
+    if q.get("modality") is not None and normalise_modality(q["modality"]) not in MODALITIES:
+        out.append(Rejection("CS5", "qualifiers.modality", sorted(MODALITIES), q["modality"], "modality is not must, may or must not"))
     if q.get("priority") is not None and (isinstance(q["priority"], bool) or not isinstance(q["priority"], int)):
-        out.append(Rejection("CS-05", "qualifiers.priority", "integer", q["priority"], "priority is not an integer"))
-    for k in ("scope", "condition", "exception"):
+        out.append(Rejection("CS5", "qualifiers.priority", "integer", q["priority"], "priority is not an integer"))
+    for k in ("condition", "exception"):
         if q.get(k) is not None and not _nonempty(q[k]):
-            out.append(Rejection("CS-05", f"qualifiers.{k}", "non-empty string or null", q[k], f"{k} is empty"))
+            out.append(Rejection("CS5", f"qualifiers.{k}", "non-empty text", q[k], f"{k} is empty"))
     return out
 
 
-def cs06_provenance(a: dict, ctx: Context) -> list[Rejection]:
+def cs6_provenance(a: dict, ctx: Context) -> list[Rejection]:
+    """The chain breaks: no pointer to a graph element, or an element the write log does not show as the product of an
+    accepted write with a unit id. With a write log (element id -> unit id) the chain is followed; without one the
+    assertion's own `provenance.unit_id` (what the exporter copied from the log) stands in."""
+    elements = a.get("elements") or a.get("element_ids") or []
+    if ctx.write_log is not None:
+        if not elements:
+            return [Rejection("CS6", "elements", "pointers to the graph elements the assertion was built from", elements,
+                              "no pointer to a graph element: unanchored")]
+        missing = [e for e in elements if e not in ctx.write_log]
+        if missing:
+            return [Rejection("CS6", "elements", "elements produced by an accepted write with a unit id", missing,
+                              "element not found in the write log: unanchored")]
+        return []
     p = a.get("provenance")
     if not isinstance(p, dict) or not _nonempty(p.get("unit_id")):
-        return [Rejection("CS-06", "provenance.unit_id", "the source unit the agent was processing", (p or {}).get("unit_id") if isinstance(p, dict) else p,
-                          "provenance pointer missing: unit_id required")]
-    if not (_nonempty(p.get("locator")) or _nonempty(p.get("quote"))):
-        return [Rejection("CS-06", "provenance", "locator or quote inside the unit", {"locator": p.get("locator"), "quote": p.get("quote")},
-                          "provenance has no anchor inside the unit (locator or quote)")]
+        return [Rejection("CS6", "provenance.unit_id", "the source unit of the accepted write", (p or {}).get("unit_id") if isinstance(p, dict) else p,
+                          "no source unit: unanchored")]
     return []
 
 
-def cs07_no_duplicate(a: dict, ctx: Context) -> list[Rejection]:
+def cs7_no_duplicate(a: dict, ctx: Context) -> list[Rejection]:
     key = assertion_key(a, ctx)
     if key in ctx.known_assertion_keys:
-        return [Rejection("CS-07", "assertion", "a proposition not yet in the graph", key, "duplicate of an assertion already in the graph")]
-    same = [b for b in ctx.batch if b is not a and assertion_key(b, ctx) == key]
-    if same:
-        return [Rejection("CS-07", "assertion", "one occurrence per proposition in a write", key, "duplicate inside the same write")]
+        return [Rejection("CS7", "assertion", "one occurrence per fact", key, "duplicate of an earlier assertion")]
     return []
 
 
 COMMON_RULES = {
-    "CS-01": ("subject, predicate and object well formed", cs01_well_formed),
-    "CS-02": ("predicate and type mapped or mappable under the equivalence table", cs02_vocabulary),
-    "CS-03": ("no dangling reference", cs03_no_dangling),
-    "CS-04": ("datatypes and units parse", cs04_datatypes_units),
-    "CS-05": ("qualifiers well formed", cs05_qualifiers),
-    "CS-06": ("provenance pointer present", cs06_provenance),
-    "CS-07": ("no duplicate assertion", cs07_no_duplicate),
+    "CS1": ("subject, predicate and object well formed", cs1_well_formed),
+    "CS2": ("predicate and type mapped or mappable under the equivalence table", cs2_vocabulary),
+    "CS3": ("no dangling reference", cs3_no_dangling),
+    "CS4": ("datatypes and units parse", cs4_datatypes_units),
+    "CS5": ("qualifiers well formed", cs5_qualifiers),
+    "CS6": ("provenance pointer present", cs6_provenance),
+    "CS7": ("no duplicate assertion", cs7_no_duplicate),
 }
 
 

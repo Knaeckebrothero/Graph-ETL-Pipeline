@@ -37,3 +37,19 @@ See `CONFIRMATIONS-2026-11-13.md` for the six [to confirm] items and three corre
 - After the items above: all configuration files set to `status: frozen`, template ids and hashes recorded, change-log row; Thesis A makes the freeze commit.
 - kgc-trace/1 version 1.1 (Thesis A's field names, one file passes both checkers): delivered 14 Nov on this branch (`kgc-trace-v1.1.schema.json`, `shared-minimum-review.md`). Instrumentation code for the openai-chat path in SRW: pull request by Sunday 15 Nov (F.2), waits for the write-tool hook (see validator questions).
 - Offered drafts to relieve Thesis A: catalog row for `deepseek-v4.1-flash`, sample-manifest JSON schema with the point-20 b fields, validator reject vocabulary, pilot job manifest for A6/A4 on S4-PG. Thesis A keeps ownership and decides.
+
+## 15 Nov 2026: Thesis A's three deliveries and what Thesis B did with them
+
+Thesis A (pull request 3 and branch `harness-db-tool`, 15 Nov):
+
+1. **Shared log, three write-record fields:** `evidence` (passage named with the write; never tested at the write), `element_ids` (what the write produced; non-empty exactly when the item is in the graph), `engine_result: already_present` (a repeated write: no rejection, no second copy, counted in `source_end.repeated_writes` and nowhere else). **Thesis B confirms all three.** kgc-trace/1.1 and the kgbench exporter carry them since 15 Nov; the sample passes both checkers (0 errors).
+2. **Common-scope rule list v0.2:** the six points of draft 0.1 settled; tested at the write CS1, CS3, CS4, on the export CS1 to CS7; `CS0` for an unreadable write; all faults of a readable item in one message; modality must / may / must not. Thesis B agrees with every point. Still owed by Thesis A by 23 Nov: the format and unit table, the test cases of section 7.
+3. **Database tool (`experiments/harness/dbtool`):** the agent writes Cypher or SPARQL; the store runs it; an APOC trigger hands the checker what the statement changed, while the transaction is open; the tool answers "already present", reports CS0, builds the message, applies the mode and writes the record. The checker is any object with `check(changes, lookup) -> faults`. **Thesis B's validator 0.2.0 implements exactly this** (`validator/checker.py`), on Thesis A's `changes` shape, with the enforcement of the schema treatments v0.2 (Rule 5). RDF side of the tool: not built by Thesis A yet.
+4. **Sample freeze, first step:** 32 development and 12 pilot units frozen (`experiments/sample/frozen/development-pilot.csv`), one day after the agreement's date.
+
+Open for Thesis A (asked 15 Nov):
+
+- Start the checker in the tool (`"checker": "validator.checker:checker"`, `PYTHONPATH=experiments/thesis-b`) and run its 16 tool tests with it; three of its stand-in situations come out differently under the real rules (validator README §6).
+- `evidence`: the tool records a string, the log schema requires `{quote, locator}` or null. One of the two changes.
+- Whether an agent may delete (`changes.deleted`): no rule of v0.2 speaks about it; the validator lets it pass.
+- Merge of `thesis-b/f3-spec` (pull request 4) and where the validator lives afterwards.

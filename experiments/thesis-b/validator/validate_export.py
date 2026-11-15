@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Run the shared validator over a canonical export (JSON Lines, one canonical assertion per line).
+"""Run the shared validator over a canonical export (JSON Lines, one canonical assertion per line): the second entry
+point of Thesis A's rule list (section 9), the rules CS1 to CS7 on the export.
 
 Usage (from the repository root):
-  python3 -m experiments.thesis-b.validator.validate_export EXPORT.jsonl \
-      [--equivalence equivalence.json] [--units units.json] [--schema] [--detail]
+  python3 experiments/thesis-b/validator/validate_export.py EXPORT.jsonl \
+      [--equivalence equivalence.json] [--formats formats.json] [--log RUN.jsonl] [--schema] [--detail]
 
-  --schema    also check every line against canonical.schema.json (needs jsonschema)
-  --detail    print one line per assertion with a violation
+  --equivalence  Thesis A's equivalence table (28 Dec); without it CS2 is not checkable and the figure is provisional
+  --formats      Thesis A's format and unit table (23 Nov); without it units are not checkable
+  --log          the run's log (shared-minimum-log/1 or kgc-trace/1.1): CS6 follows element_ids of accepted writes
+  --schema       also check every line against canonical.schema.json (needs jsonschema)
+  --detail       print one line per assertion with a violation
 Exit code 0 when no violation, 1 otherwise. Rules that could not be checked for want of a binding are listed, never
 counted as violations.
-
-The module path contains a hyphen, so run it as a file instead:
-  python3 experiments/thesis-b/validator/validate_export.py EXPORT.jsonl
 """
 from __future__ import annotations
 
@@ -22,16 +23,30 @@ import sys
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-    from validator import CANONICAL_SCHEMA_PATH, EquivalenceTable, UnitList, Validator  # type: ignore
+    from validator import CANONICAL_SCHEMA_PATH, EquivalenceTable, FormatTable, Validator  # type: ignore
 else:  # pragma: no cover
-    from . import CANONICAL_SCHEMA_PATH, EquivalenceTable, UnitList, Validator
+    from . import CANONICAL_SCHEMA_PATH, EquivalenceTable, FormatTable, Validator
+
+
+def write_log_from(path: pathlib.Path) -> dict[str, str]:
+    """element id -> unit_id over the accepted insert_attempt records of a run log."""
+    out: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        if r.get("record_type") == "insert_attempt" and r.get("accepted") and r.get("unit_id"):
+            for e in r.get("element_ids") or []:
+                out.setdefault(e, r["unit_id"])
+    return out
 
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("export", type=pathlib.Path)
     ap.add_argument("--equivalence", type=pathlib.Path)
-    ap.add_argument("--units", type=pathlib.Path)
+    ap.add_argument("--formats", "--units", dest="formats", type=pathlib.Path)
+    ap.add_argument("--log", type=pathlib.Path, help="run log; CS6 follows element_ids of accepted writes")
     ap.add_argument("--schema", action="store_true", help="also validate each line against canonical.schema.json")
     ap.add_argument("--detail", action="store_true")
     args = ap.parse_args(argv)
@@ -50,11 +65,11 @@ def main(argv: list[str]) -> int:
                 if args.detail:
                     print(f"line {i} schema: {'/'.join(map(str, err.path)) or 'record'}: {err.message[:160]}")
     val = Validator(mode="reject", equivalence=EquivalenceTable.load(args.equivalence) if args.equivalence else None,
-                    units=UnitList.load(args.units) if args.units else None)
-    rep = val.check_export(rows)
+                    formats=FormatTable.load(args.formats) if args.formats else None)
+    rep = val.check_export(rows, write_log=write_log_from(args.log) if args.log else None)
     print(f"{args.export}: {rep['assertions']} assertions, {rep['violations']} violations in "
           f"{rep['assertions_with_violation']} assertions; by rule {rep['by_rule']}; "
-          f"checked {rep['checked_rules']} of {len(val.common_rules)} rules"
+          f"checked {rep['checked_rules']} of 7 rules; equivalence table {rep['equivalence_table']}"
           + (f"; not checkable without binding: {rep['not_checkable_rules']}" if rep["not_checkable_rules"] else "")
           + (f"; canonical schema errors: {schema_errors}" if args.schema else ""))
     if args.detail:

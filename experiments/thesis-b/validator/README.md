@@ -1,102 +1,138 @@
-# Shared harness validator (Thesis B), version 0.1.0, 14 Nov 2026
+# Shared harness validator (Thesis B), version 0.2.0, 15 Nov 2026
 
-Agreement version 1.0, section 3.2: the harness validator is built and owned by Thesis B since 14 Nov 2026. Local
-per-insert rules, global end-of-run rules, reject and log-only mode, uniform messages carrying rule id, element,
-expected and found; delivered as pull requests to the harness, reviewed and merged by Thesis A. What it checks is
-fixed by Thesis A: the common-scope rule list is part of Thesis A's technique (Eval 2 package v0.1, card P.3), the
-treatment-scope rules follow from the constraints each schema realisation declares (`schemas/treatments/*/declaration.json`).
-Frozen at F4 (23 Nov) together with Thesis A's rule list and mappings.
+Agreement version 1.0, section 3.2: the harness validator is built and owned by Thesis B since 14 Nov 2026. What it
+checks is fixed by Thesis A: the common-scope rule list (`docs/technique/common-scope-rules.md`, **version 0.2 of
+15 Nov**, pull request 3) and the constraints each realisation declares (`schemas/treatments/*/declaration.json`,
+**version 0.2 of 15 Nov**, Rule 5 "what is binding"). Frozen at F4 (23 Nov) with Thesis A's rule list.
 
-**Status: core, not yet wired into the harness.** Everything below runs offline on canonical assertions and schema
-writes. What is still missing is listed in section 5; it needs Thesis A's inputs or decisions.
+Version 0.2.0 follows Thesis A's three decisions of 15 Nov: the rule list v0.2 (two test moments, ids `CS0` to `CS7`,
+`TS-*`), the database tool with its handover point (`experiments/harness/dbtool/checker.py`: the agent writes Cypher
+or SPARQL, the store runs it, the tool hands the checker **what the statement changed**), and the enforcement rules of
+the schema treatments (a label outside the list, a relationship matching no pattern and a uniqueness violation are
+rejected; a property the schema does not name is accepted and counted).
 
-## 1. Files
+**Status: the library is complete for the property-graph side and runs against Thesis A's `changes`; it is not yet
+started inside Thesis A's tool** (that is one line of configuration, section 3). RDF: the adapter exists
+(`diff_from_ntriples`), Thesis A's RDF side of the tool does not.
+
+## 1. Two entry points, one rule code (rule list section 9)
+
+```python
+from validator import Checker, Validator, FormatTable, EquivalenceTable
+
+# 1. before the database: Thesis A's tool calls this on every statement that changed something
+c = Checker()                                   # declarations from schemas/treatments/<realisation>/declaration.json
+faults = c.check(changes, lookup)               # [{"rule_id", "element", "expected", "found", "message"}, ...]; [] = pass
+c.observations                                  # counted, never rejected: properties the schema does not name (Rule 5)
+c.not_checkable()                               # rules no binding allowed to decide (never a pass)
+
+# 2. after the run: the canonical export, one assertion per line
+v = Validator(equivalence=EquivalenceTable.load(...), formats=FormatTable.load(...))
+report = v.check_export(assertions, write_log={element_id: unit_id})   # run_end.global_validator + detail
+```
+
+```bash
+python3 -m pytest experiments/thesis-b/validator/tests -q                 # 29 tests here, 36 with Thesis A's schemas checked out
+python3 experiments/thesis-b/validator/validate_export.py EXPORT.jsonl --equivalence ... --formats ... --log RUN.jsonl --detail
+```
+
+## 2. Files
 
 | File | What |
 |---|---|
-| `validator.py` | `Validator` (modes, local common scope, local treatment scope, global export check), `GraphView`, `Result` with `to_log()` and `message()` |
-| `rules_common.py` | CS-01 to CS-07, the common-scope rules of card P.3, on canonical form |
-| `rules_treatment.py` | TS-01 to TS-05 from a realisation's `declaration.json`, on the write as rendered into the schema |
-| `vocabulary.py` | loaders for the equivalence table and the unit list (Thesis A's Domain Binding; placeholder format) |
-| `canonical.schema.json` | **draft** JSON Schema of one canonical assertion, Thesis B's reading of Eval 2 §1.2; Thesis A confirms or corrects |
-| `validate_export.py` | CLI: global check of a canonical export (JSON Lines) |
-| `examples/` | placeholder equivalence table and unit list; a four-line export with one duplicate and one unanchored assertion |
-| `tests/` | expected properties on Thesis A's seven boundary graphs; treatment scope against a declaration; Thesis A's real declarations when present |
+| `checker.py` | `Checker.check(changes, lookup)` and the factory `checker()` for Thesis A's `load_checker("validator.checker:checker")` |
+| `items.py` | the item model of the write (entity item, relation item) and the adapters: `diff_from_changes` (Thesis A's tool), `diff_from_ntriples` (RDF), `diff_from_neo4j` (driver objects) |
+| `rules_write.py` | CS1, CS3, CS4 at the write; treatment scope `TS-type`, `TS-unique`, `TS-endpoint` (and `TS-required`, `TS-datatype`, `TS-valuelist` for a declaration that carries them) under the realisation's enforcement |
+| `rules_common.py` | CS1 to CS7 on the export |
+| `rules_treatment.py` | `Declaration`: loader for `declaration.json` (`enforcement`, `identifying_value`, uniqueness, patterns) |
+| `validator.py` | `Validator` with `check_write` and `check_export`, `Result` (`to_log()`, `message()`, `engine_result()`, `element_ids`) |
+| `vocabulary.py` | `EquivalenceTable`, `FormatTable` (Thesis A's format and unit table; provisional formats until 23 Nov) |
+| `changes.schema.json` | Thesis B's reading of Thesis A's `changes` (checker.py docstring) as JSON Schema, for tests |
+| `canonical.schema.json` | **draft** of one canonical assertion on the export; revised to BE-08 modalities; Thesis A confirms |
+| `examples/` | `changes.example.json` (Thesis A's rejected-write test, by hand), `inserted.example.nt` (RDF 1.2 annotation form), a four-line export, placeholder equivalence table and unit list |
+| `tests/` | the boundary graphs on the export, Thesis A's tool situations on the write, Rule 5, the RDF adapter, Thesis A's real declarations when present |
 
-```bash
-python3 -m pytest experiments/thesis-b/validator/tests -q
-python3 experiments/thesis-b/validator/validate_export.py experiments/thesis-b/validator/examples/export.example.jsonl \
-    --equivalence experiments/thesis-b/validator/examples/equivalence.example.json \
-    --units experiments/thesis-b/validator/examples/units.example.json --schema --detail
-```
+## 3. Starting it inside Thesis A's tool
 
-## 2. Rules
+`experiments/harness/dbtool/cells.example.json`: `"checker": "validator.checker:checker"`, and the tool started with
+`PYTHONPATH=experiments/thesis-b` (the folder name has a hyphen, so it is not importable as a package path). The
+checker finds `schemas/treatments/<realisation>/declaration.json` from the repository root; `KG_VALIDATOR_ROOT`
+overrides the root, `KG_VALIDATOR_FORMATS` names Thesis A's format and unit table once it exists. Nothing else is
+configured: the mode (reject, log_only), the message, "already present", CS0 and the record are the tool's.
 
-**Common scope** (Thesis A's list, card P.3; identical in both arms; on canonical form, never on engine errors):
+What the checker returns is exactly Thesis A's four fields (plus `message`, which `normalise` drops). What the tool does
+with the answer: reject mode rolls the transaction back and sends the agent `message(faults)`; log-only keeps the write
+and records the faults.
 
-| Rule | Checks | Needs from Thesis A |
+## 4. Rules
+
+**At the write** (on the items of `changes`; rule list v0.2 sections 3 to 5):
+
+| Rule | Checks | Note |
 |---|---|---|
-| CS-01 | subject, predicate and object well formed | — |
-| CS-02 | predicate and type mapped or mappable under the equivalence table | equivalence table; until then `not_checkable` |
-| CS-03 | no dangling reference: an entity referenced by id exists in the graph or is introduced in the same write | the harness fills `GraphView.entity_ids` |
-| CS-04 | datatypes parse (string, integer, decimal, boolean, date, datetime, duration); units are in the unit list | unit list; until then units `not_checkable` |
-| CS-05 | qualifiers well formed: known keys only (scope, validity_time, condition, exception, modality, priority), dates parse, from <= to, modality in its list | confirm the qualifier set |
-| CS-06 | provenance pointer present: `unit_id` plus a locator or a quote inside the unit | — |
-| CS-07 | no duplicate assertion: same subject, canonical predicate, object and qualifiers (provenance is not part of the identity, card P.8) | confirm the identity rule |
+| `CS0` | the statement cannot be run | reported by the tool, not by this code |
+| `CS1` | empty type, attribute name or relation type; an entity without an identifying value; a relation with a missing end; an empty or white-space value; control characters | identifying value = a declared unique property, else `uid`/`id`/`key`/`name`/...; in S1 only `Entity` needs one (`identifying_value`), an `Assertion` node is a reification |
+| `CS3` | an end of a relation resolves to exactly one entity | in the property graph the store resolved the ends before `changes` exists (`ends`); an end that matched nothing or several leaves an empty or multiplied diff, which the N-Triples path reads from the statement (`diff_level`); Thesis A's tool answers "already present" for an empty diff itself |
+| `CS4` | a value given with a datatype is a valid form of it | driver-typed values are already valid; typed RDF literals and the explicit form `{"value", "datatype", "unit"}` are parsed; units `not_checkable` until Thesis A's table |
+| `TS-type` | label, class or relationship type outside the list | rejected where `enforcement` says so (S3, S4); S1 declares nothing |
+| `TS-endpoint` | relationship whose type and end types match no declared pattern | rejected (S3, S4); `not_checkable` when an end has no label |
+| `TS-unique` | a declared unique value already in the graph (`lookup.find`) or twice in one statement | rejected (S3, S4); a changed node keeping its own value is no violation |
+| `TS-property` | a property the schema does not name | **accepted and counted** (Rule 5): an observation, never a fault |
+| `TS-required`, `TS-datatype`, `TS-valuelist`, `TS-cardinality` | from a declaration that carries them | n.a. for every realisation of v0.2, as card P.4 foresees |
 
-A rule that cannot be decided for want of a binding is reported as `not_checkable`, listed in the log record and in the
-global report, and never counted as pass or reject. Nothing is approved silently.
+Order: common-scope rules first; an item that fails one is not tested against the schema's rules (rule list, CS4).
+Every fault of a readable statement comes back in one list. Nothing from the benchmark in `expected`: only what the
+schema description or the unit already shows the agent. CS2, CS5, CS6 and CS7 are never tested at the write.
 
-**Treatment scope** (from `declaration.json`, card P.4):
+**On the export** (canonical assertions; rule list v0.2 section 4 "counts"):
 
-| Rule | Checks | Declared by v5.0? |
+| Rule | Counts | Needs from Thesis A |
 |---|---|---|
-| TS-01 | node label and relationship type declared | yes |
-| TS-02 | node property declared for its label | yes (constraints, indexes, `// Properties:` comments) |
-| TS-03 | relationship pattern (from label, type, to label) declared | yes (reference patterns) |
-| TS-04 | uniqueness: value not already used for that label and property | yes (21 constraints) |
-| TS-05 | relationship property declared on the pattern | yes (`HAS_COMPONENT {qty, weight_g}`) |
-| — | required property, datatype, cardinality, closed value list | **no**: n.a. for every realisation of draft 0.1, as card P.4 foresees |
+| `CS1` | subject, predicate or object missing or empty | — |
+| `CS2` | predicate or type resolves neither through the mapping nor the equivalence table | mappings (23 Nov), equivalence table (28 Dec); until then `not_checkable`, figure provisional |
+| `CS3` | subject or entity-valued object without an identifying value anywhere in the export | — |
+| `CS4` | object value that does not normalise to its datatype; unit not in the table | format and unit table (23 Nov) |
+| `CS5` | a present qualifier not in BE-08 form: scope DE / state code / 8-digit key / institution id; validity closed-open ISO interval, start before end; modality must / may / must not; condition or exception non-empty. A missing qualifier is no violation | — |
+| `CS6` | the chain breaks: no element pointer, or an element the write log does not show as the product of an accepted write with a unit id (`write_log` from `element_ids`); without a log, `provenance.unit_id` stands in | `element_ids` in the log (in since 15 Nov) |
+| `CS7` | equal subject, predicate, object and every qualifier after normalisation; first occurrence passes; provenance excluded | equivalence table for the final figure |
 
-S1 declares nothing, so every write passes the treatment scope. S2 is a placeholder until the induction; the loader
-refuses it. PG and RDF declarations of one treatment carry the same content, so the rules are the same in both arms.
+A rule that cannot be decided for want of a binding is `not_checkable`, listed in the report and never counted as
+pass or reject.
 
-## 3. Modes and the log record
+## 5. Expected properties (tests)
 
-- `reject`: a rejected write is not sent to the engine (`engine_result: not_sent`, `accepted: false`); the agent
-  receives `Result.message()`, one line per rejection, item id first, and resends the corrected candidates with the
-  same item ids (shared-minimum-log/1 README, "The item id").
-- `log_only` (configuration A6): the same checks, the same record, but the write goes through. Thesis A's card P.9
-  counts these separately and never as a rejection.
-- `Result.to_log()` gives exactly the fields of `insert_attempt` in shared-minimum-log/1: `validator_mode`,
-  `validator_result`, `rejections[rule_id, element, expected, found]` (plus Thesis B's `message` and
-  `validator_not_checkable` as extensions). `check_export()` gives `run_end.global_validator` (`checked_rules`,
-  `violations`, `by_rule`) plus the per-assertion detail.
+Export: full gold passes every rule; half gold passes; the empty export has no violations and no denominator;
+duplicated gold violates CS7 and nothing else, once per extra occurrence, and a second run gives the same figures; a
+different qualifier is a different fact; the fully hallucinated graph fails CS6 on every assertion; CS6 follows the
+write log; wrong qualifiers fail CS5 and nothing else, missing qualifiers nothing; the text blob fails CS2; without
+bindings CS2 and CS4 are `not_checkable`.
+Write: Thesis A's rejected-write test gives `CS1` (Forbidden node, no identifying value) and `TS-endpoint` in one
+answer; its rule write passes; `TS-unique` asks `lookup.find`; a label added to an existing node outside the list is
+`TS-type`; an undeclared property is counted, not rejected; S1 entities need a name, assertion nodes do not; S2's
+placeholder is no schema; common rules before schema rules per item; CS4 only on typed values; the rejection fits
+Thesis A's `validator_rejection`; log-only does not block; the checker loads through Thesis A's factory string.
 
-## 4. Expected properties (tests)
+## 6. Where Thesis B's reading differs from Thesis A's stand-in checker (for the record)
 
-On Thesis A's seven boundary graphs: full gold passes every rule; half gold passes; the empty export has no
-violations and no denominator; duplicated gold violates CS-07 and nothing else, once per extra occurrence, and a second
-run gives the same figures; the fully hallucinated graph (no basis in any unit) fails CS-06 on every assertion; wrong
-qualifiers fail CS-05 and nothing else; the text blob fails CS-02. Without an equivalence table and unit list, CS-02
-and CS-04 are `not_checkable`, not passed. Treatment scope: each of TS-01 to TS-05 is triggered by exactly one
-construction and nothing else; a write that matches the declaration passes; Thesis A's real S4/S3/S1 declarations load
-and give the inventory of the README (17 / 33 / 21 for S4).
+Thesis A's `test_neo4j_cell.py` runs a stand-in with two fixed rules. Under the real rules three of its situations
+come out differently, by Thesis A's own list:
 
-## 5. Not yet done, and what it needs
+1. `CREATE (:Forbidden {x: 1})` is `CS1` (no identifying value) before it is `TS-type`; the test expects `TS-type`.
+2. `SET w:Checked` adds a label outside the list: `TS-type` under Rule 5; the test expects the write to be stored.
+3. `DETACH DELETE` is reported under `changes.deleted` and no rule of v0.2 speaks about deletions; the validator lets
+   it pass and the record keeps it. Whether an agent may delete is Thesis A's call.
+
+And one mismatch inside Thesis A's own files: the tool records `evidence` as the plain passage string, the shared log
+schema of 15 Nov requires an object `{quote, locator}` or null.
+
+## 7. Not yet done, and what it needs
 
 | Missing | Needs | Owner |
 |---|---|---|
-| The hook in the SRW write tool: today `cypher_execute(statement: str)` runs raw Cypher with no validator and no item id; there is no SPARQL write tool yet | a structured write tool that takes canonical assertions (`write_assertions([...])`), renders them per realisation, and calls `check_insert` before and `check_write` after rendering; or Thesis A's own hook design | Thesis A builds the tool and the handover point (agreement 3.1); Thesis B wires the validator in |
-| Canonical form confirmed | Thesis A reads `canonical.schema.json` and confirms or corrects the field set, the qualifier keys and the literal datatypes | Thesis A |
-| Equivalence table and unit list in their final format | Thesis A's Domain Binding | Thesis A |
-| Mapping canonical form to each realisation (renderer), so that `check_write` sees labels and properties | Thesis A's mappings, frozen with technique v1.0 (23 Nov) | Thesis A |
-| Duplicate identity and the qualifier set confirmed | one line each from Thesis A | Thesis A |
-| Rule ids `rule_id` in Thesis A's vocabulary (if a different naming is wanted) | — | Thesis A |
-| Treatment scope for S2 | the induced schema per arm, written to `S2-induced/*/declaration.json` by Thesis A's derive.py | Thesis A, after induction |
-| Global rules beyond the common scope (e.g. graph-wide uniqueness after commit) | the per-realisation constraints are covered by TS-04; anything else: Thesis A names it | both |
-| Pilot wiring (16 Nov) | hook + canonical form; until then the validator can run log-only on the canonical export after each unit | both |
-
-Dates: Thesis A's rule list, mappings and binding tables are frozen at F4 (23 Nov), the same day as this validator.
-Thesis B asked on 14 Nov for the hook design and the canonical form by Mon 17 Nov and the bindings by 20 Nov; if they
-come later, the validator's freeze moves with them.
+| Start inside the tool (section 3) and one run of Thesis A's 16 tool tests with this checker in place of the stand-in | the development Neo4j with the hook | Thesis A (one config line), Thesis B watches the first run |
+| RDF side | Thesis A's RDF tool; the adapter `diff_from_ntriples` reads the inserted triples, CS3 for ends outside the write needs a lookup | Thesis A |
+| Format and unit table (CS4 units; formats beyond ISO) | the table, 23 Nov | Thesis A |
+| Mappings and equivalence table (CS2, final CS7) | 23 Nov, 28 Dec | Thesis A |
+| Thesis A's test cases of rule list section 7 with expected verdicts | 23 Nov; this suite is Thesis B's reading until then | Thesis A |
+| Canonical form of the export confirmed (`canonical.schema.json`) | one reading by Thesis A | Thesis A |
+| S2 declaration | after the induction | Thesis A |

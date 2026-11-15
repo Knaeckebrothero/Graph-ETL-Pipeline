@@ -1,0 +1,21 @@
+# What a SPARQL INSERT DATA added, as N-Triples (Thesis A's RDF side of the tool is not built yet; this is the form the
+# validator reads for it). S4-curated/rdf names: fessi:WasteItem etc. under https://fessi.example/schema/s4#.
+# RDF 1.2 annotation form for a relationship property, as Thesis A's Rule 3 fixes it: the statement is asserted, the
+# triple term carries the property.
+<https://fessi.example/data/wi-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://fessi.example/schema/s4#WasteItem> .
+<https://fessi.example/data/wi-1> <https://fessi.example/schema/s4#uid> "wi-1" .
+<https://fessi.example/data/wi-1> <https://fessi.example/schema/s4#name> "Paint can" .
+<https://fessi.example/data/ws-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://fessi.example/schema/s4#WasteStream> .
+<https://fessi.example/data/ws-1> <https://fessi.example/schema/s4#uid> "ws-1" .
+<https://fessi.example/data/ws-1> <https://fessi.example/schema/s4#name> "Hazardous waste" .
+<https://fessi.example/data/dr-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://fessi.example/schema/s4#DisposalRule> .
+<https://fessi.example/data/dr-1> <https://fessi.example/schema/s4#uid> "dr-1" .
+<https://fessi.example/data/dr-1> <https://fessi.example/schema/s4#valid_from> "ab Januar"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://fessi.example/data/wi-1> <https://fessi.example/schema/s4#HAS_RULE> <https://fessi.example/data/dr-1> .
+<https://fessi.example/data/dr-1> <https://fessi.example/schema/s4#ROUTES_TO> <https://fessi.example/data/ws-1> .
+<https://fessi.example/data/p-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://fessi.example/schema/s4#Product> .
+<https://fessi.example/data/p-1> <https://fessi.example/schema/s4#uid> "p-1" .
+<https://fessi.example/data/pc-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://fessi.example/schema/s4#PackagingComponent> .
+<https://fessi.example/data/pc-1> <https://fessi.example/schema/s4#uid> "pc-1" .
+<https://fessi.example/data/p-1> <https://fessi.example/schema/s4#HAS_COMPONENT> <https://fessi.example/data/pc-1> .
+<<( <https://fessi.example/data/p-1> <https://fessi.example/schema/s4#HAS_COMPONENT> <https://fessi.example/data/pc-1> )>> <https://fessi.example/schema/s4#qty> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
