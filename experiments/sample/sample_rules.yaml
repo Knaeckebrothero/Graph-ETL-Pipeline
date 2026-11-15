@@ -1,8 +1,9 @@
-# Sample rules, DRAFT 0.3 of 15 November 2026 (0.1 of 12 November). Not frozen. Every value marked "proposal" is to be
+# Sample rules, DRAFT 0.4 of 15 November 2026 (0.1 of 12 November). The development and pilot units cut under
+# this version are frozen (frozen/development-pilot.csv); a later change must leave them as they are. Not frozen. Every value marked "proposal" is to be
 # confirmed by the author before the manifest is hashed (planned: development and pilot buckets
 # 14 Nov, full manifest 18 Nov 2026). Register: EX-05 (units), BE-01 (strata), BE-02 (jurisdictions),
 # BE-05 (buckets), BE-06 (authority classes), EX-16 (canary bucket).
-version: draft-0.3
+version: draft-0.4
 seed: 20261113                     # proposal
 pdf_extractor: "pdftotext -layout" # version is written into the manifest at cut time
 
@@ -194,6 +195,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Allgemeine Abfallsatzung\\s+270\\s*$"], bottom_page_number: true}   # decided 15 Nov: dropped by position on the page
     stratum: free text
     jurisdiction: Munich
     authority_class: B
@@ -204,6 +206,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Hausmüllentsorgungssatzung\\s+271\\s*$"], bottom_page_number: true}   # decided 15 Nov: dropped by position on the page
     stratum: free text
     jurisdiction: Munich
     authority_class: B
@@ -214,6 +217,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Hausratsperrmüll-, Wertstoff- und Problemmüllsatzung\\s*$", "^\\s*277\\s+Stand: \\d{2}\\.\\d{2}\\.\\d{4}\\s*$"], bottom_page_number: true}   # decided 15 Nov: dropped by position on the page
     stratum: free text
     jurisdiction: Munich
     authority_class: B
@@ -224,6 +228,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Hausmüllentsorgungsgebührensatzung\\s+272\\s+Stand: \\d{2}\\.\\d{2}\\.\\d{4}\\s*$"], bottom_page_number: true}   # decided 15 Nov: dropped by position on the page
     stratum: free text
     stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
     split_paragraphs: ["section 3"]   # decided 15 Nov: one unit per numbered paragraph
@@ -237,6 +242,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Gartenabfallgebührensatzung\\s+276\\s+Stand: \\d{2}\\.\\d{2}\\.\\d{4}\\s*$"], bottom_page_number: true}   # decided 15 Nov: dropped by position on the page
     stratum: free text
     stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
     split_paragraphs: ["section 3"]   # decided 15 Nov: one unit per numbered paragraph
@@ -250,6 +256,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Hausratsperrmüllgebührensatzung\\s+278\\s+Stand: \\d{2}\\.\\d{2}\\.\\d{4}\\s*$"], bottom_page_number: true}   # decided 15 Nov: dropped by position on the page
     stratum: free text
     stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
     split_paragraphs: ["section 3"]   # decided 15 Nov: one unit per numbered paragraph
@@ -296,6 +303,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Veröffentlichungen\\s*$"], bottom: "^\\s*ABl\\. Nr\\. \\d+ / \\d{1,2}\\. \\w+ \\d{4}\\s+\\d+\\s*$"}   # the gazette's running header and footer; decided 15 Nov
     stratum: free text
     stratum_overrides: {"section 5": numeric tabular, "section 7": numeric tabular}   # the sections that hold the fee tables
     split_paragraphs: ["section 5", "section 7"]   # decided 15 Nov; neither has two numbered paragraphs, so both stay whole
@@ -309,6 +317,7 @@ sources:
     include: true
     held_out_only: true
     reader: pdf_statute
+    page_furniture: {top: ["^\\s*Veröffentlichungen\\s*$"], bottom: "^\\s*ABl\\. Nr\\. \\d+ / \\d{1,2}\\. \\w+ \\d{4}\\s+\\d+\\s*$"}   # the gazette's running header and footer; decided 15 Nov
     stratum: free text
     jurisdiction: Berlin
     authority_class: B

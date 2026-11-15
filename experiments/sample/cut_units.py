@@ -4,12 +4,15 @@
 Usage (from the repository root):
     .venv/bin/python experiments/sample/cut_units.py            # cut, select, write out/
     .venv/bin/python experiments/sample/cut_units.py --check    # re-cut and compare with out/manifest_draft.csv
+    .venv/bin/python experiments/sample/cut_units.py --check-frozen   # re-cut and compare with the frozen development and pilot units
+    .venv/bin/python experiments/sample/cut_units.py --write-frozen   # write frozen/development-pilot.csv; refuses to change an existing freeze
 
 Reads   sources/manifest.csv (file identity, checksums) and experiments/sample/sample_rules.yaml (all choices).
 Writes  experiments/sample/out/units/<unit_id>.txt   one file per unit, exactly what an agent is handed
         experiments/sample/out/manifest_draft.csv    one row per unit
 Everything is deterministic: same sources and same rules give byte-identical units and manifest.
-Nothing here is frozen; the freeze is a tagged commit with the manifest hash.
+Frozen since 15 November 2026: the development and pilot units (frozen/development-pilot.csv). Every other unit
+is a candidate until the full manifest is frozen.
 """
 import csv, hashlib, io, json, random, re, subprocess, sys, zipfile
 from pathlib import Path
@@ -174,11 +177,37 @@ def amount_lines(text):
     return sum(1 for ln in text.split("\n") if AMOUNT.search(ln))
 
 
+def strip_page_furniture(text, rule):
+    """Split extracted text at page breaks and drop running headers and footers by their position on the page,
+    never by pattern alone. rule.top: regexes that must match the first non-empty lines of a page, in order and
+    all of them, else nothing is dropped at the top. rule.bottom: a regex for the last non-empty line.
+    rule.bottom_page_number: the last non-empty line is dropped if it is the number of the page. Returns lines."""
+    pages = text.split("\f")
+    if not rule:
+        return "\n".join(pages).split("\n")
+    top = [re.compile(r) for r in rule.get("top") or []]
+    bottom = re.compile(rule["bottom"]) if rule.get("bottom") else None
+    out = []
+    for number, page in enumerate(pages, start=1):
+        ls = page.split("\n")
+        filled = [i for i, ln in enumerate(ls) if ln.strip()]
+        drop = set()
+        if top and len(filled) >= len(top) and all(r.match(ls[i]) for r, i in zip(top, filled)):
+            drop.update(filled[:len(top)])
+        rest = [i for i in filled if i not in drop]
+        if rest:
+            last = ls[rest[-1]].strip()
+            if (bottom and bottom.match(ls[rest[-1]])) or (rule.get("bottom_page_number") and last == str(number)):
+                drop.add(rest[-1])
+        out.extend(ln for i, ln in enumerate(ls) if i not in drop)
+    return out
+
+
 def pdf_statute(path, src):
     """One unit per section (§). The text before the table of contents is its own unit. A section listed under
     split_paragraphs that has at least two numbered paragraphs is cut at them: one unit per paragraph, with the
     section's heading lines repeated in front."""
-    lines = _pdftotext(path).replace("\f", "\n").split("\n")
+    lines = strip_page_furniture(_pdftotext(path), src.get("page_furniture"))
     if src.get("drop_lines"):
         drop = re.compile(src["drop_lines"])
         lines = [ln for ln in lines if not drop.match(ln)]
@@ -290,6 +319,8 @@ def cut():
         if src.get("split_paragraphs"):
             rule += ("; " + ", ".join(src["split_paragraphs"]) + " cut at numbered paragraphs, one unit each, section heading repeated; "
                      f"a piece with at least {RULES['chunk']['table_min_amount_lines']} lines holding an amount is numeric tabular, any other keeps the source's stratum")
+        if src.get("page_furniture"):
+            rule += "; running page headers and page footers dropped by their position on the page"
         if src["reader"].startswith("pdf"):
             rule += f"; text by {RULES['pdf_extractor']} ({pdf_version})"
         for locator, part, content in READERS[src["reader"]](path, src):
@@ -359,10 +390,55 @@ def manifest_bytes(units):
     return buf.getvalue().encode("utf-8")
 
 
+FROZEN = HERE / "frozen" / "development-pilot.csv"
+FROZEN_KEYS = ["unit_id", "unit_sha256", "unit_bytes", "source_id", "source_sha256", "locator", "stratum", "jurisdiction",
+               "authority_class", "bucket"]          # what a freeze fixes; rule texts and version labels may be reworded
+
+
+def frozen_bytes(units):
+    return manifest_bytes([u for u in units if u["bucket"] in ("development", "pilot")])
+
+
+def check_frozen(units):
+    """Every frozen row must be reproduced by the current cut in the fields a freeze fixes, and no other unit may
+    be a development or pilot unit."""
+    frozen = {r["unit_id"]: r for r in csv.DictReader(FROZEN.open(encoding="utf-8"))}
+    now = {u["unit_id"]: u for u in units}
+    problems = []
+    for uid, r in sorted(frozen.items()):
+        u = now.get(uid)
+        if u is None:
+            problems.append(f"{uid}: frozen unit is no longer cut")
+            continue
+        diff = [k for k in FROZEN_KEYS if str(u[k]) != r[k]]
+        if diff:
+            problems.append(f"{uid}: differs in {', '.join(diff)}")
+    extra = sorted(uid for uid, u in now.items() if u["bucket"] in ("development", "pilot") and uid not in frozen)
+    problems += [f"{uid}: is {now[uid]['bucket']} now but not in the freeze" for uid in extra]
+    return frozen, problems
+
+
 def main():
     units = cut()
     select(units)
     mb = manifest_bytes(units)
+    if "--check-frozen" in sys.argv:
+        frozen, problems = check_frozen(units)
+        print(f"{len(frozen)} frozen units, file sha256 {sha256_bytes(FROZEN.read_bytes())}; problems: {len(problems)}")
+        for line in problems:
+            print("  " + line)
+        sys.exit(1 if problems else 0)
+    if "--write-frozen" in sys.argv:
+        fb = frozen_bytes(units)
+        if FROZEN.exists() and FROZEN.read_bytes() != fb:
+            sys.exit(f"{FROZEN} exists and differs from the current cut. A freeze is not rewritten; "
+                     "a change is a logged deviation with a new file.")
+        FROZEN.parent.mkdir(exist_ok=True)
+        FROZEN.write_bytes(fb)
+        rows = list(csv.DictReader(io.StringIO(fb.decode("utf-8"))))
+        print(f"{len(rows)} units frozen ({sum(1 for r in rows if r['bucket'] == 'development')} development, "
+              f"{sum(1 for r in rows if r['bucket'] == 'pilot')} pilot); file sha256 {sha256_bytes(fb)}")
+        sys.exit(0)
     if "--check" in sys.argv:
         old = (OUT / "manifest_draft.csv").read_bytes()
         bad = [u["unit_id"] for u in units if (OUT / u["unit_file"]).read_bytes() != u["_text"]]

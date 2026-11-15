@@ -1,7 +1,8 @@
-# Source sample (draft)
+# Source sample
 
-Cuts the sources on disk into self-contained source units and writes a draft manifest. **Nothing here is frozen.**
-The freeze is a tagged commit that records the manifest hash; until then the choices in `sample_rules.yaml`
+Cuts the sources on disk into self-contained source units and writes a draft manifest.
+**Frozen since 15 November 2026: the 32 development and 12 pilot units** (section below). Every other unit is a
+candidate until the full manifest is frozen (planned 18 November); until then the choices in `sample_rules.yaml`
 that are not marked as decided are proposals.
 
 | File | What it is |
@@ -10,15 +11,29 @@ that are not marked as decided are proposals.
 | `cut_units.py` | Deterministic cutter and selector. `--check` re-cuts and compares with `out/`. |
 | `out/units/<unit_id>.txt` | One file per unit: exactly what an agent is handed (identity lines, `---`, content). Not tracked. |
 | `out/manifest_draft.csv` | One row per unit: hashes, source, locator, stratum, jurisdiction, authority class, bucket, chunk rule, seed. Not tracked. |
+| `frozen/development-pilot.csv` | The manifest rows of the frozen development and pilot units. Tracked. |
 
 ```bash
 .venv/bin/python experiments/sample/cut_units.py           # cut and select
 .venv/bin/python experiments/sample/cut_units.py --check   # reproducibility check
+.venv/bin/python experiments/sample/cut_units.py --check-frozen   # the current cut still gives the frozen units
 ```
+
+## Frozen: development and pilot units (15 November 2026)
+
+First step of the sample freeze (F2); the agreement names 14 November for it, it was done one day later.
+
+- **44 units:** 32 development (eight per modality stratum) and 12 pilot (three per stratum).
+- **File:** `frozen/development-pilot.csv`, SHA-256 `f9bda60a8bc4208abd36d1c56d610e808813c9a1151e75f88eff39176a8aca49`. Cut under rules version `draft-0.4`.
+- **What the freeze fixes** for each of these units: its id, the hash and size of its text, its source file and that file's hash, its locator, stratum, jurisdiction, authority class and bucket. `--check-frozen` re-cuts the sources and fails if any of that differs, or if another unit has become a development or pilot unit.
+- **What it does not fix:** the candidates. Rules may still change for them until the full manifest is frozen, as long as `--check-frozen` passes.
+- The unit texts are not in the repository (several sources have no recorded licence). Whoever has the source files reproduces them byte for byte with the cutter; the PDF extractor's version is part of each row's chunk rule.
+- `--write-frozen` refuses to change an existing freeze. A change is a logged deviation with a new file.
+- Ten of the 44 units are older FES material (the A-to-Z list, the bin leaflets, the sorting flyer, the facility list) whose permission for reuse is not recorded in `sources/manifest.csv`; consent is requested.
 
 ## State on 15 November 2026
 
-- 1,014 units from 30 source files; all four modality strata are present. Rules version `draft-0.3` (980 units under `draft-0.2` of 13 November, before the fee sections were cut).
+- 1,014 units from 30 source files; all four modality strata are present. Rules version `draft-0.4` (980 units under `draft-0.2` of 13 November, before the fee sections were cut; `draft-0.3` had the cut without the page clean-up).
 
 | Stratum | Frankfurt | Campus | Federal | Munich | Berlin | Products |
 |---|---|---|---|---|---|---|
@@ -56,5 +71,5 @@ What follows from that:
 - Statutes are cut at section headings: a number alone on a line (Frankfurt) or "§ n Title" on one line (Munich, Berlin). The body starts at the last heading numbered 1 and a heading is accepted only if its number follows the previous one; check the section list of every new statute.
 - The manifest has one `bucket` field (development, pilot, candidate; later held-out and canary). The register also reports results by whether the schema designers had seen the material (BE-05); that is a second label per source and is not in the manifest yet.
 - A fee statute is one source with one stratum; single sections are moved to another stratum with `stratum_overrides`, and the sections under `split_paragraphs` are cut at their numbered paragraphs. A paragraph that points to another one ("the fees of paragraph 2") cannot be read completely from its own piece. Pieces of one section are not independent of each other; an analysis by unit has to treat them as one cluster. The largest fee unit is now a whole Berlin section (7,749 bytes).
-- The Munich statutes carry a page number and a running footer line ("... Stand: 01.01.2025") inside the text, also in the middle of a table; only the Frankfurt statutes have such lines dropped (`drop_lines`).
+- Running page headers and footers are dropped from the Munich and Berlin statutes (decided 15 November 2026; `page_furniture`), as they already were from the Frankfurt statutes (`drop_lines`). Munich: the statute's name and number with its "Stand" date at the top of a page, the page number at the bottom. Berlin: the gazette's "Veröffentlichungen" at the top and its issue line at the bottom. They are dropped by their position on the page, the first or last non-empty lines, never by pattern alone, and a page number only if it equals the number of the page. The federal acts and the other sources have no such lines.
 - The identity lines (`Dokument`, `Herausgeber`, `Gilt für`, `Teil`) are in German because the sources are; whether jurisdiction belongs in the identity of a table unit is a choice to confirm.
