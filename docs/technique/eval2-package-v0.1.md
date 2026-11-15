@@ -1,4 +1,4 @@
-# Eval 2 package: the technique on paper (v0.1 of 12 November 2026, corrected to 14 November 2026)
+# Eval 2 package: the technique on paper (v0.1 of 12 November 2026, corrected to 15 November 2026)
 
 This is the schema-fitness evaluation technique of Thesis A written down before anything is run: what is measured, the requirements it has to meet, the stage model, one table of goals, questions and metrics per dimension, one card per metric, the formulas with the order of aggregation, and the four decision scenarios with the reasons for their weights. It is draft v0.1. Findings from the second reader and from the unit tests become change-log rows; version 1.0 is frozen on Monday 23 November 2026.
 
@@ -52,7 +52,7 @@ Schema fitness is the degree to which a schema, realised in a data model, suppor
 - **Mapping.** One written mapping per realisation from canonical form into the schema, frozen with version 1.0. It decides, before any run, whether an assertion has an image (BU-08).
 - **Exporter.** Per realisation, read-only: turns the populated graph back into canonical assertions with provenance pointers to graph elements. It is the inverse of the mapping (BU-07).
 - **Matcher.** One deterministic matcher for all realisations, on canonical form only, in four ordered tiers: exact natural key, normalised lemma in the equivalence table, unit and spelling normalisation, human adjudication blind to cell and treatment. No similarity score, no embedding, no language model decides a match (BE-10).
-- **Validator.** One shared validator applies the common rule set to canonical form, identically in both arms. Engine-native constraints are never the measuring instrument (BU-15, EX-02).
+- **Validator.** One shared validator applies the common rule set, identically in both arms, at two moments: to every item before it is written, and to the canonical export after the run. Engine-native constraints are never the measuring instrument (BU-15, EX-02).
 - **Loader.** The inverse of the exporter. It builds oracle graphs and mutation fixtures (BU-19, BU-23).
 - **Answer mapping.** Per arm: turns a query result into canonical form so that it can be compared with V*(q) as an unordered set (BU-23).
 
@@ -339,10 +339,13 @@ One table per dimension and one for the measures that belong to no dimension (BU
 
 - **Answers** QP3. **Serves** R1, R3.
 - **Attribute.** Conformance of the stored graph to rules that every realisation can satisfy.
-- **Unit of observation.** One exported canonical assertion per cell.
-- **Denominator.** All exported assertions of the cell, per modality stratum of the originating source unit.
+- **Unit of observation.** One exported canonical assertion per cell. The export keeps every occurrence and does not merge equal assertions.
+- **Denominator.** All exported assertions of the cell, per modality stratum of the originating source unit (the unit of the first accepted write; an assertion that cannot be traced to a write gets a row of its own).
 - **Function.** Share of the denominator that passes every rule of the common scope; the violation count per rule is printed beside it.
-- **Instrument.** The shared validator on the canonical export, identical for all realisations and both arms. The validator is built by the companion thesis (agreement, section 3.2); the rule list below is part of this technique. Common scope: subject, predicate and object well formed; predicate and type mapped or mappable under the equivalence table; no dangling reference; datatypes and units parse; qualifiers well formed; provenance pointer present; no duplicate assertion. A rule that some realisation cannot satisfy structurally is removed, not relaxed.
+- **Instrument.** The shared validator on the canonical export, identical for all realisations and both arms. The validator is built by the companion thesis (agreement, section 3.2); the rule list is part of this technique and is written out in Common-scope rule list — Technique (repository: `docs/technique/common-scope-rules.md`). Common scope, seven rules: CS1 subject, predicate and object well formed; CS2 predicate and type mapped or mappable under the equivalence table; CS3 no dangling reference; CS4 datatypes and units parse; CS5 qualifiers well formed; CS6 provenance pointer present (the chain from the assertion over its graph elements and the accepted write in the log to the source unit); CS7 no duplicate assertion. A rule that some realisation cannot satisfy structurally is removed, not relaxed.
+- **Two test moments.** The validator also stands before the database and rejects an item that breaks CS1, CS3 or CS4; those rejections feed P.9. This card is computed on the export only. CS2 is never tested at the write, because the rejection message would show the agent the benchmark's vocabulary.
+- **Provisional until the equivalence table is frozen.** CS2 and CS7 read the equivalence table. A figure computed before 28 December names the state of the table it used.
+- **Beside P.5.** CS2 counts stored facts with an unmapped predicate or type, where P.5 row (c) counts distinct unmapped names. CS4 tests values that state an amount or a time, where P.5 row (d) covers the values that name a thing. One fault can move both figures; they are not independent evidence.
 - **Scale.** Ratio; [0, 1]; share of assertions; higher is better.
 - **Expected properties.** Empty export: n.e. Full gold 1. Duplicated gold below 1, with the duplicate rule as the only violated rule. Unchanged by a second export. Not trivially 1 for any realisation in the pilot.
 
@@ -365,6 +368,7 @@ One table per dimension and one for the measures that belong to no dimension (BU
 - **Unit of observation and denominator, four rows.** (a) Distinct predicates per canonical predicate, over the canonical predicates that occur. (b) Distinct types or labels per canonical concept, over the canonical concepts that occur. (c) Unmapped predicates and types, over all distinct predicates and types used. (d) Object literals that cannot be normalised to an anchor, over all object literals of anchor-typed slots.
 - **Function.** (a) and (b) are means of counts; (c) and (d) are shares.
 - **Instrument.** Canonical export and equivalence table.
+- **Beside P.3.** Rows (c) and (d) neighbour two rules of the common scope. Row (c) counts distinct unmapped names, where rule CS2 counts the stored facts that use them. Row (d) covers values that name a thing (codes, keys, names), where rule CS4 tests values that state an amount or a time. One fault can move both figures; they are printed side by side and are not independent evidence.
 - **Scale.** (a), (b): ratio; [1, ∞); count per concept; lower is better. (c), (d): ratio; [0, 1]; share; lower is better.
 - **Expected properties.** On the full-gold graph in canonical vocabulary (a) = (b) = 1 and (c) = (d) = 0. Empty export: n.e. Duplicating assertions changes none of the four rows.
 
@@ -387,8 +391,9 @@ One table per dimension and one for the measures that belong to no dimension (BU
 - **Denominator.** All sampled assertions of the realisation.
 - **Function.** Unsupported rate = share coded contradicted, no basis in unit, or unanchored (no log pointer to a source unit). Printed beside it: supported explicit, supported interpreted, and undecidable. The five shares sum to 1.
 - **Not estimable.** A realisation with no non-reference output.
-- **Instrument.** Hand coding against the source unit found through the harness log pointer, independent of any provenance the schema itself stores; no language model; a second coder codes 20 % blind and agreement is reported per slot (X.3).
+- **Instrument.** Hand coding against the source unit found through the harness log pointer, independent of any provenance the schema itself stores. Beside each sampled assertion the coder sees the passage that the agent named as support when it wrote it; the passage is kept in the log and never in the graph. No language model; a second coder codes 20 % blind and agreement is reported per slot (X.3).
 - **Scale.** Ratio; [0, 1]; share of sampled assertions; lower is better for the unsupported rate. Wilson 95 % interval.
+- **Side figure, not scored.** Share of accepted writes whose named passage occurs in the unit word for word, ignoring white space and line-break hyphens; per realisation. It is checked after the run and never at the write.
 - **Expected properties.** Fully hallucinated graph: unsupported rate 1. An assertion matching either side of an unresolved conflict is coded supported.
 
 #### P.8 Run-to-run stability, card family with three rows
@@ -409,9 +414,11 @@ One table per dimension and one for the measures that belong to no dimension (BU
 - **Attribute.** The effort the agent spends against the shared validator before a write is accepted.
 - **Unit of observation.** One write attempt; one source unit.
 - **Denominator and function, three rows.** Rejected write attempts over all write attempts; retries until acceptance per accepted write; abandoned units over all units. Each also per source unit and per realisation.
+- **Repeated writes.** A write that repeats exactly what the graph holds is answered "already present"; it is no rejection and is left out of all three rows. Repeats are printed as a count of their own.
+- **A write that cannot be read** is a rejected attempt (rule id CS0). The validator never repairs a write; a write that can be read gets all its faults in one message, so one attempt is one round of correction whatever the number of rules.
 - **Instrument.** The log of the shared validator on canonical form (the validator is built by the companion thesis; agreement, section 3.2). Engine-native errors are never counted here, so the figure does not depend on how strict a database product is.
 - **Scale.** Counts (absolute) and shares in [0, 1]; lower means less friction. Reported, never scored.
-- **Expected properties.** Zero rejections by construction for a configuration whose validator only logs. A unit accepted at the first attempt contributes zero retries.
+- **Expected properties.** Zero rejections by construction for a configuration whose validator only logs. A unit accepted at the first attempt contributes zero retries. Adding repeated writes to a log changes none of the three rows.
 
 #### P.10 Resource efficiency
 

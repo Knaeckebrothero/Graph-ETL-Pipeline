@@ -1,6 +1,6 @@
-# Common-scope rule list, draft 0.1 (14 November 2026)
+# Common-scope rule list (version 0.2 of 15 November 2026)
 
-> **Draft 0.1 of 14 November 2026. Not decided, not frozen.** The seven rules come from the decision of 25 October 2026 (BU-15) and from card P.3 of `eval2-package-v0.1.md`; everything beyond that one sentence is a proposal. Six points are open and listed in section 8; they touch the provenance rule (CS6), the duplicate rule (CS7) at the write, the message format and two shared log fields. The list is part of Thesis A's technique and is frozen with version 1.0 on 23 November 2026 (F4); the validator that applies it is built by Thesis B (agreement, section 3.2).
+> **Version 0.2 of 15 November 2026. Draft, not frozen.** The seven rules come from the decision of 25 October 2026 (BU-15) and from card P.3 of `eval2-package-v0.1.md`. Draft 0.1 of 14 November left six points open; Thesis A settled them on 15 November (section 8). The list is part of Thesis A's technique and is frozen with version 1.0 on 23 November 2026 (F4); the validator that applies it is built by Thesis B (agreement, section 3.2). Still to come: the test cases of section 7 and the format and unit table.
 
 ## 1. What this list is
 
@@ -77,7 +77,7 @@ Ids `CS1` to `CS7` (CS for common scope; plain `C` would collide with the covera
 - **At the write, rejects:** a value given with a datatype (date, date and time, whole number, decimal number, yes or no, quantity with unit) that is not a valid form of that datatype under the format and unit table. A value without a datatype is text and always passes. It does not matter who asked for the datatype, the schema or the agent. Reason for testing it here and not leaving it to the database: Neo4j refuses a malformed date, Fuseki stores it; the validator makes both arms equally strict (EX-02).
 - **On the export, counts:** an object value that does not normalise to the value type its canonical predicate expects (date, amount, quantity with unit), under the same table.
 - **Needs:** the format and unit table, one file read by the validator and by the matcher (tier 3 in BE-10). It has to exist by 23 November; today it does not.
-- **Boundary, as read in this draft:** key-like values (waste code, municipality key, CAS and EAN numbers) are not tested here. They belong to the coherence figure "share of object values not normalisable to an anchor", so that nothing is counted twice.
+- **Boundary (clarified 15 November):** key-like values (waste code, municipality key, CAS and EAN numbers) are not tested here. They belong to the coherence figure "share of object values not normalisable to an anchor", so that nothing is counted twice.
 - **Against the schema's own datatype constraints:** if the schema prescribes a date and the agent hands over text, that is the schema's rule (treatment scope). If the agent hands over something labelled a date that is no date, it is this rule. Common-scope rules are tested first; an element that fails one is not tested against the schema's rules as well.
 
 ### CS5 Qualifiers well formed
@@ -94,9 +94,9 @@ Ids `CS1` to `CS7` (CS for common scope; plain `C` would collide with the covera
 *In words:* for every stored fact it is known which source unit the agent was reading when it wrote it.
 
 - **On the export, counts:** an assertion for which the chain breaks: no pointer to a graph element, or an element that the write log does not show as the product of an accepted write with a unit id. Such an assertion is "unanchored" and counts as unsupported in the supportedness coding (BU-16).
-- **At the write:** open, see decision 2 in section 8.
+- **At the write (decided 15 November, option b):** the agent names a supporting passage of the unit with every write. The passage is kept in the log and never written into the graph. Nothing is rejected because of it: a missing or empty passage is logged as such. Whether the passage occurs in the unit is checked after the run and reported beside supportedness.
 - **Independent of the schema:** the pointer comes from the harness log, never from provenance nodes a schema may have. Otherwise raw triples could not meet the rule and it would have to be removed.
-- **Needs:** per accepted write, the log must say **what was written**: the element ids in the property graph; in RDF, where a triple has no id, the triples themselves or their hashes. **The shared log schema does not have this field** (Thesis B's trace does, `engine.assertion_ids`). Without it this rule cannot be tested, the supportedness sample cannot be traced, and the conformance rate cannot be broken down by stratum of the source unit as card P.3 says.
+- **Needs:** per accepted write, the log must say **what was written**: the element ids in the property graph; in RDF, where a triple has no id, the triples themselves or their hashes. The shared log schema did not have this field (Thesis B's trace does, `engine.assertion_ids`); it is in since 15 November as `element_ids` (pull request 3, commit a085204), together with `evidence` for the passage. Without it this rule could not be tested, the supportedness sample cannot be traced, and the conformance rate cannot be broken down by stratum of the source unit as card P.3 says.
 - **Several units, one fact:** the stratum is that of the first accepted write; an unanchored assertion gets a row of its own.
 
 ### CS7 No duplicate
@@ -104,7 +104,7 @@ Ids `CS1` to `CS7` (CS for common scope; plain `C` would collide with the covera
 *In words:* the same fact is stored once.
 
 - **On the export, counts:** assertions equal in subject, predicate, object and every qualifier after the matcher's normalisation (keys, lemmas, spelling and units, accepted adjudications). The first occurrence passes; every further one is a violation. Provenance is not part of the comparison: the same fact from two units is one fact. Order is by element id, so a second export gives the same count.
-- **At the write:** open, see decision 3 in section 8. Proposal: an item that repeats exactly what the graph holds is neither rejected nor written again; the tool answers "already present" and the log keeps the attempt with its unit.
+- **At the write (decided 15 November):** when an item repeats exactly what the graph holds (same type, same identifying value, same attributes; or the same relation between the same two entities), the write tool does not create a second copy and does not treat it as a fault. Nothing is hidden: the tool answers "already present" with the id of what is there, so the agent can go on and attach relations to it, and the log keeps the attempt with its unit and the result `already_present`. It costs none of the two corrections and is no rejection. Something with the same name and other attributes is not a repeat; where the schema declares that name as unique, that is a rejection under the schema's own rule (`TS-unique`). Repeats are printed as a count of their own and left out of the friction figures (card P.9).
 - **Needs:** the equivalence table for the final figure.
 
 ## 5. Messages and ids
@@ -116,10 +116,10 @@ Every rejection carries the four fields the agreement fixes: rule id, element, e
 | `CS1` | `attribute:name` | non-empty value | `""` |
 | `CS3` | `to` | exactly one existing entity | `0 matches for name "Gelbe Tonne"` |
 | `CS4` | `attribute:valid_from` | date | `"ab Januar"` |
-| `CS6` (if decision 2 goes that way) | `evidence.quote` | text from the current unit | `""` |
 
 - **Nothing from the benchmark in a message.** `expected` may only say what the schema description or the unit already shows the agent. This holds for the schema's own rules as well.
-- **All violations of an item in one message** (proposal, decision 4): with two corrections allowed, an item with three faults would otherwise be given up without the agent ever having seen the third.
+- **What one message holds** (decided 15 November): the checks run in steps, and the validator never repairs or guesses. Step 1: can the write be read at all. If not, the message says only that and nothing further is tested, because what the agent meant cannot be known. Step 2: for a write that can be read, every fault of the item as the agent wrote it is named in one message (two required properties missing: both are named). Reason: with two corrections allowed, an item with three faults would otherwise be given up without the agent ever having seen the third, and a schema with many rules would lose items to the message policy and not to the schema.
+- **A write that cannot be read** gets the id `CS0`: it is a fault whatever the schema, it counts as friction, and it never appears on the export.
 - **Ids for the schema's own rules,** so that the log can tell the two scopes apart: `TS-type`, `TS-required`, `TS-datatype`, `TS-unique`, `TS-cardinality`, `TS-endpoint`, `TS-valuelist`, the seven kinds of the decision of 25 October, with the schema element in `element`. Their exact form follows the schema file format, which is still to agree with Thesis B.
 - **Friction by scope:** because every rejection carries its rule id, the friction rows of card P.9 can be printed split into common scope and treatment scope at no cost. That split shows how much of the friction a schema causes and how much any agent would have had.
 
@@ -135,7 +135,7 @@ On paper; the pilot has to confirm it (Eval 3).
 | CS4 | yes; nothing is typed unless the agent types it | yes | yes | yes | yes, because the validator tests it and not the database |
 | CS5 | yes; only qualifiers that are present are tested | yes | yes | yes | yes |
 | CS6 | yes, because the pointer is the log | yes | yes | yes | yes, once the log names what was written in both arms |
-| CS7 | yes | yes | yes | yes | only if repeats are handled alike at the write (decision 3) |
+| CS7 | yes | yes | yes | yes | yes, since a repeat is answered alike in both arms (decision 3) |
 
 Two things can only be checked once the realisations exist: how the RDF version of raw triples names its entities (CS3 on the export needs an identifying value) and how each RDF realisation writes attributes of a relation.
 
@@ -149,22 +149,23 @@ So that "what the validator checks is Thesis A's" can be verified, the list ship
 - a second export of the same graph: the same figure;
 - one case per rule that violates exactly that rule, for the write and for the export.
 
-Not built yet; they follow as files in this repository once the open points are decided.
+Not built yet; they follow as files in this repository.
 
-## 8. Open, not decided yet
+## 8. Settled on 15 November 2026
 
-1. **Two test moments** (section 2), and in particular: the vocabulary rule (CS2) is never tested at the write.
-2. **What the provenance pointer is** (CS6). (a) The log chain only; the agent supplies nothing. (b) The agent also names a supporting passage with every write; it is kept in the log, not in the graph, and whether the passage occurs in the unit is checked after the run and reported, never at the write. (c) As (b), and a passage that does not occur word for word in the unit is rejected at the write. Thesis B's template draft asks for unit id, locator and passage with every write. Proposed: (b). The passage speeds up the hand coding of supportedness a great deal, and it adds no source of rejections that has nothing to do with the schema, which would hit the small local model hardest.
-3. **A repeated write** (CS7): not rejected and not written twice, in both arms. RDF cannot store the same triple twice, a property graph can; without this rule the property-graph arm collects duplicates the RDF arm cannot have. Needs a result value "already present" in the shared log schema, which today knows only `ok`, `error` and `not_sent`.
-4. **All violations of an item in one message.**
-5. **The two boundaries** as read in this draft: CS4 tests dates, numbers and quantities, not key-like values; CS2 counts stored facts, the coherence figure counts distinct names.
-6. **Two additions to the shared log fields** before they freeze on Monday 16 November: what an accepted write produced (CS6), and the result "already present" (decision 3). Both exist in Thesis B's trace already.
+Draft 0.1 left six points open. Thesis A settled them as follows; the decision of 25 October (BU-15) is amended accordingly.
 
-## 9. What changes elsewhere once this is decided
+1. **Two test moments.** Each rule is stated for the write and for the export (section 2). Tested at the write: CS1, CS3, CS4. Tested on the export only: CS2, CS5, CS6, CS7. CS2 is never tested at the write, even where it could be, because the rejection message would show the agent the benchmark's vocabulary.
+2. **Provenance.** The pointer of rule CS6 is the chain from the exported assertion over its graph elements and the accepted write in the log to the source unit. In addition the agent names a supporting passage of the unit with every write. The passage is kept in the log and never in the graph; nothing is rejected because of it; whether it occurs in the unit is checked after the run and reported beside supportedness.
+3. **A repeated write.** An item that repeats exactly what the graph holds is not stored a second time and is no rejection. The write tool answers "already present" with the id of what is there, in both arms. It costs no correction. Repeats are counted on their own and left out of the friction figures. The same key with other content under a declared uniqueness constraint stays a rejection (`TS-unique`).
+4. **What one message holds.** The validator never repairs or guesses. A write that cannot be read returns only that (`CS0`). A write that can be read returns every fault of the item as written, in one message. A message names only what the schema description or the unit already shows the agent.
+5. **Two boundaries to vocabulary coherence** (card P.5), a clarification. CS4 tests values that state an amount or a time; values that name a thing (codes, keys, names) stay with coherence row (d). CS2 counts stored facts with an unmapped predicate or type; coherence row (c) counts distinct unmapped names. One fault can move both figures; they are not independent evidence.
+6. **Log fields.** The write record of the shared minimum log gained `element_ids`, the engine result `already_present` and `evidence` (`experiments/log-schema/`).
 
-- Thesis A's decision register: an amendment to BU-15 (the two test moments, the reading of "provenance pointer" and "mappable"); none exists yet for these points. The amendment of 14 November on who builds the validator stays as it is.
-- Eval 2 package, card P.3: the rule ids, the export keeps every occurrence, the figure is provisional until 28 December.
-- Shared log schema (pull request 3): the two additions of decision 6.
-- Prompt templates (freeze 16 November): the write protocol says what a rejection looks like and, if decision 2 is (b) or (c), that every write names a passage.
-- For Thesis B: this list, the test cases, and the format and unit table.
-- Thesis A still owes: the format and unit table by 23 November.
+## 9. What follows from it
+
+- **For the validator (Thesis B):** two entry points with the same rule code, one for an item before the write and one for an exported file after the run; the rule id `CS0`; all faults of a readable item in one message; no rule that reads the equivalence table at the write.
+- **For the write tools (Thesis A):** compare before writing and answer "already present"; record what was written; in RDF no blank nodes without fixed names, otherwise a written triple cannot be found again in the export.
+- **For the construction template (freeze 16 November):** every write names a supporting passage; what a rejection looks like; what "already present" means.
+- **Open between the theses:** Thesis B's confirmation of the three log fields before the log fields freeze.
+- **Owed by Thesis A by 23 November:** the test cases of section 7 with their expected verdicts, and the format and unit table that rule CS4 and the matcher both read.
