@@ -1,8 +1,8 @@
-# Sample rules, DRAFT 0.1 of 12 November 2026. Not frozen. Every value marked "proposal" is to be
+# Sample rules, DRAFT 0.3 of 15 November 2026 (0.1 of 12 November). Not frozen. Every value marked "proposal" is to be
 # confirmed by the author before the manifest is hashed (planned: development and pilot buckets
 # 14 Nov, full manifest 18 Nov 2026). Register: EX-05 (units), BE-01 (strata), BE-02 (jurisdictions),
 # BE-05 (buckets), BE-06 (authority classes), EX-16 (canary bucket).
-version: draft-0.2
+version: draft-0.3
 seed: 20261113                     # proposal
 pdf_extractor: "pdftotext -layout" # version is written into the manifest at cut time
 
@@ -10,12 +10,16 @@ chunk:                              # proposals; one fixed size per modality (EX
   rows_per_unit: 20                 # table segment: header row plus this many data records
   records_per_unit: 10              # nested records rendered as a JSON list
   catalogue_universe_cap: 200       # seeded draw of eligible entries per catalogue source; one entry per unit
+  table_min_amount_lines: 2         # decided 15 Nov with the cut of the fee sections: a piece of a fee section is a
+                                    # number table if at least this many of its lines hold an amount; else it is a sentence
 
 buckets:                            # decided 13 Nov 2026; units per modality stratum, drawn round-robin over sources
   development_per_stratum: 8        # read by the schema induction (EX-06), template work and probes
   pilot_per_stratum: 3              # read by the pilot only; disjoint from development
                                     # a stratum with too few free units fills its pilot from sources marked pilot_allowed
                                     # (decided 13 Nov: the numeric pilot units come from the Munich or Berlin fee statutes)
+  pilot_only_from_pilot_allowed: [numeric tabular]   # states that decision as a rule, so that it does not depend on how
+                                    # many numeric units Frankfurt happens to have
 shares:                             # decided 13 Nov 2026 (BE-02): the shares apply to units tied to a city or the campus;
   frankfurt_and_campus_min: 0.70    # federal and product units are reported as their own groups
   contrast_city_each: 0.15
@@ -159,7 +163,8 @@ sources:
     reader: pdf_statute
     drop_lines: '^\s*Seite \d+ von \d+\s*$'
     stratum: free text
-    stratum_overrides: {"section 5": numeric tabular, "section 6": numeric tabular}   # the fee tables; to decide: one table per unit instead
+    stratum_overrides: {"section 5": numeric tabular, "section 6": numeric tabular}   # the sections that hold the fee tables
+    split_paragraphs: ["section 5", "section 6"]   # decided 15 Nov: one unit per numbered paragraph
     jurisdiction: Frankfurt
     authority_class: B
     display_title: "Abfallgebührensatzung der Stadt Frankfurt am Main"
@@ -221,6 +226,7 @@ sources:
     reader: pdf_statute
     stratum: free text
     stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
+    split_paragraphs: ["section 3"]   # decided 15 Nov: one unit per numbered paragraph
     pilot_allowed: true             # may fill the numeric pilot units; never development
     jurisdiction: Munich
     authority_class: B
@@ -233,6 +239,7 @@ sources:
     reader: pdf_statute
     stratum: free text
     stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
+    split_paragraphs: ["section 3"]   # decided 15 Nov: one unit per numbered paragraph
     pilot_allowed: true             # may fill the numeric pilot units; never development
     jurisdiction: Munich
     authority_class: B
@@ -245,6 +252,7 @@ sources:
     reader: pdf_statute
     stratum: free text
     stratum_overrides: {"section 3": numeric tabular}   # the sections that hold the fee tables
+    split_paragraphs: ["section 3"]   # decided 15 Nov: one unit per numbered paragraph
     pilot_allowed: true             # may fill the numeric pilot units; never development
     jurisdiction: Munich
     authority_class: B
@@ -290,6 +298,7 @@ sources:
     reader: pdf_statute
     stratum: free text
     stratum_overrides: {"section 5": numeric tabular, "section 7": numeric tabular}   # the sections that hold the fee tables
+    split_paragraphs: ["section 5", "section 7"]   # decided 15 Nov; neither has two numbered paragraphs, so both stay whole
     pilot_allowed: true             # may fill the numeric pilot units; never development
     jurisdiction: Berlin
     authority_class: B

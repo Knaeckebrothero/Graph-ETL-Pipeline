@@ -153,8 +153,31 @@ def statute_sections(lines):
     return out
 
 
+PARAGRAPH = re.compile(r"^\s*\((\d+)\)\s+\S")                # "(3) Der Gebührensatz ..." at the start of a line
+AMOUNT = re.compile(r"\d,\d{2}(?!\d)")                        # a number with two decimals: 341,64 or 1.935,96
+
+
+def numbered_paragraphs(lines):
+    """Line indices at which the numbered paragraphs (1), (2), ... of a section start. A mark is accepted only
+    if its number follows the previous one, which rejects references that begin a line."""
+    marks, last = [], 0
+    for i, ln in enumerate(lines):
+        m = PARAGRAPH.match(ln)
+        if m and int(m.group(1)) == last + 1:
+            marks.append(i)
+            last += 1
+    return marks
+
+
+def amount_lines(text):
+    """Lines of the text that hold an amount. Used to tell a fee table from a sentence."""
+    return sum(1 for ln in text.split("\n") if AMOUNT.search(ln))
+
+
 def pdf_statute(path, src):
-    """One unit per section (§). The text before the table of contents is its own unit."""
+    """One unit per section (§). The text before the table of contents is its own unit. A section listed under
+    split_paragraphs that has at least two numbered paragraphs is cut at them: one unit per paragraph, with the
+    section's heading lines repeated in front."""
     lines = _pdftotext(path).replace("\f", "\n").split("\n")
     if src.get("drop_lines"):
         drop = re.compile(src["drop_lines"])
@@ -164,8 +187,16 @@ def pdf_statute(path, src):
     pre = "\n".join(lines[:first_mark])
     if len(pre.strip()) >= 200:
         yield ("preamble", "Eingangsformel", pre)
+    split = set(src.get("split_paragraphs") or [])
     for (a, num, title), nxt in zip(heads, heads[1:] + [(len(lines), "", "")]):
-        yield (f"section {num}", f"§ {num} {title}".strip(), "\n".join(lines[a:nxt[0]]))
+        sec = lines[a:nxt[0]]
+        marks = numbered_paragraphs(sec) if f"section {num}" in split else []
+        if len(marks) < 2:
+            yield (f"section {num}", f"§ {num} {title}".strip(), "\n".join(sec))
+            continue
+        heading = sec[:marks[0]]
+        for k, (b, c) in enumerate(zip(marks, marks[1:] + [len(sec)]), start=1):
+            yield (f"section {num} paragraph {k}", f"§ {num} {title}, Abs. {k}".strip(), "\n".join(heading + sec[b:c]))
 
 
 def _xml_text(x):
@@ -231,6 +262,20 @@ def unit_text(src, part, content):
     return "\n".join(head) + "\n---\n" + clean_text(content)
 
 
+def stratum_of(src, locator, content):
+    """The source's stratum, unless the locator starts with a key of stratum_overrides. A piece of a section cut
+    at its paragraphs takes the override only if it holds a table (chunk.table_min_amount_lines lines with an
+    amount, the repeated heading not counted); a sentence stays in the source's stratum."""
+    over = next((v for k, v in (src.get("stratum_overrides") or {}).items() if locator.startswith(k)), None)
+    if over is None:
+        return src["stratum"]
+    if " paragraph " in locator:
+        body = content[content.index("\n(") + 1:] if "\n(" in content else content
+        if amount_lines(body) < RULES["chunk"]["table_min_amount_lines"]:
+            return src["stratum"]
+    return over
+
+
 def cut():
     pdf_version = subprocess.run(["pdftotext", "-v"], capture_output=True).stderr.decode().split("\n")[0].strip()
     units = []
@@ -242,6 +287,9 @@ def cut():
         if sha256_bytes(path.read_bytes()) != m["sha256"]:
             raise SystemExit(f"{src['id']}: file differs from sources/manifest.csv")
         rule = RULE_TEXT[src["reader"]].format(**RULES["chunk"])
+        if src.get("split_paragraphs"):
+            rule += ("; " + ", ".join(src["split_paragraphs"]) + " cut at numbered paragraphs, one unit each, section heading repeated; "
+                     f"a piece with at least {RULES['chunk']['table_min_amount_lines']} lines holding an amount is numeric tabular, any other keeps the source's stratum")
         if src["reader"].startswith("pdf"):
             rule += f"; text by {RULES['pdf_extractor']} ({pdf_version})"
         for locator, part, content in READERS[src["reader"]](path, src):
@@ -249,7 +297,7 @@ def cut():
             uid = "u" + sha256_bytes(f"{src['id']}\x1f{locator}".encode())[:12]
             units.append(dict(unit_id=uid, unit_file=f"units/{uid}.txt", unit_sha256=sha256_bytes(text), unit_bytes=len(text),
                               source_id=src["id"], source_path=m["path"], source_sha256=m["sha256"], locator=locator,
-                              stratum=next((v for k, v in (src.get("stratum_overrides") or {}).items() if locator.startswith(k)), src["stratum"]),
+                              stratum=stratum_of(src, locator, content),
                               jurisdiction=src["jurisdiction"], authority_class=src["authority_class"],
                               bucket="candidate", _held_out_only=bool(src.get("held_out_only")), _pilot_allowed=bool(src.get("pilot_allowed")), chunk_rule=rule, selection_seed=SEED,
                               retrieval_date=f"not recorded; file date {m['file_date']}", rules_version=RULES["version"], _text=text))
@@ -262,8 +310,10 @@ def select(units):
     """Per stratum: shuffle each source's units with its own seeded generator, then deal round-robin over sources.
     Sources marked held_out_only (contrast cities, law reserved for held-out question families) are skipped.
     If a stratum then has fewer pilot units than asked for, the pilot is filled, in the same seeded round-robin,
-    from held-out-only sources marked pilot_allowed. Those units never enter development."""
+    from held-out-only sources marked pilot_allowed. Those units never enter development. A stratum listed under
+    buckets.pilot_only_from_pilot_allowed takes its pilot units from those sources only."""
     nd, npi = RULES["buckets"]["development_per_stratum"], RULES["buckets"]["pilot_per_stratum"]
+    fill_only = set(RULES["buckets"].get("pilot_only_from_pilot_allowed") or [])
     for stratum in sorted({u["stratum"] for u in units}):
         by_src = {}
         for u in units:
@@ -278,7 +328,7 @@ def select(units):
                 if q:
                     order.append(q.pop(0))
         for k, u in enumerate(order):
-            u["bucket"] = "development" if k < nd else "pilot" if k < nd + npi else "candidate"
+            u["bucket"] = "development" if k < nd else "pilot" if k < nd + npi and stratum not in fill_only else "candidate"
         missing = npi - sum(1 for u in order if u["bucket"] == "pilot")
         if missing > 0:
             fill = {}
