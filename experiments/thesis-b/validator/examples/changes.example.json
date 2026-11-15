@@ -1,0 +1,28 @@
+{
+  "_note": "Thesis A's `changes` for the second statement of test_a_rejected_write_leaves_nothing_and_names_every_fault (experiments/harness/dbtool/tests/test_neo4j_cell.py, 15 Nov 2026), written by hand in the shape checker.py describes. The graph already held (WasteItem Paint can)-[:HAS_RULE]->(DisposalRule dr-1)-[:ROUTES_TO]->(WasteStream Hazardous waste). Expected under S4-curated/pg: CS1 for the Forbidden node (no identifying value; its TS-type is then not tested), TS-endpoint for (WasteItem)-[:ROUTES_TO]->(WasteStream); the Tip and HAS_TIP pass.",
+  "cell_id": "dev-pg",
+  "arm": "pg",
+  "realisation": "S4-curated/pg",
+  "unit_id": "u0001",
+  "item_id": "i2",
+  "evidence": "p",
+  "statement": "MATCH (w:WasteItem {name: 'Paint can'}), (s:WasteStream) CREATE (t:Tip {uid: 't-1', text: 'x'}) CREATE (w)-[:HAS_TIP]->(t) CREATE (w)-[:ROUTES_TO]->(s) CREATE (:Forbidden {x: 1})",
+  "nodes": [
+    {"key": "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:10", "labels": ["Tip"], "properties": {"uid": "t-1", "text": "x"},
+     "change": "created", "changed_properties": {}, "added_labels": [], "removed_labels": []},
+    {"key": "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:11", "labels": ["Forbidden"], "properties": {"x": 1},
+     "change": "created", "changed_properties": {}, "added_labels": [], "removed_labels": []}
+  ],
+  "relationships": [
+    {"key": "5:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:20", "type": "HAS_TIP", "from": "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:1",
+     "to": "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:10", "properties": {}, "change": "created", "changed_properties": {}},
+    {"key": "5:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:21", "type": "ROUTES_TO", "from": "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:1",
+     "to": "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:3", "properties": {}, "change": "created", "changed_properties": {}}
+  ],
+  "ends": {
+    "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:1": {"labels": ["WasteItem"], "properties": {"name": "Paint can", "uid": "wi-1"}},
+    "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:10": {"labels": ["Tip"], "properties": {"uid": "t-1", "text": "x"}},
+    "4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:3": {"labels": ["WasteStream"], "properties": {"name": "Hazardous waste", "uid": "ws-1"}}
+  },
+  "deleted": {"nodes": [], "relationships": []}
+}

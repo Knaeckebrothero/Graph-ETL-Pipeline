@@ -1,0 +1,26 @@
+{
+  "_note": "Cell values for exporting a kgbench prototype run in kgc-trace/1.1 so that the file also passes Thesis A's shared-minimum-log/1 checker. kgbench runs are not cells of the experiment: there is no F2 sample manifest, no PG/RDF arm and no S1-S4 treatment. Every value below is therefore a PLACEHOLDER for a format demonstration and is marked as such in run_start.cell_source. For a real cell, the launcher supplies this file from the sample manifest.",
+  "placeholder": true,
+  "run_id": "PG-S4-A0-r1-probe1",
+  "arm": "PG",
+  "treatment": "S4",
+  "replication": 1,
+  "run_kind": "probe",
+  "launcher": "B",
+  "sample_manifest_sha256": "f6b5a9b4c2f1a2a9e1b3b1b8d4c9f7e6c0d7e4a8b1c2d3e4f5a6b7c8d9e0f1a2",
+  "_sample_manifest_sha256_note": "not a real manifest hash: a 64-hex placeholder, because Thesis A's schema does not allow null here",
+  "container_digests": {},
+  "harness_commit": "0000000000000000000000000000000000000000",
+  "_harness_commit_note": "used only when the run manifest records no git commit; 40 zeros as in Thesis A's example file",
+  "validator_mode": "reject",
+  "unit": {
+    "unit_id": "doc1_operators",
+    "stratum": "free text",
+    "jurisdiction": "fictional (kgbench test document)",
+    "authority_class": "D",
+    "bucket": "development",
+    "chunk_rule": "whole file (kgbench: one unit per source file)",
+    "selection_seed": "none",
+    "retrieval_date": "2026-10-15"
+  }
+}

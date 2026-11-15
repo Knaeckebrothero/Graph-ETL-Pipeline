@@ -1,0 +1,17 @@
+{
+  "_note": "PLACEHOLDER format and content (Thesis B, 14 Nov 2026). The equivalence table is Thesis A's Domain Binding (Eval 2 package v0.1, section 1.4). Until Thesis A delivers it, CS-02 reports not_checkable. The loader accepts this shape: canonical name -> aliases.",
+  "predicates": {
+    "routes_to": ["disposed in", "goes to", "ROUTES_TO", "DISPOSED_IN", "DISPOSED_VIA"],
+    "has_fee": ["fee", "costs", "HAS_FEE"],
+    "located_at": ["is at", "LOCATED_AT", "AVAILABLE_AT"],
+    "classified_as": ["CLASSIFIED_AS", "has AVV code"],
+    "made_of": ["MADE_OF", "consists of"]
+  },
+  "types": {
+    "WasteItem": ["waste item", "item", "Abfall"],
+    "WasteStream": ["stream", "bin", "Tonne", "Abfallstrom"],
+    "Facility": ["recycling centre", "Wertstoffhof"],
+    "Material": ["material", "Werkstoff"],
+    "AVVCode": ["AVV code", "Abfallschlüssel"]
+  }
+}
