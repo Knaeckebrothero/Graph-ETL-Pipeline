@@ -12,7 +12,7 @@ First version of the scoring code of the schema-fitness technique. It follows "E
 | `technique/aggregate.py` | Mean over completed passes with the first-pass value; mean over replications with minimum and maximum; refusal to pool across arms, treatments or condition sets | 6.4 |
 | `technique/stability.py` | P.8 row (a): mean pairwise Jaccard and stable-core share over three replications | 5.2 |
 | `technique/logcards.py` | P.2, P.9, P.10 from records of `experiments/log-schema/shared-minimum-log.v1.schema.json`; a void run is refused | 5.2, 6.7 |
-| `tests/` | 475 tests: one per expected property of each implemented card on synthetic item tables for the seven boundary cases, the rules for every card, the aggregation order, and the identities on 300 seeded random cells | 5 ("expected properties are unit tests") |
+| `tests/` | 477 tests: one per expected property of each implemented card on synthetic item tables for the seven boundary cases, the rules for every card, the aggregation order, and the identities on 300 seeded random cells | 5 ("expected properties are unit tests") |
 
 All rates are exact fractions, so an identity is checked with `==`, not with a tolerance.
 

@@ -860,7 +860,7 @@
           "type": "boolean"
         },
         "attempts": {
-          "description": "Write attempts in this unit.",
+          "description": "Write attempts in this unit. A repeated write (engine_result already_present) is not counted here.",
           "type": "integer",
           "minimum": 0
         },
@@ -870,6 +870,12 @@
           "minimum": 0
         },
         "accepted_writes": {
+          "description": "Write attempts that were written (engine_result ok).",
+          "type": "integer",
+          "minimum": 0
+        },
+        "repeated_writes": {
+          "description": "Optional. Writes answered already_present in this unit; they are counted here and nowhere else.",
           "type": "integer",
           "minimum": 0
         },

@@ -80,10 +80,14 @@ def precommit_friction(records: Iterable[Mapping], *, min_n: int = MIN_DENOMINAT
     """P.9, three rows: rejected write attempts over all write attempts; retries until acceptance
     per accepted write; abandoned units over all units. Only rejections by the shared validator in
     reject mode count; engine-native errors never do. What a log-only validator would have
-    rejected is returned separately and is not a rejection."""
+    rejected is returned separately and is not a rejection. A repeated write (engine_result
+    already_present: the graph held exactly this item) is no write attempt in any of the rows;
+    repeats are returned as a count of their own."""
     log = read_run(records)
     starts, ends = _units(log)
-    attempts = log.of("insert_attempt")
+    is_repeat = lambda a: a.get("engine_result") == "already_present"
+    repeats = [a for a in log.of("insert_attempt") if is_repeat(a)]
+    attempts = [a for a in log.of("insert_attempt") if not is_repeat(a)]
     is_reject = lambda a: a["validator_mode"] == "reject" and a["validator_result"] == "reject"
     accepted = [a for a in attempts if a["accepted"]]
     per_unit: dict[str, dict] = {}
@@ -91,12 +95,14 @@ def precommit_friction(records: Iterable[Mapping], *, min_n: int = MIN_DENOMINAT
         ua = [a for a in attempts if a["unit_id"] == u]
         acc = [a for a in ua if a["accepted"]]
         per_unit[u] = {"attempts": len(ua), "rejected": sum(1 for a in ua if is_reject(a)),
+                       "repeated_writes": sum(1 for a in repeats if a["unit_id"] == u),
                        "retries_per_accepted_write": (Fraction(sum(a["retry_index"] for a in acc), len(acc)) if acc else None)}
     return {
         "rejected_share": item_rate("P.9 rejected write attempts", sum(1 for a in attempts if is_reject(a)), len(attempts),
                                     unit="write attempts", min_n=min_n),
         "retries_per_accepted_write": (Fraction(sum(a["retry_index"] for a in accepted), len(accepted)) if accepted else None),
         "accepted_writes": len(accepted),
+        "repeated_writes": len(repeats),
         "abandoned_units": item_rate("P.9 abandoned units", sum(1 for e in ends.values() if e["final_status"] == "abandoned"),
                                      len(ends), unit="source units", min_n=min_n),
         "logged_only_violations": sum(1 for a in attempts if a["validator_mode"] == "log_only" and a["validator_result"] == "reject"),

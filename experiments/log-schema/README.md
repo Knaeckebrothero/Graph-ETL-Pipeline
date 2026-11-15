@@ -60,18 +60,18 @@ Every fact candidate gets an `item_id` when it is first written. If the validato
 
 ## What a write produced, a repeated write, the supporting passage
 
-Added on 15 November 2026 to the `insert_attempt` record. All three come out of writing down the common-scope rules (`docs/technique/common-scope-rules-draft-0.1.md`).
+Added on 15 November 2026 to the `insert_attempt` record. All three come out of writing down the common-scope rules (`docs/technique/common-scope-rules.md`).
 
 - **`element_ids`: what the write produced.** Without it a stored fact cannot be traced back to the write that made it, and so not to the unit the agent was reading. Three things need that trace: the provenance rule of the common scope, the sample for the hand coding of supportedness, and the breakdown of conformance by stratum of the source unit. Property graph: the element ids the engine returns for the nodes and relationships created. RDF, where a triple has no id: the SHA-256 of each written triple as one canonical N-Triples line. For that hash to be reproducible by the exporter, the RDF write tool must not create blank nodes, or must give them fixed names. Thesis B's trace has the same content as `engine.assertion_ids`.
-- **`engine_result: already_present`: a repeated write.** The graph already held exactly this item and nothing was written again. `element_ids` then names the elements that were already there, so the second unit counts as a source of them as well. A harness that rejects repeats or stores them twice never reports the value. Whether the write tools of the runs behave this way is not decided yet; the value is needed in any case, because Thesis B's trace reports `duplicate` and had nothing to map it to.
+- **`engine_result: already_present`: a repeated write.** The graph already held exactly this item and nothing was written again. `element_ids` then names the elements that were already there, so the second unit counts as a source of them as well. The write tools of the runs behave this way in both arms (Thesis A's decision of 15 November 2026): the tool answers "already present" with the id of what is there; this is information for the agent, no rejection, and costs no correction. A harness that rejects repeats or stores them twice never reports the value. Thesis B's trace reports the same case as `duplicate`.
   A repeated write looks like this (other fields left out):
 
   ```json
   {"record_type": "insert_attempt", "attempt_id": "PG-S4-A0-r1-pilot-s1-a2", "item_id": "i0002", "unit_id": "u004bb83eb485", "retry_index": 0, "validator_result": "pass", "rejections": [], "engine_result": "already_present", "element_ids": ["4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:3"], "accepted": true}
   ```
 
-  The example run in `examples/valid.jsonl` holds no repeated write, because it is not decided yet whether a repeat counts as a write attempt in the friction figures.
-- **`evidence`: the passage named as support.** The passage of the unit that the model names with a write (`quote`, and a `locator` if the write protocol asks for one). It is kept in the log and never written into the graph, so no schema gets provenance for free. It is not tested at the write; whether the passage occurs in the unit is checked after the run and reported. `null` for a configuration that does not ask for it.
+  A repeated write is no write attempt in the friction figures (card P.9) and not in `source_end.attempts`; it is counted on its own (`source_end.repeated_writes`, optional). The example run in `examples/valid.jsonl` holds one.
+- **`evidence`: the passage named as support.** The passage of the unit that the model names with a write (`quote`, and a `locator` if the write protocol asks for one). It is kept in the log and never written into the graph, so no schema gets provenance for free. It is not tested at the write and nothing is rejected because of it (Thesis A's decision of 15 November 2026); whether the passage occurs in the unit is checked after the run and reported beside supportedness. `null` for a configuration that does not ask for it.
 
 ## Where this draft departs from the field list of the agreement
 

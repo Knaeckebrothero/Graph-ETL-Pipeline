@@ -80,6 +80,36 @@ def test_p9_engine_native_errors_are_never_counted():
     assert r["rejected_share"].exact == 0 and r["rejected_share"].n == 15
 
 
+def with_repeats(recs, units=("u000", "u001", "u005")):
+    """The same log with one repeated write added to each named unit, after its last attempt."""
+    out = []
+    for r in recs:
+        if r["record_type"] == "source_end" and r["unit_id"] in units:
+            last = [x for x in out if x["record_type"] == "insert_attempt" and x["unit_id"] == r["unit_id"]][-1]
+            out.append({**last, "attempt_id": last["attempt_id"] + "-rep", "retry_index": 0, "validator_result": "pass",
+                        "rejections": [], "engine_result": "already_present", "accepted": True})
+        out.append(r)
+    return out
+
+
+def test_p9_repeated_writes_change_none_of_the_three_rows_and_are_counted_on_their_own():
+    base = make_run(20, reject_first=(0, 1, 2, 3), fatal=(19,))
+    r0, r1 = precommit_friction(base), precommit_friction(with_repeats(base))
+    for row in ("rejected_share", "retries_per_accepted_write", "accepted_writes", "abandoned_units"):
+        assert r0[row] == r1[row]
+    assert (r1["rejected_share"].k, r1["rejected_share"].n) == (4, 23)
+    assert r0["repeated_writes"] == 0 and r1["repeated_writes"] == 3
+    assert r1["per_unit"]["u005"]["repeated_writes"] == 1 and r1["per_unit"]["u005"]["attempts"] == r0["per_unit"]["u005"]["attempts"]
+
+
+def test_p9_a_unit_that_only_repeats_has_no_retry_figure():
+    recs = [r for r in with_repeats(make_run(4), units=("u002",))
+            if not (r["record_type"] == "insert_attempt" and r["unit_id"] == "u002" and r["engine_result"] == "ok")]
+    r = precommit_friction(recs)
+    assert r["per_unit"]["u002"] == {"attempts": 0, "rejected": 0, "repeated_writes": 1, "retries_per_accepted_write": None}
+    assert r["accepted_writes"] == 3 and r["repeated_writes"] == 1
+
+
 # ---------------------------------------------------------------- P.10
 
 def cost(recs, table=PRICES, booking="full_input_price", n_success=6, **kw):
@@ -151,6 +181,7 @@ def test_example_log_of_the_schema_can_be_read():
     assert (p2["overall"].k, p2["overall"].n) == (1, 1) and p2["overall"].status == "k of n"
     p9 = precommit_friction(recs)
     assert (p9["rejected_share"].k, p9["rejected_share"].n) == (1, 2) and p9["retries_per_accepted_write"] == 1
+    assert p9["repeated_writes"] == 1                                              # the example holds one repeated write
     table = PriceTable({"deepseek-flash": {"input": "0.30", "cached_input": "0.006", "output": "1.20"}}, to_euro=1, dated="example")
     p10 = resource_efficiency(recs, table, cached_input_booking="full_input_price", n_success=0)
     assert p10["totals"]["tokens"] == {"input": 12500, "cached_input": 5100, "output": 2700, "reasoning": 1900}
