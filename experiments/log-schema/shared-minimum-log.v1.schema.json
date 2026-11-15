@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "shared-minimum-log/1",
   "title": "Shared minimum log fields of Thesis A and Thesis B, version 1",
-  "description": "DRAFT of 14 November 2026 for the F3 freeze; not frozen. One JSON object per line. A record whose record_type is listed here must satisfy its definition. Any other record_type is an extension and only needs record_type and ts. Extra fields are allowed on every record and never change the meaning of the fields defined here. null means unknown or not reported, never zero. No euro amount is logged: euro is computed afterwards from the tokens and the dated price table.",
+  "description": "DRAFT of 15 November 2026 for the F3 freeze; not frozen. One JSON object per line. A record whose record_type is listed here must satisfy its definition. Any other record_type is an extension and only needs record_type and ts. Extra fields are allowed on every record and never change the meaning of the fields defined here. null means unknown or not reported, never zero. No euro amount is logged: euro is computed afterwards from the tokens and the dated price table.",
   "type": "object",
   "required": [
     "record_type",
@@ -1010,10 +1010,12 @@
         "retry_index",
         "tool_name",
         "payload_sha256",
+        "evidence",
         "validator_mode",
         "validator_result",
         "rejections",
         "engine_result",
+        "element_ids",
         "accepted",
         "latency_ms"
       ],
@@ -1066,6 +1068,36 @@
         "payload_sha256": {
           "$ref": "#/$defs/sha256"
         },
+        "evidence": {
+          "description": "The passage of the unit that the model names as support for this write, as the model gave it. It is kept in the log and never written into the graph. Whether the passage occurs in the unit is checked after the run, never at the write. null for a harness or a configuration that does not ask for it.",
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "quote"
+              ],
+              "properties": {
+                "quote": {
+                  "description": "The passage, word for word as the model gave it.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "locator": {
+                  "description": "Where in the unit the model places it (section, row), if the write protocol asks for one.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          ]
+        },
         "validator_mode": {
           "enum": [
             "reject",
@@ -1085,11 +1117,12 @@
           }
         },
         "engine_result": {
-          "description": "not_sent when the validator rejected the write in reject mode.",
+          "description": "ok: written. error: the engine refused or failed. not_sent: the validator rejected the write in reject mode. already_present: the graph already held exactly this item and nothing was written again; a harness that rejects repeats or stores them a second time never reports this value.",
           "enum": [
             "ok",
             "error",
-            "not_sent"
+            "not_sent",
+            "already_present"
           ]
         },
         "engine_error": {
@@ -1098,8 +1131,15 @@
             "null"
           ]
         },
+        "element_ids": {
+          "description": "What this write produced, so that a stored fact can be traced back to the write and to its unit. Property graph: the element ids the engine returns for the nodes and relationships created. RDF, where a triple has no id: the SHA-256 of each written triple as one canonical N-Triples line. For already_present: the ids of the elements that were already there. Empty when nothing was written.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "accepted": {
-          "description": "true when the write is in the graph.",
+          "description": "true when the item is in the graph after this attempt (engine_result ok or already_present).",
           "type": "boolean"
         },
         "latency_ms": {

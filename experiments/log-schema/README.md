@@ -1,6 +1,6 @@
 # Shared minimum log fields, version 1 (draft)
 
-**Status: draft of 14 November 2026, not frozen.** The field specification is frozen on 16 November 2026, before the pilot. Thesis B agreed to the fields on 13 November and asked for one addition, `item_id`, which is in since 14 November. Its own event schema (kgc-trace/1) carries these fields under the same names from its version 1.1.
+**Status: draft of 15 November 2026, not frozen.** The field specification is frozen on 16 November 2026, before the pilot. Thesis B agreed to the fields on 13 November and asked for one addition, `item_id`, which is in since 14 November. Three fields of the write record were added on 15 November (section "What a write produced" below); they are not yet confirmed by Thesis B. Its own event schema (kgc-trace/1) carries these fields under the same names from its version 1.1.
 
 Thesis A computes its populatability and queryability figures from these fields with its own code, which is why Thesis A specifies them (agreement, section 4.3).
 
@@ -14,7 +14,7 @@ Thesis A computes its populatability and queryability figures from these fields 
 ```bash
 pip install jsonschema
 python3 experiments/log-schema/validate_log.py experiments/log-schema/examples/valid.jsonl     # 0 errors
-python3 experiments/log-schema/validate_log.py experiments/log-schema/examples/invalid.jsonl   # 12 errors, exit code 1
+python3 experiments/log-schema/validate_log.py experiments/log-schema/examples/invalid.jsonl   # 13 errors, exit code 1
 ```
 
 ## Format
@@ -36,7 +36,7 @@ python3 experiments/log-schema/validate_log.py experiments/log-schema/examples/i
 | `source_start` | per unit | per source | the unit's row of the sample manifest, under the manifest's column names |
 | `source_end` | per unit | per source | final status, fatal flag, reason for giving up, attempts, rejects, wall-clock time |
 | `model_call` | per call | cost record | requested sampling, returned model string, fingerprint, tokens by category, finish reason. **The only place where tokens are recorded** |
-| `insert_attempt` | per fact candidate in a write-tool call | per insert attempt | `item_id` of the candidate; validator result with rule id, element, expected and found; engine result; retry index |
+| `insert_attempt` | per fact candidate in a write-tool call | per insert attempt | `item_id` of the candidate; the passage named as support; validator result with rule id, element, expected and found; engine result; what the write produced (`element_ids`); retry index |
 | `cq_attempt` | per query attempt | per CQ attempt | pass, attempt index, query text, parses, executes, result hash |
 | `provider_snapshot` | daily, own file | snapshot rule | stored copy of a provider's update page or model list |
 
@@ -47,15 +47,31 @@ Field-level descriptions are in the schema file.
 1. `tokens.cached_input` is a part of `tokens.input`, and `tokens.reasoning` is a part of `tokens.output`. Sums use `input` and `output` only, so nothing is counted twice.
 2. `insert_attempt.call_id` and `cq_attempt.call_id` name a `model_call` of the same file. Tokens are read from that call and never copied to the attempt: one call can issue several writes.
 3. `attempt_id` starts with the `run_id`.
-4. `rejections` is non-empty exactly when `validator_result` is `reject`. A write rejected in mode `reject` has `engine_result` `not_sent` and is not accepted. An accepted write has `engine_result` `ok`.
+4. `rejections` is non-empty exactly when `validator_result` is `reject`. A write rejected in mode `reject` has `engine_result` `not_sent` and is not accepted. An accepted write has `engine_result` `ok` or `already_present`.
 5. `source_end` follows a `source_start` of the same unit. `fatal` is true and `abandon_reason` is set exactly when `final_status` is `abandoned`. `rejects` never exceeds `attempts`.
 6. In a `model_call`, `cq_id` and `pass_id` are set exactly when `stage` is `querying`.
 7. In a `cq_attempt` without a query (`produced` false), `parses` and `executes` are `null`. A query that executes has parsed.
 8. Attempts that share an `item_id` lie in one unit and carry the retry indices 0, 1, 2 in a row.
+9. `element_ids` is non-empty exactly when `engine_result` is `ok` or `already_present`.
 
 ## The item id
 
 Every fact candidate gets an `item_id` when it is first written. If the validator rejects the write, the rejection message returns the id, and the model resends the corrected write with it. All attempts at one candidate therefore share one id, which is what "retries until acceptance" and the comparison of configurations with zero, one or two self-corrections need. The `attempt_id` keeps its form (run id, step index, attempt index) and does not contain the item id. A harness without an item concept writes `null`.
+
+## What a write produced, a repeated write, the supporting passage
+
+Added on 15 November 2026 to the `insert_attempt` record. All three come out of writing down the common-scope rules (`docs/technique/common-scope-rules-draft-0.1.md`).
+
+- **`element_ids`: what the write produced.** Without it a stored fact cannot be traced back to the write that made it, and so not to the unit the agent was reading. Three things need that trace: the provenance rule of the common scope, the sample for the hand coding of supportedness, and the breakdown of conformance by stratum of the source unit. Property graph: the element ids the engine returns for the nodes and relationships created. RDF, where a triple has no id: the SHA-256 of each written triple as one canonical N-Triples line. For that hash to be reproducible by the exporter, the RDF write tool must not create blank nodes, or must give them fixed names. Thesis B's trace has the same content as `engine.assertion_ids`.
+- **`engine_result: already_present`: a repeated write.** The graph already held exactly this item and nothing was written again. `element_ids` then names the elements that were already there, so the second unit counts as a source of them as well. A harness that rejects repeats or stores them twice never reports the value. Whether the write tools of the runs behave this way is not decided yet; the value is needed in any case, because Thesis B's trace reports `duplicate` and had nothing to map it to.
+  A repeated write looks like this (other fields left out):
+
+  ```json
+  {"record_type": "insert_attempt", "attempt_id": "PG-S4-A0-r1-pilot-s1-a2", "item_id": "i0002", "unit_id": "u004bb83eb485", "retry_index": 0, "validator_result": "pass", "rejections": [], "engine_result": "already_present", "element_ids": ["4:6f1c2b9e-0d3a-4c58-9b7e-2a1f0c4d5e6f:3"], "accepted": true}
+  ```
+
+  The example run in `examples/valid.jsonl` holds no repeated write, because it is not decided yet whether a repeat counts as a write attempt in the friction figures.
+- **`evidence`: the passage named as support.** The passage of the unit that the model names with a write (`quote`, and a `locator` if the write protocol asks for one). It is kept in the log and never written into the graph, so no schema gets provenance for free. It is not tested at the write; whether the passage occurs in the unit is checked after the run and reported. `null` for a configuration that does not ask for it.
 
 ## Where this draft departs from the field list of the agreement
 

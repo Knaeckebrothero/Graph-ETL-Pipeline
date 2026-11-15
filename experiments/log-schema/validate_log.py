@@ -67,8 +67,11 @@ def check(path):
                 errors.append(f"line {number} [insert_attempt] rejections must be non-empty exactly when validator_result is reject")
             if rejected and r.get("validator_mode") == "reject" and (r.get("engine_result") != "not_sent" or r.get("accepted")):
                 errors.append(f"line {number} [insert_attempt] a write rejected in reject mode is not sent and not accepted")
-            if r.get("accepted") and r.get("engine_result") != "ok":
-                errors.append(f"line {number} [insert_attempt] accepted needs engine_result ok")
+            in_graph = r.get("engine_result") in ("ok", "already_present")
+            if r.get("accepted") and not in_graph:
+                errors.append(f"line {number} [insert_attempt] accepted needs engine_result ok or already_present")
+            if isinstance(r.get("element_ids"), list) and bool(r["element_ids"]) != in_graph:
+                errors.append(f"line {number} [insert_attempt] element_ids must be non-empty exactly when engine_result is ok or already_present")
         if kind == "source_start":
             started.add((r.get("run_id"), r.get("unit_id")))
         if kind == "source_end":
