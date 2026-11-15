@@ -107,8 +107,11 @@ def consistency(records: list[dict]) -> list[str]:
             p.append(f"attempt {a.get('attempt_id')}: rejections must be non-empty exactly on a reject (rule_id, element, expected, found)")
         if rejected and a.get("validator_mode") == "reject" and (a.get("engine_result") != "not_sent" or a.get("accepted")):
             p.append(f"attempt {a.get('attempt_id')}: rejected in reject mode but sent or accepted")
-        if a.get("accepted") != (a.get("engine_result") == "ok"):
-            p.append(f"attempt {a.get('attempt_id')}: accepted must mirror engine_result ok")
+        in_graph = a.get("engine_result") in ("ok", "already_present")
+        if a.get("accepted") != in_graph:
+            p.append(f"attempt {a.get('attempt_id')}: accepted must mirror engine_result ok or already_present")
+        if bool(a.get("element_ids")) != in_graph:
+            p.append(f"attempt {a.get('attempt_id')}: element_ids non-empty exactly when the item is in the graph (Thesis A rule 9)")
 
     # Harness commitment 1: a stable item_id; every attempt belongs to a known item, retries of one item are 0..n-1
     item_events: dict[str, list[str]] = defaultdict(list)
@@ -147,9 +150,13 @@ def consistency(records: list[dict]) -> list[str]:
             continue
         if r.get("unit_id") not in started:
             p.append(f"source_end for unit {r.get('unit_id')!r} without a source_start before it")
-        att = by_unit.get(str(r.get("unit_id")), [])
+        all_att = by_unit.get(str(r.get("unit_id")), [])
+        att = [a for a in all_att if a.get("engine_result") != "already_present"]     # repeats are counted on their own
+        rep = [a for a in all_att if a.get("engine_result") == "already_present"]
         if r.get("attempts") != len(att):
-            p.append(f"source_end.attempts {r.get('attempts')} != insert_attempt records {len(att)} for {r.get('unit_id')}")
+            p.append(f"source_end.attempts {r.get('attempts')} != insert_attempt records without repeats {len(att)} for {r.get('unit_id')}")
+        if r.get("repeated_writes") != len(rep):
+            p.append(f"source_end.repeated_writes {r.get('repeated_writes')} != {len(rep)} for {r.get('unit_id')}")
         rejects = sum(1 for a in att if a.get("validator_result") == "reject")
         if r.get("rejects") != rejects:
             p.append(f"source_end.rejects {r.get('rejects')} != {rejects} for {r.get('unit_id')}")

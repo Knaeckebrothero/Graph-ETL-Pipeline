@@ -77,6 +77,14 @@ These do not block anything; version 1.1 passes Thesis A's checker as it is.
    validated"): Thesis B records it as `reject` with `rule_id: kgbench:write-precondition` and `engine_result: not_sent`,
    because the refusal is a rule of the harness. If Thesis A prefers a third value, Thesis B follows.
 
+5. **The three write-record fields of 15 Nov** (`evidence`, `element_ids`, `engine_result: already_present`,
+   `source_end.repeated_writes`): **confirmed by Thesis B on 15 Nov.** kgc-trace/1.1 carries them under the same
+   names and meaning; kgbench maps `engine_detail.result: duplicate` to `already_present`, `engine_detail.assertion_ids`
+   plus `entities_created` to `element_ids`, and the candidate's `evidence.quote` / `evidence.segment_id` to
+   `evidence.quote` / `evidence.locator`. Repeated writes are left out of `attempts`, `rejects` and `accepted_writes`.
+   One thing to align on Thesis A's side: the database tool (`experiments/harness/dbtool`, 15 Nov) records `evidence`
+   as the plain passage string, the schema requires `{quote, locator}` or null.
+
 ## 5. How to check
 
 ```bash
@@ -86,5 +94,5 @@ python3 experiments/thesis-b/validate_trace.py experiments/thesis-b/sample.kgc.j
 python3 experiments/log-schema/validate_log.py experiments/thesis-b/sample.kgc.jsonl  # Thesis A's checker: 0 errors
 ```
 
-State on 14 Nov 2026: both commands report 0 errors on the sample (77 records: 9 insert attempts, 5 model calls, the
-rest extension records that Thesis A's checker counts as such).
+State on 15 Nov 2026 (schema of 15 Nov with the three new fields): both commands report 0 errors on the sample (77 records:
+9 insert attempts, 5 model calls, the rest extension records that Thesis A's checker counts as such).
