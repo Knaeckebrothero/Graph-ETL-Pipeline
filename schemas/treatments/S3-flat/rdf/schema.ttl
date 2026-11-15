@@ -1,7 +1,8 @@
 # Fessi flat (S3), RDF realisation
 # Derived from schemas/v5.0/schema.cql (sha256 e0c1acf69b6692c8...)
-# by schemas/treatments/derive.py, rules draft-0.1. Generated; do not edit by hand.
-# Status: draft, not reviewed, not frozen.
+# by schemas/treatments/derive.py, rules 0.2. Generated; do not edit by hand.
+# Status: rules decided on 15 November 2026; not frozen (freeze: 23 November).
+# Enforced by the harness validator, not by the store: see declaration.json.
 
 @prefix fessi: <https://fessi.example/schema/s3#> .
 @prefix map:   <https://fessi.example/mapping#> .
@@ -151,7 +152,9 @@ fessi:REQUIRES_AVV a owl:ObjectProperty ;
     rdfs:domain fessi:WasteStream ;
     rdfs:range fessi:AVVCode .
 
-# Relationship properties: carried by statements of the object property
+# Relationship properties: carried by statements of the object property.
+# In the data: an RDF 1.2 annotation on the statement, s p o {| q v |} .
+# The statement s p o itself is always asserted.
 fessi:HAS_COMPONENT map:edgeProperty fessi:qty , fessi:weight_g .
 
 # Keys: one per uniqueness constraint

@@ -3,9 +3,19 @@
   "treatment": "S1",
   "arm": "rdf",
   "status": "draft",
-  "rules_version": "draft-0.1",
+  "rules_version": "0.2",
   "schema_file": null,
   "derived_from": null,
+  "enforcement": {
+    "node_type_outside_the_list": "nothing_declared",
+    "relationship_outside_the_patterns": "nothing_declared",
+    "uniqueness_violation": "nothing_declared",
+    "undeclared_property": "nothing_declared"
+  },
+  "identifying_value": {
+    "property": "rdfs:label",
+    "iri": "http://www.w3.org/2000/01/rdf-schema#label"
+  },
   "counts": {
     "node_types": 0,
     "relationship_types": 0,

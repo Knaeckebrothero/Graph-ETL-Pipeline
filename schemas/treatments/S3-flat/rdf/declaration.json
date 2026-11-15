@@ -3,13 +3,24 @@
   "treatment": "S3",
   "arm": "rdf",
   "status": "draft",
-  "rules_version": "draft-0.1",
+  "rules_version": "0.2",
   "schema_file": "schema.ttl",
   "derived_from": {
     "file": "schemas/v5.0/schema.cql",
     "sha256": "e0c1acf69b6692c81d6d164eaed7c5c076393fe664c4123bb8c3e00a1d96d151"
   },
   "namespace": "https://fessi.example/schema/s3#",
+  "enforcement": {
+    "node_type_outside_the_list": "reject",
+    "relationship_outside_the_patterns": "reject",
+    "uniqueness_violation": "reject",
+    "undeclared_property": "accept_and_count"
+  },
+  "relationship_property_form": {
+    "form": "rdf12-annotation",
+    "written_as": "s p o {| q v |} .",
+    "note": "the statement s p o itself is always asserted"
+  },
   "counts": {
     "node_types": 15,
     "relationship_types": 17,

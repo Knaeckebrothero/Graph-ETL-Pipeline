@@ -8,8 +8,9 @@ Output: one folder per treatment under schemas/treatments/, with one sub-folder
     python schemas/treatments/derive.py           # write all files
     python schemas/treatments/derive.py --check   # fail if a file on disk differs
 
-The three rules applied here (flat derivation, property graph to RDF, raw-triple
-pattern) are described in schemas/treatments/README.md. Standard library only.
+The rules applied here (flat derivation, property graph to RDF, raw-triple
+pattern, what is binding) are described in schemas/treatments/README.md.
+Standard library only.
 """
 
 from __future__ import annotations
@@ -26,7 +27,8 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 CURATED = REPO / "schemas" / "v5.0" / "schema.cql"
 
-RULES_VERSION = "draft-0.1"
+RULES_VERSION = "0.2"
+STATUS_LINE = "Status: rules decided on 15 November 2026; not frozen (freeze: 23 November)."
 NAMESPACE = "https://fessi.example/schema/{slug}#"
 MAPPING_NS = "https://fessi.example/mapping#"
 
@@ -34,6 +36,27 @@ MAPPING_NS = "https://fessi.example/mapping#"
 # types that could own a rule in the curated schema (the sources of HAS_RULE).
 FLAT_REMOVED = ("DisposalRule", "Condition")
 FLAT_RULE_OWNER_VIA = "HAS_RULE"
+
+# Rule "binding": what the harness validator does with a write that leaves the
+# declared schema. The stores enforce nothing of this themselves.
+ENFORCEMENT_DECLARED = {
+    "node_type_outside_the_list": "reject",
+    "relationship_outside_the_patterns": "reject",
+    "uniqueness_violation": "reject",
+    "undeclared_property": "accept_and_count",
+}
+ENFORCEMENT_NONE = {key: "nothing_declared" for key in ENFORCEMENT_DECLARED}
+
+# Rule "raw triples": how an entity carries its identifying value
+RAW_NAME_PG = "name"
+RAW_NAME_RDF = {"property": "rdfs:label", "iri": "http://www.w3.org/2000/01/rdf-schema#label"}
+
+# Rule "pg-to-rdf": how the data carries a property on a relationship
+EDGE_PROPERTY_FORM = {
+    "form": "rdf12-annotation",
+    "written_as": "s p o {| q v |} .",
+    "note": "the statement s p o itself is always asserted",
+}
 
 STATEMENT = re.compile(
     r"^CREATE (CONSTRAINT|INDEX) (\w+) IF NOT EXISTS FOR \((\w+):(\w+)\) "
@@ -242,7 +265,7 @@ def raw_triples_pg() -> dict:
             "unique": [], "indexed": [], "comment_lines": [], "statements": [],
         }
     return {
-        "node_types": [node("Entity", []), node("Assertion", ["predicate", "value"])],
+        "node_types": [node("Entity", [RAW_NAME_PG]), node("Assertion", ["predicate", "value"])],
         "relationship_patterns": [
             {"type": "SUBJECT", "from": "Assertion", "to": ["Entity"], "properties": [], "group": None},
             {"type": "OBJECT", "from": "Assertion", "to": ["Entity"], "properties": [], "group": None},
@@ -308,7 +331,8 @@ def write_ttl(slug: str, title: str, origin: list[str], schema: dict) -> str:
     if overlap:
         raise ValueError(f"one name used for two kinds of term: {sorted(overlap)}")
 
-    out = [f"# {title}", *[f"# {line}" for line in origin], ""]
+    out = [f"# {title}", *[f"# {line}" for line in origin],
+           "# Enforced by the harness validator, not by the store: see declaration.json.", ""]
     out += [
         f"@prefix fessi: <{namespace}> .",
         f"@prefix map:   <{MAPPING_NS}> .",
@@ -340,7 +364,9 @@ def write_ttl(slug: str, title: str, origin: list[str], schema: dict) -> str:
                                      for p in pattern["properties"])) for rel in rel_types]
     with_edge_props = [(rel, props) for rel, props in with_edge_props if props]
     if with_edge_props:
-        out += ["", "# Relationship properties: carried by statements of the object property"]
+        out += ["", "# Relationship properties: carried by statements of the object property.",
+                "# In the data: an RDF 1.2 annotation on the statement, s p o {| q v |} .",
+                "# The statement s p o itself is always asserted."]
         for rel, props in with_edge_props:
             out.append(f"fessi:{rel} map:edgeProperty " + " , ".join(f"fessi:{p}" for p in props) + " .")
 
@@ -371,7 +397,8 @@ def write_ttl(slug: str, title: str, origin: list[str], schema: dict) -> str:
 
 
 def declaration(realisation: str, status: str, source: dict | None, schema: dict | None,
-                rdf_slug: str | None = None, schema_file: str | None = None) -> str:
+                rdf_slug: str | None = None, schema_file: str | None = None,
+                enforcement: dict | None = None, identifying_value: dict | None = None) -> str:
     treatment, arm = realisation.split("/")
     body: dict = {
         "realisation": realisation,
@@ -384,6 +411,12 @@ def declaration(realisation: str, status: str, source: dict | None, schema: dict
     }
     if arm == "rdf" and rdf_slug:
         body["namespace"] = NAMESPACE.format(slug=rdf_slug)
+    if enforcement is not None:
+        body["enforcement"] = enforcement
+    if identifying_value is not None:
+        body["identifying_value"] = identifying_value
+    if arm == "rdf" and schema is not None and any(p["properties"] for p in schema["relationship_patterns"]):
+        body["relationship_property_form"] = EDGE_PROPERTY_FORM
     if schema is not None:
         body["counts"] = counts(schema)
         body["node_types"] = [
@@ -420,28 +453,32 @@ def build() -> dict[Path, str | bytes]:
     origin = [
         f"Derived from {source['file']} (sha256 {source['sha256'][:16]}...)",
         f"by schemas/treatments/derive.py, rules {RULES_VERSION}. Generated; do not edit by hand.",
-        "Status: draft, not reviewed, not frozen.",
+        STATUS_LINE,
     ]
     files: dict[Path, str | bytes] = {}
 
     # S4, curated: the Cypher file is copied byte for byte
     files[HERE / "S4-curated/pg/schema.cql"] = CURATED.read_bytes()
     files[HERE / "S4-curated/pg/declaration.json"] = declaration(
-        "S4-curated/pg", "draft", source, curated, schema_file="schema.cql")
+        "S4-curated/pg", "draft", source, curated, schema_file="schema.cql",
+        enforcement=ENFORCEMENT_DECLARED)
     files[HERE / "S4-curated/rdf/schema.ttl"] = write_ttl(
         "s4", "Fessi curated v5.0 (S4), RDF realisation", origin, curated)
     files[HERE / "S4-curated/rdf/declaration.json"] = declaration(
-        "S4-curated/rdf", "draft", source, curated, rdf_slug="s4", schema_file="schema.ttl")
+        "S4-curated/rdf", "draft", source, curated, rdf_slug="s4", schema_file="schema.ttl",
+        enforcement=ENFORCEMENT_DECLARED)
 
     # S3, flat
     files[HERE / "S3-flat/pg/schema.cql"] = write_cql(
         "Fessi flat (S3), property-graph realisation", origin, flat)
     files[HERE / "S3-flat/pg/declaration.json"] = declaration(
-        "S3-flat/pg", "draft", source, flat, schema_file="schema.cql")
+        "S3-flat/pg", "draft", source, flat, schema_file="schema.cql",
+        enforcement=ENFORCEMENT_DECLARED)
     files[HERE / "S3-flat/rdf/schema.ttl"] = write_ttl(
         "s3", "Fessi flat (S3), RDF realisation", origin, flat)
     files[HERE / "S3-flat/rdf/declaration.json"] = declaration(
-        "S3-flat/rdf", "draft", source, flat, rdf_slug="s3", schema_file="schema.ttl")
+        "S3-flat/rdf", "draft", source, flat, rdf_slug="s3", schema_file="schema.ttl",
+        enforcement=ENFORCEMENT_DECLARED)
 
     # S2, induced: placeholders
     files[HERE / "S2-induced/pg/schema.cql"] = placeholder("//", "S2 (induced)", "property-graph")
@@ -457,15 +494,19 @@ def build() -> dict[Path, str | bytes]:
         "Nothing is declared: no constraint, no index, no required property, no fixed predicate.",
         "An Assertion states one thing about its SUBJECT. Its predicate is free text. The object is",
         "either a literal in the property value, or another Entity reached through OBJECT.",
-        "Status: draft, not reviewed, not frozen.",
+        "An Entity carries its name in the property name: the shared rules of the validator ask",
+        "every entity for an identifying value, whatever the schema.",
+        STATUS_LINE,
     ]
     files[HERE / "S1-raw-triples/pg/schema.cql"] = write_cql(
         "Raw triples (S1), property-graph realisation", raw_origin, raw)
     files[HERE / "S1-raw-triples/pg/declaration.json"] = declaration(
-        "S1-raw-triples/pg", "draft", None, raw, schema_file="schema.cql")
+        "S1-raw-triples/pg", "draft", None, raw, schema_file="schema.cql",
+        enforcement=ENFORCEMENT_NONE, identifying_value={"node_type": "Entity", "property": RAW_NAME_PG})
     empty = {"node_types": [], "relationship_patterns": []}
     files[HERE / "S1-raw-triples/rdf/declaration.json"] = declaration(
-        "S1-raw-triples/rdf", "draft", None, empty, schema_file=None)
+        "S1-raw-triples/rdf", "draft", None, empty, schema_file=None,
+        enforcement=ENFORCEMENT_NONE, identifying_value=RAW_NAME_RDF)
     return files
 
 

@@ -3,9 +3,19 @@
   "treatment": "S1",
   "arm": "pg",
   "status": "draft",
-  "rules_version": "draft-0.1",
+  "rules_version": "0.2",
   "schema_file": "schema.cql",
   "derived_from": null,
+  "enforcement": {
+    "node_type_outside_the_list": "nothing_declared",
+    "relationship_outside_the_patterns": "nothing_declared",
+    "uniqueness_violation": "nothing_declared",
+    "undeclared_property": "nothing_declared"
+  },
+  "identifying_value": {
+    "node_type": "Entity",
+    "property": "name"
+  },
   "counts": {
     "node_types": 2,
     "relationship_types": 2,
@@ -17,7 +27,12 @@
     {
       "name": "Entity",
       "layer": null,
-      "properties": [],
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "pattern"
+        }
+      ],
       "unique": [],
       "indexed": []
     },

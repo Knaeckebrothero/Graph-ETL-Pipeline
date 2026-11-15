@@ -2,8 +2,8 @@
 // Fessi flat (S3), property-graph realisation
 // =============================================================================
 // Derived from schemas/v5.0/schema.cql (sha256 e0c1acf69b6692c8...)
-// by schemas/treatments/derive.py, rules draft-0.1. Generated; do not edit by hand.
-// Status: draft, not reviewed, not frozen.
+// by schemas/treatments/derive.py, rules 0.2. Generated; do not edit by hand.
+// Status: rules decided on 15 November 2026; not frozen (freeze: 23 November).
 // =============================================================================
 
 // AVVCode: Legal Classification per Abfallverzeichnis-Verordnung (European Waste Catalogue)
