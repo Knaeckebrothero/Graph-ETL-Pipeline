@@ -13,19 +13,28 @@ services:
     # database per cell: Enterprise edition, or one instance per cell.
     image: docker.io/library/neo4j:5-community
     container_name: harness-neo4j
-    ports:
-      - "127.0.0.1:17474:7474"  # HTTP (Browser)
-      - "127.0.0.1:17687:7687"  # Bolt
+    # Host network, bound to localhost: the commit hook below calls the database
+    # tool (experiments/harness/dbtool), which runs on this machine and listens
+    # on localhost. HTTP (Browser) on 17474, Bolt on 17687.
+    network_mode: host
     environment:
       - NEO4J_AUTH=neo4j/${HARNESS_NEO4J_PASSWORD:-harness_dev}
       - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_server_default__listen__address=127.0.0.1
+      - NEO4J_server_bolt_listen__address=127.0.0.1:17687
+      - NEO4J_server_bolt_advertised__address=localhost:17687
+      - NEO4J_server_http_listen__address=127.0.0.1:17474
+      # Commit hook: the database hands every transaction's changes to the
+      # database tool before it commits. A new hook is picked up within a second.
+      - NEO4J_apoc_trigger_enabled=true
+      - NEO4J_apoc_trigger_refresh=1000
       - NEO4J_server_memory_heap_max__size=1G
       - NEO4J_server_memory_pagecache_size=512M
     volumes:
       - neo4j-data:/data
       - neo4j-logs:/logs
     healthcheck:
-      test: ["CMD-SHELL", "cypher-shell -u neo4j -p $${NEO4J_AUTH#neo4j/} 'RETURN 1' || exit 1"]
+      test: ["CMD-SHELL", "cypher-shell -a bolt://127.0.0.1:17687 -u neo4j -p $${NEO4J_AUTH#neo4j/} 'RETURN 1' || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 10

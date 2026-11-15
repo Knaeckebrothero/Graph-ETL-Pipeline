@@ -15,6 +15,8 @@ podman-compose -f deploy/harness/podman-compose.yml down      # stop; add -v to 
 
 Both listen on localhost only. The passwords are development passwords; for the runs they come from outside this repository.
 
+Neo4j runs on the host network (bound to localhost) with the APOC commit hook enabled (`apoc.trigger.enabled`). The database tool in [`../../experiments/harness/dbtool/`](../../experiments/harness/dbtool/README.md) installs a hook through which the store hands every transaction's changes to the tool before it commits. While such a hook is installed, a write that does not come through the tool is undone; stopping the tool with `remove_hooks_on_stop` removes it again.
+
 ## Neo4j: one database
 
 The Community edition holds one user database per instance. That is enough for development. The runs need one database per cell, so either the Enterprise edition (several databases and one account per database on one server) or one instance per cell.
