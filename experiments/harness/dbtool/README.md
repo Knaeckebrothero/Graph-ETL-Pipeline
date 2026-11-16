@@ -2,21 +2,22 @@
 
 The agent's one way to its graph store. The agent writes Cypher (property-graph cells) or SPARQL (RDF cells) itself. The store runs the statement, the tool gets from the store **only what the statement changed**, hands those changes to the validator, and keeps or undoes them. There is no parser for the query languages and no copy of the graph.
 
-**Status: 15 November 2026. The property-graph side works and is tested against Neo4j 5.26. The RDF side is not built yet. Not wired into the agent framework.**
+**Status: 16 November 2026. The property-graph side works and is tested against Neo4j 5.26, also with Thesis B's validator as its checker. The RDF side is not built yet. Not wired into the agent framework.**
 
 ```bash
 podman-compose -f deploy/harness/podman-compose.yml up -d            # the stores; Neo4j with the commit hook enabled
-python -m pytest experiments/harness/dbtool/tests -q                 # 16 tests against that Neo4j
+python -m pytest experiments/harness/dbtool/tests -q                 # 19 tests against that Neo4j
+PYTHONPATH=experiments/thesis-b python -m pytest experiments/harness/dbtool/tests -q   # 7 more, with Thesis B's validator
 HARNESS_NEO4J_PASSWORD=harness_dev python experiments/harness/dbtool/serve.py experiments/harness/dbtool/cells.example.json
 ```
 
 ## What the agent sees
 
-One tool per cell, in the cell's own language: `cypher(statement, id, passage)` or `sparql(statement, id, passage)`. Reading and writing go through the same tool.
+One tool per cell, in the cell's own language: `cypher(statement, passage, locator, id)` or `sparql(...)`. Reading and writing go through the same tool.
 
 - `statement`: one statement. It runs as one transaction: all of it is stored, or nothing.
-- `id`: the agent's name for the fact it writes. The same id on a corrected statement marks it as a retry.
-- `passage`: the passage of the unit the write rests on. Kept in the record, never a reason for a rejection.
+- `passage`: the passage of the unit the write rests on, with an optional `locator` (section, row). Kept in the record, never a reason for a rejection.
+- `id`: the tool names every write at its first attempt and returns the name with the answer. The agent sends it back only with a corrected statement, which marks it as a retry.
 
 | Answer `status` | Meaning |
 |---|---|
@@ -41,15 +42,28 @@ Needs `apoc.trigger.enabled=true` and, because the store calls the tool, a store
 
 ## The handover point for the validator
 
-A checker is an object with one method, `check(changes, lookup) -> list of faults`; each fault has `rule_id`, `element`, `expected`, `found`. [`checker.py`](checker.py) describes `changes`: the nodes and relationships the statement created or changed, in their state after the statement, with every node a relationship touches under `ends`, and the ids of what it deleted. `lookup.find(label, property, value)` returns what was in the graph before the statement.
+A checker is an object with one method, `check(changes, lookup) -> list of faults`; each fault has `rule_id`, `element`, `expected`, `found`. It may also keep a list `observations` of what it counted without rejecting, and offer `not_checkable()`; both go into the record of the write. [`checker.py`](checker.py) describes `changes`: the nodes and relationships the statement created or changed, in their state after the statement, with every node a relationship touches under `ends`, and the ids of what it deleted. `lookup.find(label, property, value)` returns what was in the graph before the statement.
 
-The tool contains no rule of its own. `"checker": "none"` in the configuration lets everything pass; `"package.module:factory"` loads a checker. In mode `log_only` faults are recorded and the write is kept.
+The tool contains no rule of its own. `"checker": "none"` in the configuration lets everything pass; `"package.module:factory"` loads a checker. Thesis B's validator is loaded with `"checker": "validator.checker:checker"` and the tool started with `PYTHONPATH=experiments/thesis-b`; it reads the schema of the cell from `schemas/treatments/<realisation>/declaration.json` (`KG_VALIDATOR_ROOT` names the repository root when the two are not in one checkout). In mode `log_only` faults are recorded and the write is kept.
 
 ## The record
 
-Every call is appended to `<log_dir>/<cell>.jsonl`, in order. A write attempt is an `insert_attempt` with the fields of the shared minimum log that the tool can know: `ts`, `run_id`, `unit_id`, `source_id`, `stratum` (from the open unit), `item_id`, `retry_index`, `tool_name`, `payload_sha256`, `evidence`, `validator_mode`, `validator_result`, `rejections`, `engine_result`, `engine_error`, `element_ids`, `accepted`, `latency_ms`; plus the full `statement` and the `changes`. `attempt_id`, `call_id` and `step_index` belong to the model call and are joined from the agent framework's records. Other record types: `graph_read`, `statement_error`, `refused`, `unattributed_write`, `hook_missing`, `unit_open`, `unit_close`.
+Every call is appended to `<log_dir>/<cell>.jsonl`, in order. A write attempt is an `insert_attempt` with the fields of the shared minimum log that the tool can know: `ts`, `run_id`, `unit_id`, `source_id`, `stratum` (from the open unit), `item_id`, `retry_index`, `tool_name`, `payload_sha256`, `evidence` (`quote`, `locator`), `validator_mode`, `validator_result`, `rejections`, `engine_result`, `engine_error`, `element_ids`, `accepted`, `latency_ms`; plus the full `statement`, the `changes`, and the checker's `observations` and `validator_not_checkable`. `attempt_id`, `call_id` and `step_index` belong to the model call and are joined from the agent framework's records. Other record types: `graph_read`, `statement_error`, `refused`, `unattributed_write`, `hook_missing`, `warning`, `unit_open`, `unit_close`.
 
 The harness opens a unit before each job (`POST /cells/<cell>/unit`) and closes it afterwards; without an open unit the tool runs nothing.
+
+## Deleting, and the warnings file
+
+An agent may delete and change what earlier units wrote (decided 16 November 2026). Without that an early mistake could not be corrected and every later unit would have to build around it. Nothing about a delete is rejected. Every delete is in the record with the ids of what went, so a fact that was stored and later removed can be told from one that was never stored.
+
+What a person should look at is appended to `<log_dir>/warnings.jsonl`, one file for all cells, and printed on standard error. A warning never changes what the agent is told or what is stored.
+
+| `kind` | When |
+|---|---|
+| `bulk_delete` | one statement deleted at least `warn_deleted` elements (default 25); the warning says how many of them earlier units wrote and how large the graph is afterwards |
+| `unattributed_write` | a write reached the store without passing the tool; it was undone |
+| `hook_missing` | a write was committed without being checked; the unit has to be repeated |
+| `checker_fault` | the checker raised an error; nothing was stored |
 
 ## Open
 
@@ -60,3 +74,5 @@ The harness opens a unit before each job (`POST /cells/<cell>/unit`) and closes 
 5. **Uniqueness.** When the constraints of a schema file are also created in Neo4j, the store itself refuses a duplicate and the agent sees the store's message, not the validator's.
 6. **Accounts.** The refusal of schema and set-up commands is a check on the text. In the runs the account of a cell must not have the right to run them.
 7. **One database per cell.** The hook is installed per database; tried on one database.
+8. **A limit on deleting.** Today a large delete is only reported. Whether a statement that deletes more than a fixed number of elements should be rejected, and at which number, is to be decided from the pilot before the freeze on 23 November.
+9. **"Stored, later removed".** The record allows this figure per cell; it is not yet part of the technique's tables.

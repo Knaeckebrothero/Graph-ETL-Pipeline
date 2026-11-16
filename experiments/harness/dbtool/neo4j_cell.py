@@ -156,6 +156,8 @@ class Outcome:
     truncated: bool = False
     changes: dict | None = None
     rejections: list[dict] = field(default_factory=list)
+    observations: list[dict] = field(default_factory=list)      # counted by the checker, not rejected
+    not_checkable: list[str] = field(default_factory=list)      # rules the checker could not decide
     error_code: str | None = None
     error: str | None = None
 
@@ -167,6 +169,8 @@ class Pending:
     context: dict = field(default_factory=dict)
     changes: dict | None = None
     rejections: list[dict] | None = None
+    observations: list[dict] = field(default_factory=list)
+    not_checkable: list[str] = field(default_factory=list)
     rejected: bool = False
 
 
@@ -271,14 +275,16 @@ class Neo4jCell:
         except Neo4jError as error:
             self.pending.pop(token, None)
             if pending.rejected:
-                return Outcome("rejected", changes=pending.changes, rejections=pending.rejections or [])
+                return Outcome("rejected", changes=pending.changes, rejections=pending.rejections or [],
+                               observations=pending.observations, not_checkable=pending.not_checkable)
             return Outcome("error", error_code=error.code, error=error.message)
         self.pending.pop(token, None)
         if pending.changes is not None:
             if is_empty(pending.changes):
                 return Outcome("unchanged", rows=rows, truncated=truncated)
             return Outcome("stored", rows=rows, truncated=truncated, changes=pending.changes,
-                           rejections=pending.rejections or [])
+                           rejections=pending.rejections or [], observations=pending.observations,
+                           not_checkable=pending.not_checkable)
         if query_type == "r":
             return Outcome("result", rows=rows, truncated=truncated)
         # The hook was not called. Either the statement changed nothing in the end, or the hook is not
@@ -287,6 +293,13 @@ class Neo4jCell:
         if updates and not self.hook_is_active():
             return Outcome("unchecked", rows=rows, truncated=truncated)
         return Outcome("unchanged", rows=rows, truncated=truncated)
+
+    def size(self) -> dict:
+        """Nodes and relationships in the graph (committed). Read from the store's counts, so it is cheap."""
+        with self.driver.session(database=self.database) as session:
+            nodes = session.run("MATCH (n) RETURN count(n) AS c").single()["c"]
+            relationships = session.run("MATCH ()-[r]->() RETURN count(r) AS c").single()["c"]
+        return {"nodes": nodes, "relationships": relationships}
 
     # ------------------------------------------------------------------ lookup for the checker
 

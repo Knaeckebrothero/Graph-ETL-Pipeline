@@ -12,6 +12,12 @@ It returns one entry per fault, each with the four agreed fields
 `rule_id`, `element`, `expected`, `found`. An empty list means pass. It must not
 change anything and must not talk to the store except through `lookup`.
 
+Two things are optional. A checker may keep a list `observations` of what it
+counted without rejecting (a property the schema does not name); after each call
+the tool moves its entries into the record of that write. And it may offer
+`not_checkable()`, the ids of the rules its last check could not decide; they go
+into the record as `validator_not_checkable`.
+
 `changes` describes one statement:
 
     {

@@ -37,7 +37,8 @@ def main() -> int:
             database=cell.get("database", "neo4j"), checker=load_checker(cell.get("checker", config.get("checker"))),
             mode=cell.get("mode", "reject"), log_dir=config.get("log_dir", "dbtool-records"),
             realisation=cell.get("realisation"), max_rows=cell.get("max_rows", 200),
-            timeout_s=cell.get("timeout_s", 60.0))
+            timeout_s=cell.get("timeout_s", 60.0),
+            warn_deleted=cell.get("warn_deleted", config.get("warn_deleted", 25)))
     service.start()
     print(f"database tool on {service.address}, cells: {', '.join(sorted(service.cells))}", flush=True)
     stop = threading.Event()

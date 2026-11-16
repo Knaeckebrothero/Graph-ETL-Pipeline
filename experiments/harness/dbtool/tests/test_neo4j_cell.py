@@ -37,7 +37,8 @@ def test_a_write_is_stored_and_the_checker_sees_exactly_the_changes(cell):
     record = records(cell, "insert_attempt")[-1]
     assert record["engine_result"] == "ok" and record["accepted"] and record["validator_result"] == "pass"
     assert len(record["element_ids"]) == 5 and record["retry_index"] == 0
-    assert record["evidence"] == "Farbdosen gehören zum Sondermüll." and record["tool_name"] == "cypher"
+    assert record["evidence"] == {"quote": "Farbdosen gehören zum Sondermüll.", "locator": None}
+    assert record["tool_name"] == "cypher" and answer["id"] == "i1" and record["item_id"] == "i1"
     assert record["run_id"] == "run-test" and record["stratum"] == "prose"
 
 
@@ -109,8 +110,21 @@ def test_a_statement_the_store_cannot_read(cell):
     record = records(cell, "insert_attempt")[-1]
     assert record["engine_result"] == "error" and not record["accepted"]
     assert record["rejections"][0]["rule_id"] == "CS0" and record["validator_result"] == "reject"
-    assert cell.tool("MATCH (n RETURN n")["status"] == "error"
+    answer = cell.tool("MATCH (n RETURN n")
+    assert answer["status"] == "error" and "id" not in answer
     assert records(cell)[-1]["record_type"] == "statement_error"
+
+
+def test_the_tool_names_a_write_and_the_agent_sends_the_name_back(cell):
+    first = cell.tool("CREATE (:Forbidden)", passage="p", locator="§ 3")
+    assert first["status"] == "rejected" and first["id"] == "u0001-w001"
+    assert cell.tool("MATCH (n) RETURN count(n) AS c").get("id") is None            # reading uses up no name
+    second = cell.tool("CREATE (:WasteItem {name: 'Jar'})", item_id=first["id"], passage="p")
+    assert second["status"] == "stored" and second["id"] == "u0001-w001"
+    assert cell.tool("CREATE (:WasteItem {name: 'Lid'})")["id"] == "u0001-w002"
+    attempts = records(cell, "insert_attempt")
+    assert [(a["item_id"], a["retry_index"]) for a in attempts] == [("u0001-w001", 0), ("u0001-w001", 1), ("u0001-w002", 0)]
+    assert attempts[0]["evidence"] == {"quote": "p", "locator": "§ 3"} and attempts[2]["evidence"] is None
 
 
 def test_retries_of_the_same_item_are_counted_per_unit(cell):
@@ -137,7 +151,7 @@ def test_a_write_that_goes_around_the_tool_is_undone(cell):
         session.run("CREATE (:Bypass)").consume()
     driver.close()
     assert count(cell, "(:Bypass)") == 0
-    assert records(cell)[-1]["record_type"] == "unattributed_write"
+    assert [r["record_type"] for r in records(cell)[-2:]] == ["unattributed_write", "warning"]
 
 
 def test_no_unit_no_statement(cell):
@@ -191,7 +205,7 @@ def test_without_a_working_hook_the_cell_stops(service, cell):
     try:
         answer = cell.tool("CREATE (:WasteItem {name: 'unchecked'})", item_id="i1", passage="p")
         assert answer["status"] == "error" and "not checking writes" in answer["message"]
-        assert records(cell)[-1]["record_type"] == "hook_missing"
+        assert [r["record_type"] for r in records(cell)[-2:]] == ["hook_missing", "warning"]
         assert cell.tool("MATCH (n) RETURN count(n)")["status"] == "error"          # the cell stays shut
         with pytest.raises(RuntimeError):
             cell.open_unit({"unit_id": "u0003"})                                    # and no unit opens without the hook
@@ -201,3 +215,41 @@ def test_without_a_working_hook_the_cell_stops(service, cell):
     cell.open_unit({"unit_id": "u0003", "run_id": "run-test"})
     assert cell.fault is None
     assert cell.tool("CREATE (:WasteItem {name: 'checked'})", item_id="i1")["status"] == "stored"
+
+
+def warnings(cell):
+    path = cell.warnings_path
+    return [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+
+
+def test_a_large_delete_is_allowed_and_reported(cell, capsys):
+    cell.warnings_path.write_text("")
+    cell.warn_deleted = 10
+    cell.tool("UNWIND range(1, 8) AS i CREATE (:WasteItem {name: 'old ' + i})-[:HAS_TIP]->(:Tip {uid: 'tip ' + i})", item_id="i1")
+    cell.open_unit({"unit_id": "u0002", "run_id": "run-test"})                  # a later unit
+    cell.tool("CREATE (:WasteItem {name: 'mine'})", item_id="i1")
+    assert cell.tool("MATCH (w:WasteItem {name: 'mine'}) DELETE w", item_id="i2")["status"] == "stored"
+    assert warnings(cell) == []                                                 # a small delete is no warning
+    answer = cell.tool("MATCH (n) DETACH DELETE n", item_id="i3")
+    assert answer["status"] == "stored" and answer["deleted"] == 24 and count(cell) == 0
+    (warning,) = warnings(cell)
+    assert warning["kind"] == "bulk_delete" and warning["unit_id"] == "u0002" and warning["cell_id"] == "dev-pg"
+    assert warning["deleted_nodes"] == 16 and warning["deleted_relationships"] == 8
+    assert warning["deleted_from_earlier_units"] == 24 and warning["graph_after"] == {"nodes": 0, "relationships": 0}
+    assert records(cell)[-1]["record_type"] == "warning"
+    assert "bulk_delete" in capsys.readouterr().err
+
+
+def test_other_things_to_look_at_land_in_the_same_file(cell):
+    cell.warnings_path.write_text("")
+    driver = GraphDatabase.driver(URI, auth=("neo4j", PASSWORD))
+    with driver.session() as session, pytest.raises(Neo4jError):
+        session.run("CREATE (:Bypass)").consume()
+    driver.close()
+    original = cell.checker
+    cell.checker = type("Broken", (), {"check": lambda self, changes, lookup: 1 / 0})()
+    try:
+        cell.tool("CREATE (:WasteItem {name: 'x'})", item_id="i1")
+    finally:
+        cell.checker = original
+    assert [w["kind"] for w in warnings(cell)] == ["unattributed_write", "checker_fault"]

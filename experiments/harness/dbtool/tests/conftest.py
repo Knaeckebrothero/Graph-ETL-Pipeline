@@ -40,6 +40,20 @@ class StandInChecker:
         return faults
 
 
+class Recorder:
+    """Keeps what a checker was handed, so a test can look at it."""
+
+    def __init__(self, inner):
+        self.inner, self.seen = inner, []
+
+    def check(self, changes, lookup):
+        self.seen.append(changes)
+        return self.inner.check(changes, lookup)
+
+    def __getattr__(self, name):                      # observations, not_checkable
+        return getattr(self.inner, name)
+
+
 @pytest.fixture(scope="module")
 def service(tmp_path_factory):
     service = Service(port=0, control_key="test-key")

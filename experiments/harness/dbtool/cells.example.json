@@ -3,6 +3,7 @@
   "control_key_env": "DBTOOL_CONTROL_KEY",
   "log_dir": "dbtool-records",
   "checker": "none",
+  "warn_deleted": 25,
   "remove_hooks_on_stop": true,
   "cells": {
     "dev-pg": {

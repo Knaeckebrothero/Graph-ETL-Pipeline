@@ -1,7 +1,7 @@
 """The database tool: one service for one or more cells.
 
 For the agent (later wrapped as a tool of the agent framework):
-    POST /cells/<cell>/tool   {"statement": "...", "id": "...", "passage": "..."}
+    POST /cells/<cell>/tool   {"statement": "...", "passage": "...", "locator": "...", "id": "..."}
 
 For the harness (needs the control key when one is set):
     POST   /cells/<cell>/unit   {"unit_id", "run_id", "source_id", "stratum"}   open a unit
@@ -9,7 +9,9 @@ For the harness (needs the control key when one is set):
     POST   /check/<cell>        called by the store's commit hook
     GET    /health
 
-Every call of the tool is appended to <log_dir>/<cell>.jsonl, in order.
+Every call of the tool is appended to <log_dir>/<cell>.jsonl, in order. What a person should look at
+(a large delete, a write that went around the tool, a hook that is not working, a checker that failed)
+is also appended to <log_dir>/warnings.jsonl, one file for all cells, and printed on standard error.
 """
 
 from __future__ import annotations
@@ -17,6 +19,7 @@ from __future__ import annotations
 import datetime
 import hashlib
 import json
+import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -41,27 +44,40 @@ def now() -> str:
 class Cell:
     """One cell: its store, its checker, its mode, the unit that is open, and its record file."""
 
-    def __init__(self, cell_id: str, store, checker, mode: str, log_dir: Path, realisation: str | None = None):
+    def __init__(self, cell_id: str, store, checker, mode: str, log_dir: Path, realisation: str | None = None,
+                 warn_deleted: int = 25):
         if mode not in ("reject", "log_only"):
             raise ValueError(f"mode is reject or log_only, not {mode!r}")
         self.cell_id, self.store, self.checker, self.mode = cell_id, store, checker, mode
         self.realisation = realisation
+        self.warn_deleted = warn_deleted         # a statement that deletes this many elements is reported
+        self.unit_created: set[str] = set()      # element ids the open unit created and has not deleted again
         self.unit: dict | None = None
         self.fault: str | None = None            # set when a write got into the store unchecked
         self.retries: dict[tuple[str, str], int] = {}
+        self.writes = 0                          # write attempts in the open unit that got a new id
         self.lock = threading.Lock()             # one statement at a time
         log_dir.mkdir(parents=True, exist_ok=True)
         self.log_path = log_dir / f"{cell_id}.jsonl"
+        self.warnings_path = log_dir / "warnings.jsonl"
 
     # ------------------------------------------------------------------ records
 
-    def record(self, record_type: str, **fields: Any) -> None:
+    def record(self, record_type: str, **fields: Any) -> dict:
         unit = self.unit or {}
         entry = {"record_type": record_type, "ts": now(), "cell_id": self.cell_id,
                  "run_id": unit.get("run_id"), "unit_id": unit.get("unit_id"),
                  "source_id": unit.get("source_id"), "stratum": unit.get("stratum"), **fields}
         with self.log_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(entry, ensure_ascii=False, default=str) + "\n")
+        return entry
+
+    def warn(self, kind: str, text: str, **fields: Any) -> None:
+        """Something a person should look at. Never changes what the agent is told or what is stored."""
+        entry = self.record("warning", kind=kind, text=text, **fields)
+        with self.warnings_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(entry, ensure_ascii=False, default=str) + "\n")
+        print(f"dbtool warning [{self.cell_id}, unit {entry['unit_id']}] {kind}: {text}", file=sys.stderr, flush=True)
 
     # ------------------------------------------------------------------ units
 
@@ -71,7 +87,8 @@ class Cell:
         with self.lock:
             if not self.store.hook_is_active():      # every unit starts with a hook that was seen working
                 raise RuntimeError(f"the commit hook of {self.cell_id} is not active; no unit was opened")
-            self.unit, self.retries, self.fault = dict(unit), {}, None
+            self.unit, self.retries, self.writes, self.fault = dict(unit), {}, 0, None
+            self.unit_created = set()
             self.record("unit_open")
 
     def close_unit(self) -> None:
@@ -82,16 +99,18 @@ class Cell:
 
     # ------------------------------------------------------------------ the tool
 
-    def tool(self, statement: str, item_id: str | None = None, passage: str | None = None) -> dict:
+    def tool(self, statement: str, item_id: str | None = None, passage: str | None = None,
+             locator: str | None = None) -> dict:
         with self.lock:
-            return self._tool(statement, item_id, passage)
+            return self._tool(statement, item_id, passage, locator)
 
-    def _tool(self, statement: str, item_id: str | None, passage: str | None) -> dict:
+    def _tool(self, statement: str, given_id: str | None, passage: str | None, locator: str | None) -> dict:
         started = time.monotonic()
         tool_name = TOOL_NAME[self.store.arm]
+        evidence = {"quote": passage, "locator": locator} if passage is not None or locator is not None else None
         common = {"tool_name": tool_name, "statement": statement,
                   "payload_sha256": hashlib.sha256((statement or "").encode("utf-8")).hexdigest(),
-                  "item_id": item_id, "evidence": passage}
+                  "item_id": given_id, "evidence": evidence}
         latency = lambda: int((time.monotonic() - started) * 1000)
 
         if self.unit is None:
@@ -103,6 +122,9 @@ class Cell:
             self.record("refused", reason=refusal, latency_ms=latency(), **common)
             return {"status": "refused", "message": f"Not passed on to the store: {refusal}."}
 
+        # The tool names a write at its first attempt and returns the name; the agent sends it back with a
+        # correction. The name is only used up if the statement turns out to be a write.
+        item_id = given_id or f"{self.unit['unit_id']}-w{self.writes + 1:03d}"
         context = {"cell_id": self.cell_id, "arm": self.store.arm, "realisation": self.realisation,
                    "unit_id": self.unit["unit_id"], "item_id": item_id, "evidence": passage, "statement": statement}
         outcome = self.store.run(statement, context)
@@ -111,24 +133,28 @@ class Cell:
             self.fault = ("The store is not checking writes at the moment. This is a fault of the harness, "
                           "not of the statement. Nothing more can be run in this unit.")
             self.record("hook_missing", latency_ms=latency(), **common)
+            self.warn("hook_missing", "a write was committed without being checked; the unit has to be repeated",
+                      statement=statement)
             return {"status": "error", "message": self.fault}
 
         if outcome.kind == "result":
             self.record("graph_read", rows=len(outcome.rows), truncated=outcome.truncated, latency_ms=latency(), **common)
             return {"status": "result", "rows": outcome.rows, "row_count": len(outcome.rows), "truncated": outcome.truncated}
 
-        if outcome.kind == "error" and item_id is None and passage is None:
+        if outcome.kind == "error" and given_id is None and evidence is None:
             self.record("statement_error", engine_error=outcome.error, engine_error_code=outcome.error_code,
                         latency_ms=latency(), **common)
             return {"status": "error", "message": outcome.error}
 
         # everything below is a write attempt
-        key = (self.unit["unit_id"], item_id or "")
-        retry_index = self.retries.get(key, 0) if item_id else 0
-        if item_id:
-            self.retries[key] = retry_index + 1
+        if given_id is None:
+            self.writes += 1
+        key = (self.unit["unit_id"], item_id)
+        retry_index = self.retries.get(key, 0)
+        self.retries[key] = retry_index + 1
         attempt = {"retry_index": retry_index, "validator_mode": self.mode, "engine_error": None,
-                   "element_ids": [], "rejections": [], **common}
+                   "element_ids": [], "rejections": [], **common, "item_id": item_id,
+                   "observations": outcome.observations, "validator_not_checkable": outcome.not_checkable}
 
         if outcome.kind == "error":
             unreadable = outcome.error_code in SYNTAX_ERRORS
@@ -138,12 +164,12 @@ class Cell:
                                         "expected": "a statement the store can read",
                                         "found": outcome.error_code}] if unreadable else [])
             self.record("insert_attempt", latency_ms=latency(), **attempt)
-            return {"status": "error", "message": outcome.error}
+            return {"status": "error", "id": item_id, "message": outcome.error}
 
         if outcome.kind == "unchanged":
             attempt.update(validator_result="pass", engine_result="already_present", accepted=True)
             self.record("insert_attempt", latency_ms=latency(), **attempt)
-            return {"status": "already_present", "rows": outcome.rows,
+            return {"status": "already_present", "id": item_id, "rows": outcome.rows,
                     "message": "The statement changed nothing: what it writes is already in the graph."}
 
         changes = outcome.changes or {}
@@ -153,14 +179,35 @@ class Cell:
             attempt.update(validator_result="reject", engine_result="not_sent", accepted=False,
                            rejections=outcome.rejections)
             self.record("insert_attempt", changes=changes, latency_ms=latency(), **attempt)
-            return {"status": "rejected", "message": checking.message(outcome.rejections),
-                    "rejections": outcome.rejections, "note": "Nothing of this statement was stored."}
+            return {"status": "rejected", "id": item_id, "message": checking.message(outcome.rejections),
+                    "rejections": outcome.rejections,
+                    "note": "Nothing of this statement was stored. Send the corrected statement with this id."}
 
         # stored; in log-only mode the checker may still have found faults
         attempt.update(validator_result="reject" if outcome.rejections else "pass", engine_result="ok",
                        accepted=True, rejections=outcome.rejections, element_ids=element_ids)
         self.record("insert_attempt", changes=changes, latency_ms=latency(), **attempt)
-        return {"status": "stored", **summary, "rows": outcome.rows}
+        self._watch_deletes(changes, item_id, statement)
+        return {"status": "stored", "id": item_id, **summary, "rows": outcome.rows}
+
+    def _watch_deletes(self, changes: dict, item_id: str, statement: str) -> None:
+        """Deleting is allowed. A statement that deletes a lot is reported, with how much of it older units wrote."""
+        deleted = changes.get("deleted", {})
+        gone = list(deleted.get("nodes", [])) + list(deleted.get("relationships", []))
+        from_earlier_units = [key for key in gone if key not in self.unit_created]
+        self.unit_created.difference_update(gone)
+        self.unit_created.update(n["key"] for n in changes.get("nodes", []) if n["change"] == "created")
+        self.unit_created.update(r["key"] for r in changes.get("relationships", []) if r["change"] == "created")
+        if len(gone) >= self.warn_deleted:
+            size = self.store.size()
+            self.warn("bulk_delete",
+                      f"one statement deleted {len(deleted.get('nodes', []))} nodes and "
+                      f"{len(deleted.get('relationships', []))} relationships, {len(from_earlier_units)} of them "
+                      f"written by earlier units; the graph now holds {size['nodes']} nodes and "
+                      f"{size['relationships']} relationships",
+                      item_id=item_id, statement=statement, deleted_nodes=len(deleted.get("nodes", [])),
+                      deleted_relationships=len(deleted.get("relationships", [])),
+                      deleted_from_earlier_units=len(from_earlier_units), graph_after=size)
 
     # ------------------------------------------------------------------ the commit hook
 
@@ -170,6 +217,7 @@ class Cell:
         pending = self.store.pending.get(token) if token else None
         if pending is None:
             self.record("unattributed_write", changes=changes_from_hook(payload))
+            self.warn("unattributed_write", "a write reached the store without passing the tool; it was undone")
             return {"reject": True, "message": "A write reached the store without passing the database tool."}
         if pending.kind == "admin":
             return {"reject": False, "message": ""}
@@ -186,7 +234,16 @@ class Cell:
             pending.rejections = [{"rule_id": "CHECKER-FAULT", "element": "checker",
                                    "expected": "a verdict", "found": f"{type(error).__name__}: {error}"}]
             pending.rejected = True
+            self.warn("checker_fault", f"the checker failed with {type(error).__name__}: {error}; nothing was stored",
+                      statement=pending.context.get("statement"))
             return {"reject": True, "message": "The checker failed; nothing was stored."}
+        # A checker may keep what it counted without rejecting, and say which rules it could not decide.
+        observations = getattr(self.checker, "observations", None)
+        if isinstance(observations, list):
+            pending.observations = list(observations)
+            observations.clear()
+        not_checkable = getattr(self.checker, "not_checkable", None)
+        pending.not_checkable = list(not_checkable()) if callable(not_checkable) else []
         pending.rejected = bool(pending.rejections) and self.mode == "reject"
         return {"reject": pending.rejected, "message": checking.message(pending.rejections) if pending.rejected else ""}
 
@@ -254,7 +311,8 @@ class Service:
                     if len(parts) == 3 and parts[0] == "cells" and parts[1] in service.cells:
                         cell = service.cells[parts[1]]
                         if method == "POST" and parts[2] == "tool":
-                            return self._send(200, cell.tool(body.get("statement", ""), body.get("id"), body.get("passage")))
+                            return self._send(200, cell.tool(body.get("statement", ""), body.get("id"),
+                                                             body.get("passage"), body.get("locator")))
                         if method == "POST" and parts[2] == "unit":
                             cell.open_unit(body)
                             return self._send(200, {"status": "ok"})
@@ -280,9 +338,10 @@ class Service:
 
     def add_neo4j_cell(self, cell_id: str, uri: str, user: str, password: str, database: str = "neo4j",
                        checker=None, mode: str = "reject", log_dir: Path | str = ".", realisation: str | None = None,
-                       max_rows: int = 200, timeout_s: float = 60.0) -> Cell:
+                       max_rows: int = 200, timeout_s: float = 60.0, warn_deleted: int = 25) -> Cell:
         store = Neo4jCell(cell_id, uri, user, password, database, max_rows=max_rows, timeout_s=timeout_s)
-        cell = self.cells[cell_id] = Cell(cell_id, store, checker or checking.NoChecker(), mode, Path(log_dir), realisation)
+        cell = self.cells[cell_id] = Cell(cell_id, store, checker or checking.NoChecker(), mode, Path(log_dir),
+                                          realisation, warn_deleted=warn_deleted)
         return cell
 
     def start(self) -> None:
