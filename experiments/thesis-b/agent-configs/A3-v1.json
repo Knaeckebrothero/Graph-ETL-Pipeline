@@ -1,7 +1,7 @@
 {
   "agent_config_id": "A3-v1",
   "label": "third API model family",
-  "status": "proposal",
+  "status": "frozen",
   "baseline": "A0-v1",
   "block": "model",
   "varies": "model.family",
@@ -42,5 +42,5 @@
   "requires_from_harness": [
     "catalog entry for the model"
   ],
-  "notes": "Optional; only if pilot cost allows. Candidate: Gemini 4. Decided 13 Nov: A3 stays in the list as best effort (built only if capacity remains after the pre-selected cells), model Gemini 4 family, pinned."
+  "notes": "Optional; only if pilot cost allows. Candidate: Gemini 4. Decided 13 Nov: A3 stays in the list as best effort (built only if capacity remains after the pre-selected cells), model Gemini 4 family, pinned. Frozen 21 Nov 2026 (agreement 4.6, F3 second step, due 16 Nov; late with the pilot). Template id A-frozen-v1 is Thesis B's name until Thesis A delivers the three templates with ids and hashes; the three A0 numbers (max_output_tokens, per-unit budget, query timeout) stay null until the pilot has run and are filled by Thesis A as non-semantic fixes logged in deviations.md. Any semantic change from here produces -v2."
 }

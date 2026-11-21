@@ -1,4 +1,4 @@
-# Agent configurations A0 to A10 (Thesis B; list to freeze 13 Nov 2026, open points 3 and 18)
+# Agent configurations A0 to A10 (Thesis B; list fixed 13 Nov 2026, files frozen 21 Nov 2026; open points 3 and 18)
 
 Source of truth: `src/kgbench/spec/agent-configs/A*.json`, validated by `kgbench configs-check` and
 `tests/test_agent_configs.py`. Rules enforced there: every configuration names A0 as baseline; it differs from A0
@@ -26,7 +26,7 @@ Bold = pre-selected for Thesis A's robustness check (open point 18): A1, A2, A6.
 open-weight model with tool calling is hostable by 13 Nov. Rationale follows Thesis A's diversity order: model
 family first (two), then tooling (one that opens the closed loop), prompting last.
 
-## 2. Cells (open point 3; numbers fixed 21 Nov from pilot cost)
+## 2. Cells (open point 3; numbers were to be fixed 21 Nov from pilot cost; pilot not run, see `deviations.md` D3)
 
 ```
 pre-selected A1, A2, A6:   3 × 4 treatments × PG × up to 3 reps  = up to 36 runs
@@ -58,5 +58,5 @@ enters only if its runs completed on all four treatments with complete logs; exc
 
 ## 5. Versioning
 
-A configuration file is immutable once frozen (`status: frozen`). Any change after F3 produces `-v2` and new
+All eleven files are `status: frozen` since 21 Nov 2026 (`deviations.md` D2; A0 `hosting: self-hosted`, D5). A configuration file is immutable once frozen (`status: frozen`); the three A0 numbers and the template hashes are filled as non-semantic fixes logged in `deviations.md`. Any change after F3 produces `-v2` and new
 `run_id`s (agreement 4.6). `run_start.agent_config_id` references the exact version.

@@ -1,7 +1,7 @@
 {
   "agent_config_id": "A9-v1",
   "label": "source unit delivered in sub-chunks inside one agent task",
-  "status": "proposal",
+  "status": "frozen",
   "baseline": "A0-v1",
   "block": "prompting",
   "varies": "prompting.source_delivery",
@@ -12,7 +12,7 @@
     "family": "deepseek",
     "model_id": "deepseek-flash (alias as sent; served version DeepSeek-V4.1-Flash-1017 on 12 Nov 2026; published weights deepseek-ai/DeepSeek-V4.1-Flash-1017 @ 08c8657f02291e11b6f6b63e0e16014f8e748518; agreement 4.5; returned model string and fingerprint recorded per call; no fallback model: the drafting family Claude Sonnet 5.5 is excluded from every run agent)",
     "protocol": "openai-chat",
-    "hosting": "vendor-api",
+    "hosting": "self-hosted",
     "decoding": {
       "temperature": 0.2,
       "top_p": 1.0,
@@ -42,5 +42,5 @@
   "requires_from_harness": [
     "source delivery mode (whole vs fixed-size chunks) exposed per configuration"
   ],
-  "notes": "Chunk size fixed with A0. The source unit itself is unchanged (EX-05: cut once at F2, byte-identical); only the delivery inside the one task per unit (EX-12) changes. Dropped at F3 if the harness cannot deliver sub-chunks inside one task."
+  "notes": "Chunk size fixed with A0. The source unit itself is unchanged (EX-05: cut once at F2, byte-identical); only the delivery inside the one task per unit (EX-12) changes. Dropped at F3 if the harness cannot deliver sub-chunks inside one task. Frozen 21 Nov 2026 (agreement 4.6, F3 second step, due 16 Nov; late with the pilot). Template id A-frozen-v1 is Thesis B's name until Thesis A delivers the three templates with ids and hashes; the three A0 numbers (max_output_tokens, per-unit budget, query timeout) stay null until the pilot has run and are filled by Thesis A as non-semantic fixes logged in deviations.md. Any semantic change from here produces -v2."
 }

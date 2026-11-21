@@ -1,7 +1,7 @@
 {
   "agent_config_id": "A1-v1",
   "label": "second API model family",
-  "status": "proposal",
+  "status": "frozen",
   "baseline": "A0-v1",
   "block": "model",
   "varies": "model.family",
@@ -44,5 +44,5 @@
     "protocol openai-responses",
     "decoding record: the SRW factories do not send temperature/top_p for this row, so `model_call.requested` must record `not_exposed` for them and the effort level actually sent"
   ],
-  "notes": "Fixed in the call of 12 Nov: OpenAI GPT-6.1 Sol (SRW catalog `gpt-6.1-sol`, Responses API). The drafting family named in Draft 1i (3.3) is Claude Sonnet 5.5, so the Gemini 4 alternative is not needed and A1 stays on OpenAI. Runs on Thesis B's own OpenAI credits (budget 500 USD, own key in the SRW catalog); see F.4. Decoding deviation to record, not hide: the catalog comment says sampling controls are omitted on the wire for this row, so the EX-10 values T 0.2 / top-p 1 are requested in the config but logged as `not_exposed` per call; reasoning effort `high` is the exposed knob (same level as A0's thinking mode, agreement 4.5)."
+  "notes": "Fixed in the call of 12 Nov: OpenAI GPT-6.1 Sol (SRW catalog `gpt-6.1-sol`, Responses API). The drafting family named in Draft 1i (3.3) is Claude Sonnet 5.5, so the Gemini 4 alternative is not needed and A1 stays on OpenAI. Runs on Thesis B's own OpenAI credits (budget 500 USD, own key in the SRW catalog); see F.4. Decoding deviation to record, not hide: the catalog comment says sampling controls are omitted on the wire for this row, so the EX-10 values T 0.2 / top-p 1 are requested in the config but logged as `not_exposed` per call; reasoning effort `high` is the exposed knob (same level as A0's thinking mode, agreement 4.5). Frozen 21 Nov 2026 (agreement 4.6, F3 second step, due 16 Nov; late with the pilot). Template id A-frozen-v1 is Thesis B's name until Thesis A delivers the three templates with ids and hashes; the three A0 numbers (max_output_tokens, per-unit budget, query timeout) stay null until the pilot has run and are filled by Thesis A as non-semantic fixes logged in deviations.md. Any semantic change from here produces -v2."
 }

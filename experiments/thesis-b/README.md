@@ -5,11 +5,11 @@ Specifications that Thesis B contributes to the shared experiment: the instrumen
 | Deliverable | Open point | Prose | Machine-readable | Check (in kgbench) |
 |---|---|---|---|---|
 | Instrumentation specification `kgc-trace/1`, **version 1.1** (carries `shared-minimum-log/1` under Thesis A's names) | 4, 12, 20 b; agreement 4.3 | `event-schema-v1.md` | `kgc-trace-v1.1.schema.json` | `kgbench trace-export <run> --validate --shared-minimum <schema>` |
-| Agent configurations A0 to A10, pre-selection A1/A2/A6 | 3, 18 | `agent-configs.md` | `agent-configs/A*.json`, `agent-config.schema.json` | `kgbench configs-check` |
+| Agent configurations A0 to A10, pre-selection A1/A2/A6, **frozen 21 Nov** (A0 self-hosted since 20 Nov) | 3, 18 | `agent-configs.md` | `agent-configs/A*.json`, `agent-config.schema.json` | `kgbench configs-check` |
 | A0 baseline proposal (model, decoding, tools, prompts, budgets, parameters the harness must expose) | A0 agreed | `a0-baseline-proposal.md` | `agent-configs/A0-v1.json` | — |
 | A0 prompt template, construction role (slot list, per-arm binding, hash rule, A8 variant) | A0 agreed (templates: both, F3) | `a0-prompt-templates-proposal.md` | — | ids and hashes recorded at F3 |
 | Indicator mapping against Thesis A's ten populatability components | 13 | `indicator-mapping.md` | — | confirmed in the Eval 2 reading |
-| Eval 2 second-reading checklist | 15 | `eval2-review-checklist.md` | — | filled in 13 to 15 Nov |
+| Eval 2 second reading (done 21 Nov: 31 cards, 0 blockers, 9 fixes, 6 notes) | 15 | `eval2-review-checklist.md` | — | rows go into Thesis A's change log |
 | Example trace in `kgc-trace/1.1` (one kgbench prototype run; cell labels are placeholders, see `shared-minimum-review.md` §3) | 4 | — | `sample.kgc.jsonl`, `sample-cell.placeholder.json` | `validate_trace.py`, Thesis A's `validate_log.py` |
 | Checker: schema plus cross-record rules (ordering, counts, stable `item_id`, Thesis A's `attempt_id` form, rejections on reject, `call_id` links); `--shared-minimum` also runs Thesis A's schema and cross-record rules | 4, 12 | — | `validate_trace.py` | `pip install jsonschema` |
 | Review of `shared-minimum-log/1`: the six departures, the field map 1.0 to 1.1, where kgbench needs a cell file, four small requests to Thesis A | agreement 4.3 | `shared-minimum-review.md` | — | — |
@@ -17,6 +17,7 @@ Specifications that Thesis B contributes to the shared experiment: the instrumen
 | Thesis B reply to the demarcation agreement Draft 1h (Draft 1i, supersedes 8 Nov) | 1 to 20 | `reply-draft-1i.md` | — | — |
 | Freeze decisions and open items of 13 Nov | — | `DECISIONS-2026-11-13.md` | — | — |
 | Written confirmations for the signature of Draft 1i (six items, three corrections) | — | `CONFIRMATIONS-2026-11-13.md` | — | — |
+| Deviation table (agreement 4.6, F.7; read by card X.4) | — | `deviations.md` | — | — |
 
 Decisions the harness owner has to make for the schema to be implementable (see `event-schema-v1.md`):
 
@@ -25,6 +26,8 @@ Decisions the harness owner has to make for the schema to be implementable (see 
 3. Validator rejections carry `rule_id`, `element`, `expected`, `found`.
 
 Decision of 14 Nov 2026 (agreement version 1.0, 3.1/3.2): the harness validator moved from Thesis A to Thesis B. Thesis B builds it (`validator/`); Thesis A fixes what it checks (common-scope rule list of the technique, constraints of each realisation) and builds the handover point in the write tools. Frozen at F4 (23 Nov) with Thesis A's rule list.
+
+16 to 21 Nov 2026: the validator runs inside Thesis A's tool since 16 Nov (26 tool tests); the configurations are frozen; A0 is served on Thesis A's DGX; the Eval 2 reading is done; see `DECISIONS-2026-11-13.md` (section 16 to 21 Nov) and `deviations.md`.
 
 15 Nov 2026: Thesis A delivered the rule list v0.2, the database tool with its handover point (`experiments/harness/dbtool/checker.py`) and three new write-record fields of the shared log (`evidence`, `element_ids`, `already_present`). Thesis B confirmed the fields, carries them in kgc-trace/1.1 (sample re-exported, 0 errors in both checkers) and rebuilt the validator to the tool's `check(changes, lookup)` interface (`DECISIONS-2026-11-13.md`, section 15 Nov).
 

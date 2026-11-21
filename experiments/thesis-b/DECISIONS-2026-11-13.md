@@ -53,3 +53,12 @@ Open for Thesis A (asked 15 Nov):
 - `evidence`: the tool records a string, the log schema requires `{quote, locator}` or null. One of the two changes.
 - Whether an agent may delete (`changes.deleted`): no rule of v0.2 speaks about it; the validator lets it pass.
 - Merge of `thesis-b/f3-spec` (pull request 4) and where the validator lives afterwards.
+
+## 16 to 21 Nov 2026: state before F4
+
+- **16 Nov, Thesis A:** validator 0.2.0 runs inside the database tool (`harness-db-tool` cc07f21): `"checker": "validator.checker:checker"`, `PYTHONPATH=experiments/thesis-b`; `evidence` now `{quote, locator}`; the tool assigns the item id; observations and `validator_not_checkable` go into the record; deletes stay allowed (warnings file). 26 tool tests pass with the validator. The three open items of 15 Nov are closed.
+- **17 Nov, both:** the persistent agent workspace (SRW `cloud/`) is dropped; graph store and snapshot per cell stay (`deviations.md` D4).
+- **20 Nov, Thesis A:** pilot not started; DGX Station in service; DeepSeek V4.1 Flash served locally (8 parallel agents, 400k context). A0 moves to `hosting: self-hosted` (D5). Thesis B asked for the serving record (framework, version, quantisation, weights commit, exposed sampling parameters) and the same stack for pilot and main runs.
+- **21 Nov, Thesis B:** Eval 2 second reading done (`eval2-review-checklist.md`: 31 cards, 0 blockers, 9 fixes, 6 notes; no change request for kgc-trace); all configuration files set to `status: frozen` (D2); `deviations.md` opened (D1 to D7).
+
+Open for Thesis A before or at F4 (23 Nov): rule list v1.0 tag, format and unit table, section 7 test cases, mappings; the three templates with ids and hashes; the three A0 numbers (after the pilot); the serving record for A0 (and A2); the RDF go/no-go; new date for Thesis B's repetitions and cost cap (D3); merge of pull request 4.
