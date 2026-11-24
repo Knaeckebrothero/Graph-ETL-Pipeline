@@ -1,13 +1,21 @@
 """The database tool: one service for one or more cells.
 
 For the agent (later wrapped as a tool of the agent framework):
-    POST /cells/<cell>/tool   {"statement": "...", "passage": "...", "locator": "...", "id": "..."}
+    POST /cells/<cell>/tool   {"statement": "...", "parameters": {...}, "passage": "...", "locator": "...", "id": "..."}
+
+The same address serves the tool call of the agent framework and `run_query` inside the workspace
+(client/run_query.py). When a cell has a tool key, the call has to carry it (`X-Tool-Key`), so that a
+workspace reaches its own cell only.
 
 For the harness (needs the control key when one is set):
     POST   /cells/<cell>/unit   {"unit_id", "run_id", "source_id", "stratum"}   open a unit
     DELETE /cells/<cell>/unit                                                   close it
-    POST   /check/<cell>        called by the store's commit hook
+    POST   /check/<cell>        called by the store's commit hook (property graph)
     GET    /health
+
+A property-graph cell is checked by a hook inside the store, before the commit (neo4j_cell.py). An RDF
+cell has no such hook: the store logs what a statement changed, the tool reads that, and a rejected
+statement is taken out again (fuseki_cell.py). Both end in the same verdict (`Cell.judge`) and the same record.
 
 Every call of the tool is appended to <log_dir>/<cell>.jsonl, in order. What a person should look at
 (a large delete, a write that went around the tool, a hook that is not working, a checker that failed)
@@ -22,19 +30,32 @@ import json
 import sys
 import threading
 import time
+from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
 try:
     from . import checker as checking, guard
+    from .fuseki_cell import FusekiCell, triple_id
     from .neo4j_cell import TOKEN_KEY, Neo4jCell, changes_from_hook, is_empty
 except ImportError:  # run as a script
     import checker as checking, guard
+    from fuseki_cell import FusekiCell, triple_id
     from neo4j_cell import TOKEN_KEY, Neo4jCell, changes_from_hook, is_empty
 
 TOOL_NAME = {"pg": "cypher", "rdf": "sparql"}
-SYNTAX_ERRORS = ("Neo.ClientError.Statement.SyntaxError",)
+SYNTAX_ERRORS = ("Neo.ClientError.Statement.SyntaxError", "Fuseki.ParseError")
+
+
+@dataclass
+class Verdict:
+    """What the checker said about one statement's changes, after the mode was applied."""
+    rejections: list[dict] = field(default_factory=list)
+    observations: list[dict] = field(default_factory=list)
+    not_checkable: list[str] = field(default_factory=list)
+    rejected: bool = False
+    fault: bool = False                          # the checker itself failed
 
 
 def now() -> str:
@@ -45,12 +66,13 @@ class Cell:
     """One cell: its store, its checker, its mode, the unit that is open, and its record file."""
 
     def __init__(self, cell_id: str, store, checker, mode: str, log_dir: Path, realisation: str | None = None,
-                 warn_deleted: int = 25):
+                 warn_deleted: int = 25, tool_key: str = ""):
         if mode not in ("reject", "log_only"):
             raise ValueError(f"mode is reject or log_only, not {mode!r}")
         self.cell_id, self.store, self.checker, self.mode = cell_id, store, checker, mode
         self.realisation = realisation
         self.warn_deleted = warn_deleted         # a statement that deletes this many elements is reported
+        self.tool_key = tool_key                 # when set, a tool call has to carry it
         self.unit_created: set[str] = set()      # element ids the open unit created and has not deleted again
         self.unit: dict | None = None
         self.fault: str | None = None            # set when a write got into the store unchecked
@@ -60,6 +82,8 @@ class Cell:
         log_dir.mkdir(parents=True, exist_ok=True)
         self.log_path = log_dir / f"{cell_id}.jsonl"
         self.warnings_path = log_dir / "warnings.jsonl"
+        if hasattr(store, "attach"):             # a store without a commit hook asks for the verdict itself
+            store.attach(judge=self.judge, report=self._reported)
 
     # ------------------------------------------------------------------ records
 
@@ -85,8 +109,8 @@ class Cell:
         if not unit.get("unit_id"):
             raise ValueError("a unit needs a unit_id")
         with self.lock:
-            if not self.store.hook_is_active():      # every unit starts with a hook that was seen working
-                raise RuntimeError(f"the commit hook of {self.cell_id} is not active; no unit was opened")
+            if not self.store.ready():               # every unit starts with a store that was seen checking
+                raise RuntimeError(self.store.not_ready)
             self.unit, self.retries, self.writes, self.fault = dict(unit), {}, 0, None
             self.unit_created = set()
             self.record("unit_open")
@@ -100,16 +124,21 @@ class Cell:
     # ------------------------------------------------------------------ the tool
 
     def tool(self, statement: str, item_id: str | None = None, passage: str | None = None,
-             locator: str | None = None) -> dict:
+             locator: str | None = None, parameters: dict | None = None) -> dict:
+        if parameters is not None and not isinstance(parameters, dict):
+            return {"status": "error", "message": "parameters is a map from names to values"}
         with self.lock:
-            return self._tool(statement, item_id, passage, locator)
+            return self._tool(statement, item_id, passage, locator, parameters)
 
-    def _tool(self, statement: str, given_id: str | None, passage: str | None, locator: str | None) -> dict:
+    def _tool(self, statement: str, given_id: str | None, passage: str | None, locator: str | None,
+              parameters: dict | None) -> dict:
         started = time.monotonic()
         tool_name = TOOL_NAME[self.store.arm]
         evidence = {"quote": passage, "locator": locator} if passage is not None or locator is not None else None
-        common = {"tool_name": tool_name, "statement": statement,
-                  "payload_sha256": hashlib.sha256((statement or "").encode("utf-8")).hexdigest(),
+        payload = statement or "" if not parameters else json.dumps(
+            {"statement": statement, "parameters": parameters}, sort_keys=True, ensure_ascii=False, default=str)
+        common = {"tool_name": tool_name, "statement": statement, "parameters": parameters or None,
+                  "payload_sha256": hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                   "item_id": given_id, "evidence": evidence}
         latency = lambda: int((time.monotonic() - started) * 1000)
 
@@ -117,6 +146,11 @@ class Cell:
             return {"status": "error", "message": "No unit is open. This is a fault of the harness, not of the statement."}
         if self.fault:
             return {"status": "error", "message": self.fault}
+        if parameters and self.store.arm == "rdf":
+            message = "SPARQL takes no parameters. Write the values into the statement."
+            self.record("statement_error", engine_error=message, engine_error_code="DbTool.Parameters",
+                        latency_ms=latency(), **common)
+            return {"status": "error", "message": message}
         refusal = guard.refuse(statement, self.store.arm)
         if refusal:
             self.record("refused", reason=refusal, latency_ms=latency(), **common)
@@ -126,15 +160,21 @@ class Cell:
         # correction. The name is only used up if the statement turns out to be a write.
         item_id = given_id or f"{self.unit['unit_id']}-w{self.writes + 1:03d}"
         context = {"cell_id": self.cell_id, "arm": self.store.arm, "realisation": self.realisation,
-                   "unit_id": self.unit["unit_id"], "item_id": item_id, "evidence": passage, "statement": statement}
-        outcome = self.store.run(statement, context)
+                   "unit_id": self.unit["unit_id"], "item_id": item_id, "evidence": passage, "statement": statement,
+                   "parameters": parameters or None}
+        outcome = self.store.run(statement, context, parameters)
 
         if outcome.kind == "unchecked":
             self.fault = ("The store is not checking writes at the moment. This is a fault of the harness, "
                           "not of the statement. Nothing more can be run in this unit.")
-            self.record("hook_missing", latency_ms=latency(), **common)
-            self.warn("hook_missing", "a write was committed without being checked; the unit has to be repeated",
-                      statement=statement)
+            if self.store.arm == "pg":
+                self.record("hook_missing", latency_ms=latency(), **common)
+                self.warn("hook_missing", "a write was committed without being checked; the unit has to be repeated",
+                          statement=statement)
+            else:                                # RDF: the log gave nothing, or an undo did not go through
+                self.record(outcome.error_code or "log_missing", reason=outcome.error, latency_ms=latency(), **common)
+                self.warn(outcome.error_code or "log_missing", f"{outcome.error}; the unit has to be repeated",
+                          statement=statement)
             return {"status": "error", "message": self.fault}
 
         if outcome.kind == "result":
@@ -167,13 +207,17 @@ class Cell:
             return {"status": "error", "id": item_id, "message": outcome.error}
 
         if outcome.kind == "unchanged":
-            attempt.update(validator_result="pass", engine_result="already_present", accepted=True)
+            attempt.update(validator_result="pass", engine_result="already_present", accepted=True,
+                           element_ids=outcome.existing)
             self.record("insert_attempt", latency_ms=latency(), **attempt)
             return {"status": "already_present", "id": item_id, "rows": outcome.rows,
                     "message": "The statement changed nothing: what it writes is already in the graph."}
 
         changes = outcome.changes or {}
-        element_ids = [n["key"] for n in changes.get("nodes", [])] + [r["key"] for r in changes.get("relationships", [])]
+        if "triples" in changes:                 # RDF: a triple has no id, so it is named by the hash of its line
+            element_ids = [triple_id(line) for line in changes["triples"]["added"]]
+        else:
+            element_ids = [n["key"] for n in changes.get("nodes", [])] + [r["key"] for r in changes.get("relationships", [])]
         summary = summarise(changes)
         if outcome.kind == "rejected":
             attempt.update(validator_result="reject", engine_result="not_sent", accepted=False,
@@ -192,6 +236,19 @@ class Cell:
 
     def _watch_deletes(self, changes: dict, item_id: str, statement: str) -> None:
         """Deleting is allowed. A statement that deletes a lot is reported, with how much of it older units wrote."""
+        if "triples" in changes:                 # RDF: counted in triples
+            gone = changes["triples"]["removed"]
+            from_earlier_units = [line for line in gone if line not in self.unit_created]
+            self.unit_created.difference_update(gone)
+            self.unit_created.update(changes["triples"]["added"])
+            if len(gone) >= self.warn_deleted:
+                size = self.store.size()
+                self.warn("bulk_delete",
+                          f"one statement deleted {len(gone)} triples, {len(from_earlier_units)} of them written by "
+                          f"earlier units; the graph now holds {size['triples']} triples",
+                          item_id=item_id, statement=statement, deleted_triples=len(gone),
+                          deleted_from_earlier_units=len(from_earlier_units), graph_after=size)
+            return
         deleted = changes.get("deleted", {})
         gone = list(deleted.get("nodes", [])) + list(deleted.get("relationships", []))
         from_earlier_units = [key for key in gone if key not in self.unit_created]
@@ -208,6 +265,34 @@ class Cell:
                       item_id=item_id, statement=statement, deleted_nodes=len(deleted.get("nodes", [])),
                       deleted_relationships=len(deleted.get("relationships", [])),
                       deleted_from_earlier_units=len(from_earlier_units), graph_after=size)
+
+    # ------------------------------------------------------------------ the verdict
+
+    def judge(self, changes: dict) -> Verdict:
+        """Hand one statement's changes to the checker and apply the mode. A checker that fails lets nothing through."""
+        try:
+            rejections = checking.normalise(self.checker.check(changes, self.store))
+        except Exception as error:
+            self.warn("checker_fault", f"the checker failed with {type(error).__name__}: {error}; nothing was stored",
+                      statement=changes.get("statement"))
+            return Verdict(rejections=[{"rule_id": "CHECKER-FAULT", "element": "checker", "expected": "a verdict",
+                                        "found": f"{type(error).__name__}: {error}"}], rejected=True, fault=True)
+        # A checker may keep what it counted without rejecting, and say which rules it could not decide.
+        verdict = Verdict(rejections=rejections)
+        observations = getattr(self.checker, "observations", None)
+        if isinstance(observations, list):
+            verdict.observations = list(observations)
+            observations.clear()
+        not_checkable = getattr(self.checker, "not_checkable", None)
+        verdict.not_checkable = list(not_checkable()) if callable(not_checkable) else []
+        verdict.rejected = bool(rejections) and self.mode == "reject"
+        return verdict
+
+    def _reported(self, kind: str, text: str, changes: dict | None = None, **fields: Any) -> None:
+        """What a store without a commit hook found on its own: a write past the tool, a log without a mark."""
+        if kind == "unattributed_write":
+            self.record("unattributed_write", changes=changes or {}, **fields)
+        self.warn(kind, text, **({} if kind == "unattributed_write" else fields))
 
     # ------------------------------------------------------------------ the commit hook
 
@@ -228,41 +313,34 @@ class Cell:
         pending.changes = changes
         if is_empty(changes):                           # created and removed again: nothing to check
             return {"reject": False, "message": ""}
-        try:
-            pending.rejections = checking.normalise(self.checker.check(changes, self.store))
-        except Exception as error:                      # a broken checker must not let writes through
-            pending.rejections = [{"rule_id": "CHECKER-FAULT", "element": "checker",
-                                   "expected": "a verdict", "found": f"{type(error).__name__}: {error}"}]
-            pending.rejected = True
-            self.warn("checker_fault", f"the checker failed with {type(error).__name__}: {error}; nothing was stored",
-                      statement=pending.context.get("statement"))
+        verdict = self.judge(changes)
+        pending.rejections, pending.rejected = verdict.rejections, verdict.rejected
+        pending.observations, pending.not_checkable = verdict.observations, verdict.not_checkable
+        if verdict.fault:
             return {"reject": True, "message": "The checker failed; nothing was stored."}
-        # A checker may keep what it counted without rejecting, and say which rules it could not decide.
-        observations = getattr(self.checker, "observations", None)
-        if isinstance(observations, list):
-            pending.observations = list(observations)
-            observations.clear()
-        not_checkable = getattr(self.checker, "not_checkable", None)
-        pending.not_checkable = list(not_checkable()) if callable(not_checkable) else []
-        pending.rejected = bool(pending.rejections) and self.mode == "reject"
         return {"reject": pending.rejected, "message": checking.message(pending.rejections) if pending.rejected else ""}
 
 
 def summarise(changes: dict) -> dict:
     created_nodes = [n for n in changes.get("nodes", []) if n["change"] == "created"]
     created_relationships = [r for r in changes.get("relationships", []) if r["change"] == "created"]
-    return {
+    summary = {
         "created": {"nodes": len(created_nodes), "relationships": len(created_relationships)},
         "changed": sum(1 for n in changes.get("nodes", []) if n["change"] == "changed")
         + sum(1 for r in changes.get("relationships", []) if r["change"] == "changed"),
         "deleted": len(changes.get("deleted", {}).get("nodes", [])) + len(changes.get("deleted", {}).get("relationships", [])),
     }
+    if "triples" in changes:                     # RDF: the same counted in triples
+        summary["triples"] = {"added": len(changes["triples"]["added"]), "removed": len(changes["triples"]["removed"])}
+    return summary
 
 
 class Service:
-    def __init__(self, host: str = "127.0.0.1", port: int = 18080, control_key: str = ""):
+    def __init__(self, host: str = "127.0.0.1", port: int = 18080, control_key: str = "",
+                 hook_address: str = ""):
         self.cells: dict[str, Cell] = {}
         self.control_key = control_key
+        self.hook_address = hook_address.rstrip("/")   # where the store reaches the tool, if not the listen address
         self.ready = False                       # true once every cell's hook was seen working
         service = self
 
@@ -311,8 +389,10 @@ class Service:
                     if len(parts) == 3 and parts[0] == "cells" and parts[1] in service.cells:
                         cell = service.cells[parts[1]]
                         if method == "POST" and parts[2] == "tool":
-                            return self._send(200, cell.tool(body.get("statement", ""), body.get("id"),
-                                                             body.get("passage"), body.get("locator")))
+                            if cell.tool_key and self.headers.get("X-Tool-Key") != cell.tool_key:
+                                return self._send(403, {"status": "error", "message": "tool key missing or wrong"})
+                            return self._send(200, cell.tool(body.get("statement", ""), body.get("id"), body.get("passage"),
+                                                             body.get("locator"), body.get("parameters")))
                         if method == "POST" and parts[2] == "unit":
                             cell.open_unit(body)
                             return self._send(200, {"status": "ok"})
@@ -334,25 +414,41 @@ class Service:
 
         self.server = ThreadingHTTPServer((host, port), Handler)
         self.server.daemon_threads = True
-        self.address = f"http://{host}:{self.server.server_address[1]}"
+        # a tool that listens on every interface is reached by the store on this machine through localhost
+        self.address = f"http://{'127.0.0.1' if host in ('0.0.0.0', '') else host}:{self.server.server_address[1]}"
 
     def add_neo4j_cell(self, cell_id: str, uri: str, user: str, password: str, database: str = "neo4j",
                        checker=None, mode: str = "reject", log_dir: Path | str = ".", realisation: str | None = None,
-                       max_rows: int = 200, timeout_s: float = 60.0, warn_deleted: int = 25) -> Cell:
+                       max_rows: int = 200, timeout_s: float = 60.0, warn_deleted: int = 25,
+                       tool_key: str = "") -> Cell:
         store = Neo4jCell(cell_id, uri, user, password, database, max_rows=max_rows, timeout_s=timeout_s)
         cell = self.cells[cell_id] = Cell(cell_id, store, checker or checking.NoChecker(), mode, Path(log_dir),
-                                          realisation, warn_deleted=warn_deleted)
+                                          realisation, warn_deleted=warn_deleted, tool_key=tool_key)
+        return cell
+
+    def add_fuseki_cell(self, cell_id: str, endpoint: str, user: str, password: str, change_log: Path | str,
+                        checker=None, mode: str = "reject", log_dir: Path | str = ".", realisation: str | None = None,
+                        namespace: str | None = None, max_rows: int = 200, timeout_s: float = 60.0,
+                        warn_deleted: int = 25, tool_key: str = "") -> Cell:
+        """An RDF cell. `endpoint` is the dataset's address, `change_log` the dataset's change log as this
+        process can read it. The tool's mark of how far that log is dealt with is kept beside the records."""
+        Path(log_dir).mkdir(parents=True, exist_ok=True)
+        store = FusekiCell(cell_id, endpoint, user, password, change_log,
+                           state_path=Path(log_dir) / f"{cell_id}.settled", namespace=namespace,
+                           max_rows=max_rows, timeout_s=timeout_s)
+        cell = self.cells[cell_id] = Cell(cell_id, store, checker or checking.NoChecker(), mode, Path(log_dir),
+                                          realisation, warn_deleted=warn_deleted, tool_key=tool_key)
         return cell
 
     def start(self) -> None:
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         for cell_id, cell in self.cells.items():       # the hook can only be tested once the service answers
-            cell.store.install_hook(f"{self.address}/check/{cell_id}", self.control_key)
+            cell.store.start(f"{self.hook_address or self.address}/check/{cell_id}", self.control_key)
         self.ready = True
 
     def stop(self, remove_hooks: bool = False) -> None:
         for cell in self.cells.values():
-            if remove_hooks:
+            if remove_hooks and hasattr(cell.store, "remove_hook"):
                 cell.store.remove_hook()
             cell.store.close()
         self.server.shutdown()

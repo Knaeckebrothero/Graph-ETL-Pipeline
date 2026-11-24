@@ -22,7 +22,7 @@ into the record as `validator_not_checkable`.
 
     {
       "cell_id": "...", "arm": "pg", "realisation": "S4-curated/pg",
-      "unit_id": "...", "item_id": "...", "evidence": "...", "statement": "...",
+      "unit_id": "...", "item_id": "...", "evidence": "...", "statement": "...", "parameters": {...} | null,
       "nodes": [
         {"key": "<element id>", "labels": ["WasteItem"], "properties": {...},
          "change": "created" | "changed",
@@ -43,6 +43,25 @@ it was there before, so "does this end exist, and as what" needs no query.
 
 `lookup.find(label, property, value)` returns the element ids of the nodes that
 were in the graph before the statement and carry that label with that value.
+
+An RDF cell hands over the same shape (fuseki_cell.py):
+
+- a node is a subject with a class or a literal value; `key` is its IRI, or `_:` and
+  the store's label for a blank node; `labels` are its classes, `properties` its
+  literal values;
+- a relationship is a triple whose object is a resource; `key` is the triple as one
+  canonical N-Triples line; its `properties` are the values hung on it with the
+  annotation form `s p o {| q v |}`;
+- a class or predicate inside the schema's namespace is named by its local name,
+  rdfs:label by `label`, every other IRI in full;
+- text is text; a typed value is {"value": written form, "datatype": integer | decimal |
+  boolean | date | datetime | duration, "datatype_iri": ...}, without "datatype" when the
+  datatype is none of these; text with a language is {"value", "lang"}; a property
+  with several values holds a list;
+- `triples: {"added": [...], "removed": [...]}` is the exact change as N-Triples lines;
+- every entry of `ends` has `exists`: whether that end is a node of the graph. In RDF a
+  triple can point to a resource nothing describes; `lookup.entity_exists(key)` answers
+  1 or 0 for a checker that wants to ask.
 """
 
 from __future__ import annotations
@@ -53,6 +72,7 @@ from typing import Any, Protocol
 
 class Lookup(Protocol):
     def find(self, label: str | None, property: str, value: Any) -> list[str]: ...
+    # RDF cells also offer entity_exists(key) -> 0 | 1
 
 
 class Checker(Protocol):

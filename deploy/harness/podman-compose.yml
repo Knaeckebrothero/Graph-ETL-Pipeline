@@ -1,6 +1,6 @@
 # Graph stores for the experiment harness: Neo4j (property graph) and Apache Jena
-# Fuseki (RDF). Development setup: one Neo4j database, Fuseki datasets created over
-# HTTP. Separate from deploy/local/ (other names, ports and volumes), so both can
+# Fuseki (RDF). Development setup: one Neo4j database, one logged Fuseki dataset
+# (`cell`). Separate from deploy/local/ (other names, ports and volumes), so both can
 # exist on one machine.
 #   podman-compose -f deploy/harness/podman-compose.yml up -d
 #   podman-compose -f deploy/harness/podman-compose.yml down        # add -v to delete the data
@@ -49,18 +49,28 @@ services:
         JENA_VERSION: "6.2.0"
     image: localhost/fuseki:6.2.0
     container_name: harness-fuseki
+    # The image's user (uid 1000) is mapped to the user who starts the container, so
+    # the change log below is a file the database tool on this machine can read.
+    userns_mode: "keep-id:uid=1000,gid=1000"
     ports:
       - "127.0.0.1:13030:3030"
     environment:
       - JAVA_OPTIONS=-Xmx2g -Xms512m
-    # No dataset on the command line: datasets are created and deleted over HTTP
-    # (POST and DELETE on /$/datasets) and stored under /fuseki/run. Logins come
-    # from shiro.ini.
-    command: ["--shiro", "/fuseki/shiro.ini", "--ping", "--compact"]
+    # One dataset comes from fuseki/cell.ttl: `cell`, which writes every change into
+    # a log that the database tool reads (experiments/harness/dbtool). Further
+    # datasets can still be created and deleted over HTTP (POST and DELETE on
+    # /$/datasets); they are stored under /fuseki/run and are not logged. Logins
+    # come from shiro.ini.
+    command: ["--shiro", "/fuseki/shiro.ini", "--ping", "--compact", "--config", "/fuseki/cell.ttl"]
     volumes:
       - ./fuseki/shiro.ini:/fuseki/shiro.ini:ro,z
+      - ./fuseki/cell.ttl:/fuseki/cell.ttl:ro,z
       # U: Podman hands the volume to the container's user, which the image needs
       - fuseki-run:/fuseki/run:U
+      # the data of `cell`
+      - fuseki-data:/fuseki/databases:U
+      # the change log of `cell`, as fuseki/log/cell.rdfp beside this file
+      - ./fuseki/log:/fuseki/logs:z
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3030/$$/ping || exit 1"]
       interval: 10s
@@ -73,3 +83,4 @@ volumes:
   neo4j-data:
   neo4j-logs:
   fuseki-run:
+  fuseki-data:

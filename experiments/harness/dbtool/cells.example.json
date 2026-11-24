@@ -13,6 +13,17 @@
       "password_env": "HARNESS_NEO4J_PASSWORD",
       "database": "neo4j",
       "realisation": "S4-curated/pg",
+      "tool_key_env": "DBTOOL_KEY_DEV_PG",
+      "mode": "reject"
+    },
+    "dev-rdf": {
+      "arm": "rdf",
+      "endpoint": "http://127.0.0.1:13030/cell",
+      "user": "admin",
+      "password_env": "HARNESS_FUSEKI_PASSWORD",
+      "change_log": "deploy/harness/fuseki/log/cell.rdfp",
+      "realisation": "S4-curated/rdf",
+      "tool_key_env": "DBTOOL_KEY_DEV_RDF",
       "mode": "reject"
     }
   }

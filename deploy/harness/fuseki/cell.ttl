@@ -1,0 +1,42 @@
+# One cell's dataset in Fuseki: a TDB2 dataset that writes every change into a log.
+#
+# The database tool (experiments/harness/dbtool, fuseki_cell.py) reads that log to learn
+# what a statement changed, and takes a rejected statement out again through the patch
+# endpoint. The same file serves the development store and every cell of a run: each
+# cell has its own Fuseki with its own two volumes, so name and paths can be the same.
+#
+#   /fuseki/databases/cell      the data (TDB2)
+#   /fuseki/logs/cell.rdfp      the change log; the tool has to be able to read this file
+#
+# Both folders exist in the image and belong to its user, so a named volume mounted on
+# either is writable without further settings. Dataset and log belong together: the tool
+# rebuilds its own list of the graph from the log. To empty a cell, stop Fuseki and
+# delete both, and the tool's mark (<records>/<cell>.settled) with them.
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX patch:   <http://jena.apache.org/rdf-patch#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "cell" ;
+    # reading; a query is stopped after 60 seconds
+    fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "sparql" ;
+                      ja:context [ ja:cxtName "arq:queryTimeout" ; ja:cxtValue "60000" ] ] ;
+    # writing: the agent's statements, passed on by the tool
+    fuseki:endpoint [ fuseki:operation fuseki:update ; fuseki:name "update" ] ;
+    # the tool's undo: a list of triples to take out and to put back
+    fuseki:endpoint [ fuseki:operation fuseki:patch ; fuseki:name "patch" ] ;
+    # the whole graph, read only (export, snapshot)
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-r ; fuseki:name "data" ] ;
+    fuseki:dataset :logged .
+
+:logged rdf:type patch:LoggedDataset ;
+    patch:log "/fuseki/logs/cell.rdfp" ;
+    patch:logPolicy "fixed" ;
+    ja:dataset :base .
+
+:base rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "/fuseki/databases/cell" .

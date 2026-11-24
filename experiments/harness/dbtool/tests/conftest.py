@@ -1,4 +1,5 @@
-"""Tests run against the development Neo4j of deploy/harness (commit hook enabled)."""
+"""Tests run against the development stores of deploy/harness: Neo4j with the commit hook enabled,
+Fuseki with the logged dataset `cell`. A store that is not there skips its tests."""
 import os
 import sys
 from pathlib import Path
@@ -12,6 +13,9 @@ from dbtool.service import Service  # noqa: E402
 
 URI = os.environ.get("HARNESS_NEO4J_URI", "bolt://127.0.0.1:17687")
 PASSWORD = os.environ.get("HARNESS_NEO4J_PASSWORD", "harness_dev")
+FUSEKI = os.environ.get("HARNESS_FUSEKI_ENDPOINT", "http://127.0.0.1:13030/cell")
+FUSEKI_PASSWORD = os.environ.get("HARNESS_FUSEKI_PASSWORD", "harness_dev")
+FUSEKI_LOG = Path(os.environ.get("HARNESS_FUSEKI_LOG", HERE.parents[3] / "deploy/harness/fuseki/log/cell.rdfp"))
 
 
 class StandInChecker:
@@ -80,3 +84,49 @@ def cell(service):
     cell.open_unit({"unit_id": "u0001", "run_id": "run-test", "source_id": "src-1", "stratum": "prose"})
     yield cell
     cell.close_unit()
+
+
+# ---------------------------------------------------------------------- the RDF side
+
+def fuseki_service(tmp_path_factory, checker, realisation="S4-curated/rdf"):
+    """A service with one RDF cell on the development Fuseki, or a skip."""
+    service = Service(port=0, control_key="test-key")
+    try:
+        cell = service.add_fuseki_cell("dev-rdf", FUSEKI, "admin", FUSEKI_PASSWORD, change_log=FUSEKI_LOG,
+                                       checker=checker, log_dir=tmp_path_factory.mktemp("records"),
+                                       realisation=realisation)
+        cell.store.start(wait_s=3.0)
+        service.start()
+    except Exception as error:
+        pytest.skip(f"the development Fuseki with the logged dataset is not available: {error}")
+    return service
+
+
+def in_step(cell):
+    """The tool's own list and the store agree, and nothing sits in a named graph."""
+    triples, named = cell.store.counts()
+    return triples == cell.store.mirror.count and named == 0
+
+
+@pytest.fixture(scope="module")
+def rdf_service(tmp_path_factory):
+    checker = StandInChecker()
+    service = fuseki_service(tmp_path_factory, checker)
+    service.cells["dev-rdf"].test_checker = checker
+    yield service
+    service.cells["dev-rdf"].store.admin("DELETE WHERE { ?s ?p ?o }")
+    service.stop()
+
+
+@pytest.fixture
+def rdf(rdf_service):
+    cell = rdf_service.cells["dev-rdf"]
+    cell.store.admin("DELETE WHERE { ?s ?p ?o }")
+    cell.mode, cell.warn_deleted, cell.store.max_rows = "reject", 25, 200
+    cell.test_checker.seen.clear()
+    cell.log_path.write_text("")
+    cell.warnings_path.write_text("")
+    cell.open_unit({"unit_id": "u0001", "run_id": "run-test", "source_id": "src-1", "stratum": "prose"})
+    yield cell
+    cell.close_unit()
+    assert in_step(cell), "the tool's list of the graph and the store differ"

@@ -85,6 +85,24 @@ def test_a_statement_that_changes_nothing_is_already_present(cell):
     assert record["engine_result"] == "already_present" and record["accepted"] and record["retry_index"] == 1
 
 
+def test_a_repeated_write_names_what_was_already_there_if_the_statement_returns_it(cell):
+    """Rule 9 of the shared log: element_ids of an `already_present` write names the elements that were there.
+    The store tells the tool only what a statement changed, so the tool can name them when the statement
+    returns them, and not otherwise."""
+    merge = ("MERGE (w:WasteItem {name: 'Paint can'}) ON CREATE SET w.uid = 'wi-1' "
+             "MERGE (t:Tip {uid: 't-1'}) MERGE (w)-[r:HAS_TIP]->(t) RETURN w, r, [t] AS tips")
+    assert cell.tool(merge)["status"] == "stored"
+    made = records(cell, "insert_attempt")[-1]["element_ids"]
+    assert len(made) == 3
+    assert cell.tool(merge)["status"] == "already_present"
+    record = records(cell, "insert_attempt")[-1]
+    assert record["engine_result"] == "already_present" and sorted(record["element_ids"]) == sorted(made)
+    assert cell.tool("MERGE (w:WasteItem {name: 'Paint can'})")["status"] == "already_present"
+    assert records(cell, "insert_attempt")[-1]["element_ids"] == []            # nothing returned, nothing to name
+    gone = cell.tool("CREATE (n:WasteItem {name: 'gone', uid: 'wi-9'}) WITH n, elementId(n) AS id DETACH DELETE n RETURN id")
+    assert gone["status"] == "already_present" and records(cell, "insert_attempt")[-1]["element_ids"] == []
+
+
 def test_the_checker_can_ask_what_was_there_before(cell):
     assert cell.tool("CREATE (:WasteItem {uid: 'wi-1', name: 'Paint can'})", item_id="i1")["status"] == "stored"
     answer = cell.tool("CREATE (:WasteItem {uid: 'wi-1', name: 'Paint tin'})", item_id="i2")

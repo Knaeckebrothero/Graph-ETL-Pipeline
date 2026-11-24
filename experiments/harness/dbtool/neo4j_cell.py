@@ -19,6 +19,7 @@ from typing import Any
 
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
+from neo4j.graph import Node, Path as GraphPath, Relationship
 
 TOKEN_KEY = "dbtool"
 
@@ -160,6 +161,23 @@ class Outcome:
     not_checkable: list[str] = field(default_factory=list)      # rules the checker could not decide
     error_code: str | None = None
     error: str | None = None
+    existing: list[str] = field(default_factory=list)           # nothing changed: ids of what was already there (RDF: the
+                                                                # triples written; property graph: what the statement returned)
+
+
+def returned_elements(value: Any, found: dict[str, None]) -> None:
+    """Collect the element ids of the nodes and relationships in a value a statement returned."""
+    if isinstance(value, (Node, Relationship)):
+        found.setdefault(value.element_id)
+    elif isinstance(value, GraphPath):
+        for part in (*value.nodes, *value.relationships):
+            found.setdefault(part.element_id)
+    elif isinstance(value, (list, tuple)):
+        for part in value:
+            returned_elements(part, found)
+    elif isinstance(value, dict):
+        for part in value.values():
+            returned_elements(part, found)
 
 
 @dataclass
@@ -184,6 +202,7 @@ class Neo4jCell:
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.pending: dict[str, Pending] = {}
         self.hook_name = f"dbtool-{cell_id}"
+        self.not_ready = f"the commit hook of {cell_id} is not active; no unit was opened"
 
     def close(self) -> None:
         self.driver.close()
@@ -214,6 +233,14 @@ class Neo4jCell:
             if time.monotonic() > deadline:
                 raise RuntimeError(f"the commit hook of {self.cell_id} did not become active within {wait_s} s")
             time.sleep(refresh_s / 4)
+
+    def start(self, check_url: str, key: str = "") -> None:
+        """What the service calls once it answers: install the hook that calls it back."""
+        self.install_hook(check_url, key)
+
+    def ready(self) -> bool:
+        """Whether the store is checking writes right now; asked before every unit."""
+        return self.hook_is_active()
 
     def remove_hook(self) -> None:
         with self.driver.session(database="system") as session:
@@ -249,10 +276,11 @@ class Neo4jCell:
 
     # ------------------------------------------------------------------ the agent's statement
 
-    def run(self, statement: str, context: dict) -> Outcome:
+    def run(self, statement: str, context: dict, parameters: dict | None = None) -> Outcome:
         token = uuid.uuid4().hex
         pending = self.pending[token] = Pending(context=context)
         rows: list[dict] = []
+        returned: dict[str, None] = {}      # element ids in the rows, in the order they came
         truncated = False
         query_type = None
         updates = False
@@ -260,12 +288,13 @@ class Neo4jCell:
             with self.driver.session(database=self.database) as session:
                 tx = session.begin_transaction(metadata={TOKEN_KEY: token}, timeout=self.timeout_s)
                 try:
-                    result = tx.run(statement)  # type: ignore[arg-type]
+                    result = tx.run(statement, parameters or {})  # type: ignore[arg-type]
                     for record in result:
                         if len(rows) >= self.max_rows:
                             truncated = True
                             break
                         rows.append(record.data())
+                        returned_elements(record.values(), returned)
                     summary = result.consume()
                     query_type, updates = summary.query_type, summary.counters.contains_updates
                     tx.commit()                 # the hook runs here when the transaction changed something
@@ -278,10 +307,13 @@ class Neo4jCell:
                 return Outcome("rejected", changes=pending.changes, rejections=pending.rejections or [],
                                observations=pending.observations, not_checkable=pending.not_checkable)
             return Outcome("error", error_code=error.code, error=error.message)
+        except (TypeError, ValueError) as error:        # a parameter the driver cannot send
+            self.pending.pop(token, None)
+            return Outcome("error", error_code="DbTool.Parameters", error=f"{type(error).__name__}: {error}")
         self.pending.pop(token, None)
         if pending.changes is not None:
             if is_empty(pending.changes):
-                return Outcome("unchanged", rows=rows, truncated=truncated)
+                return Outcome("unchanged", rows=rows, truncated=truncated, existing=self.still_there(returned))
             return Outcome("stored", rows=rows, truncated=truncated, changes=pending.changes,
                            rejections=pending.rejections or [], observations=pending.observations,
                            not_checkable=pending.not_checkable)
@@ -292,7 +324,20 @@ class Neo4jCell:
         # tell the two apart; when they report updates, only a working hook makes "nothing changed" true.
         if updates and not self.hook_is_active():
             return Outcome("unchecked", rows=rows, truncated=truncated)
-        return Outcome("unchanged", rows=rows, truncated=truncated)
+        return Outcome("unchanged", rows=rows, truncated=truncated, existing=self.still_there(returned))
+
+    def still_there(self, element_ids: Any) -> list[str]:
+        """Of the elements a statement returned, those the graph holds. For a writing statement that changed
+        nothing they are what was already there. The store tells the tool only what a statement changed, so a
+        statement that returns nothing leaves nothing to name."""
+        ids = list(element_ids)
+        if not ids:
+            return []
+        with self.driver.session(database=self.database) as session:
+            found = {record["id"] for record in session.run(
+                "MATCH (n) WHERE elementId(n) IN $ids RETURN elementId(n) AS id "
+                "UNION MATCH ()-[r]->() WHERE elementId(r) IN $ids RETURN elementId(r) AS id", ids=ids)}
+        return [element_id for element_id in ids if element_id in found]
 
     def size(self) -> dict:
         """Nodes and relationships in the graph (committed). Read from the store's counts, so it is cheap."""
