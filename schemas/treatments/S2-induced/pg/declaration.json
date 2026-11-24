@@ -2,8 +2,727 @@
   "realisation": "S2-induced/pg",
   "treatment": "S2",
   "arm": "pg",
-  "status": "placeholder",
+  "status": "draft",
   "rules_version": "0.2",
   "schema_file": "schema.cql",
-  "derived_from": null
+  "derived_from": {
+    "file": "schemas/treatments/S2-induced/pg/induction.reply.json",
+    "sha256": "560a3f2523d07815bfc1e5df28da6527099688081cd2f97d509d83fd82415831"
+  },
+  "induction": {
+    "in_code_fence": false,
+    "identifier_counts_as_unique": true,
+    "identifier_added_to_unique": []
+  },
+  "enforcement": {
+    "node_type_outside_the_list": "reject",
+    "relationship_outside_the_patterns": "reject",
+    "uniqueness_violation": "reject",
+    "undeclared_property": "accept_and_count",
+    "required_property_missing": "reject",
+    "datatype_violation": "reject",
+    "value_outside_the_list": "reject",
+    "cardinality_violation": "reject"
+  },
+  "counts": {
+    "node_types": 12,
+    "relationship_types": 11,
+    "relationship_patterns": 13,
+    "uniqueness_constraints": 12,
+    "indexes": 0
+  },
+  "node_types": [
+    {
+      "name": "Document",
+      "layer": null,
+      "identifier": "document_id",
+      "properties": [
+        {
+          "name": "document_id",
+          "declared_by": "induction"
+        },
+        {
+          "name": "title",
+          "declared_by": "induction"
+        },
+        {
+          "name": "publisher",
+          "declared_by": "induction"
+        },
+        {
+          "name": "scope",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "document_id"
+      ],
+      "indexed": [],
+      "required": [
+        "document_id",
+        "title"
+      ],
+      "datatypes": {
+        "document_id": "string",
+        "title": "string",
+        "publisher": "string",
+        "scope": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Section",
+      "layer": null,
+      "identifier": "section_id",
+      "properties": [
+        {
+          "name": "section_id",
+          "declared_by": "induction"
+        },
+        {
+          "name": "reference",
+          "declared_by": "induction"
+        },
+        {
+          "name": "heading",
+          "declared_by": "induction"
+        },
+        {
+          "name": "text",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "section_id"
+      ],
+      "indexed": [],
+      "required": [
+        "section_id"
+      ],
+      "datatypes": {
+        "section_id": "string",
+        "reference": "string",
+        "heading": "string",
+        "text": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Organisation",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "address",
+          "declared_by": "induction"
+        },
+        {
+          "name": "contact",
+          "declared_by": "induction"
+        },
+        {
+          "name": "url",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "address": "string",
+        "contact": "string",
+        "url": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "WasteType",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "avv_code",
+          "declared_by": "induction"
+        },
+        {
+          "name": "avv_level1",
+          "declared_by": "induction"
+        },
+        {
+          "name": "avv_level2",
+          "declared_by": "induction"
+        },
+        {
+          "name": "avv_level3",
+          "declared_by": "induction"
+        },
+        {
+          "name": "description",
+          "declared_by": "induction"
+        },
+        {
+          "name": "notes",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "avv_code": "string",
+        "avv_level1": "string",
+        "avv_level2": "string",
+        "avv_level3": "string",
+        "description": "string",
+        "notes": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "WasteCode",
+      "layer": null,
+      "identifier": "code",
+      "properties": [
+        {
+          "name": "code",
+          "declared_by": "induction"
+        },
+        {
+          "name": "designation",
+          "declared_by": "induction"
+        },
+        {
+          "name": "hazardous",
+          "declared_by": "induction"
+        },
+        {
+          "name": "chapter",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "code"
+      ],
+      "indexed": [],
+      "required": [
+        "code"
+      ],
+      "datatypes": {
+        "code": "string",
+        "designation": "string",
+        "hazardous": "boolean",
+        "chapter": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "DisposalOption",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "kind",
+          "declared_by": "induction"
+        },
+        {
+          "name": "address",
+          "declared_by": "induction"
+        },
+        {
+          "name": "opening_hours",
+          "declared_by": "induction"
+        },
+        {
+          "name": "contact",
+          "declared_by": "induction"
+        },
+        {
+          "name": "additional_info",
+          "declared_by": "induction"
+        },
+        {
+          "name": "link",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "kind": "string",
+        "address": "string",
+        "opening_hours": "string",
+        "contact": "string",
+        "additional_info": "string",
+        "link": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "ContainerType",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "container_kind",
+          "declared_by": "induction"
+        },
+        {
+          "name": "volume_litres",
+          "declared_by": "induction"
+        },
+        {
+          "name": "lid_colour",
+          "declared_by": "induction"
+        },
+        {
+          "name": "emptying_interval",
+          "declared_by": "induction"
+        },
+        {
+          "name": "description",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "container_kind": "string",
+        "volume_litres": "decimal",
+        "lid_colour": "string",
+        "emptying_interval": "string",
+        "description": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Fee",
+      "layer": null,
+      "identifier": "fee_id",
+      "properties": [
+        {
+          "name": "fee_id",
+          "declared_by": "induction"
+        },
+        {
+          "name": "amount",
+          "declared_by": "induction"
+        },
+        {
+          "name": "currency",
+          "declared_by": "induction"
+        },
+        {
+          "name": "unit",
+          "declared_by": "induction"
+        },
+        {
+          "name": "label",
+          "declared_by": "induction"
+        },
+        {
+          "name": "conditions",
+          "declared_by": "induction"
+        },
+        {
+          "name": "reference",
+          "declared_by": "induction"
+        },
+        {
+          "name": "container_volume_litres",
+          "declared_by": "induction"
+        },
+        {
+          "name": "container_kind",
+          "declared_by": "induction"
+        },
+        {
+          "name": "valid_from",
+          "declared_by": "induction"
+        },
+        {
+          "name": "valid_until",
+          "declared_by": "induction"
+        },
+        {
+          "name": "notes",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "fee_id"
+      ],
+      "indexed": [],
+      "required": [
+        "fee_id",
+        "amount"
+      ],
+      "datatypes": {
+        "fee_id": "string",
+        "amount": "decimal",
+        "currency": "string",
+        "unit": "string",
+        "label": "string",
+        "conditions": "string",
+        "reference": "string",
+        "container_volume_litres": "decimal",
+        "container_kind": "string",
+        "valid_from": "date",
+        "valid_until": "date",
+        "notes": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Product",
+      "layer": null,
+      "identifier": "barcode",
+      "properties": [
+        {
+          "name": "barcode",
+          "declared_by": "induction"
+        },
+        {
+          "name": "product_name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "product_name_de",
+          "declared_by": "induction"
+        },
+        {
+          "name": "quantity",
+          "declared_by": "induction"
+        },
+        {
+          "name": "categories",
+          "declared_by": "induction"
+        },
+        {
+          "name": "packaging",
+          "declared_by": "induction"
+        },
+        {
+          "name": "labels",
+          "declared_by": "induction"
+        },
+        {
+          "name": "image_url",
+          "declared_by": "induction"
+        },
+        {
+          "name": "source_api",
+          "declared_by": "induction"
+        },
+        {
+          "name": "found",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "barcode"
+      ],
+      "indexed": [],
+      "required": [
+        "barcode"
+      ],
+      "datatypes": {
+        "barcode": "string",
+        "product_name": "string",
+        "product_name_de": "string",
+        "quantity": "quantity",
+        "categories": "string",
+        "packaging": "string",
+        "labels": "string",
+        "image_url": "string",
+        "source_api": "string",
+        "found": "boolean"
+      },
+      "values": {}
+    },
+    {
+      "name": "Brand",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Category",
+      "layer": null,
+      "identifier": "tag",
+      "properties": [
+        {
+          "name": "tag",
+          "declared_by": "induction"
+        },
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "path",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "tag"
+      ],
+      "indexed": [],
+      "required": [
+        "tag"
+      ],
+      "datatypes": {
+        "tag": "string",
+        "name": "string",
+        "path": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Packaging",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string"
+      },
+      "values": {}
+    }
+  ],
+  "relationship_patterns": [
+    {
+      "type": "PART_OF",
+      "from": "Section",
+      "to": [
+        "Document"
+      ],
+      "properties": [],
+      "at_most_one": true,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "PUBLISHED_BY",
+      "from": "Document",
+      "to": [
+        "Organisation"
+      ],
+      "properties": [],
+      "at_most_one": true,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "DEFINED_IN",
+      "from": "Fee",
+      "to": [
+        "Section"
+      ],
+      "properties": [],
+      "at_most_one": true,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "APPLIES_TO",
+      "from": "Fee",
+      "to": [
+        "WasteType"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "APPLIES_TO",
+      "from": "Fee",
+      "to": [
+        "ContainerType"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "APPLIES_TO",
+      "from": "Fee",
+      "to": [
+        "DisposalOption"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "DISPOSED_VIA",
+      "from": "WasteType",
+      "to": [
+        "DisposalOption",
+        "ContainerType"
+      ],
+      "properties": [
+        "jurisdiction",
+        "organisation_unit",
+        "location",
+        "contact",
+        "additional_info"
+      ],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {
+        "jurisdiction": "string",
+        "organisation_unit": "string",
+        "location": "string",
+        "contact": "string",
+        "additional_info": "string"
+      },
+      "values": {}
+    },
+    {
+      "type": "CLASSIFIED_AS",
+      "from": "WasteType",
+      "to": [
+        "WasteCode"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "OPERATED_BY",
+      "from": "DisposalOption",
+      "to": [
+        "Organisation"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "COLLECTS",
+      "from": "ContainerType",
+      "to": [
+        "WasteType"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "IN_CATEGORY",
+      "from": "Product",
+      "to": [
+        "Category"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "HAS_BRAND",
+      "from": "Product",
+      "to": [
+        "Brand"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "HAS_PACKAGING",
+      "from": "Product",
+      "to": [
+        "Packaging"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    }
+  ]
 }

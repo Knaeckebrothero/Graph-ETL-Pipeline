@@ -1,0 +1,35 @@
+Schema S2 for RDF, version 0.2, as declared.
+Namespace of the classes and properties, written below with the prefix fessi: <https://fessi.example/schema/s2#>
+Namespace for the IRIs of the entities you create: <https://fessi.example/data/>
+
+Classes (7):
+fessi:WasteType, fessi:WasteCode, fessi:Facility, fessi:ContainerType, fessi:CollectionService, fessi:Fee, fessi:Product
+
+Properties (class, then its properties; a property marked * is unique, see the constraints; in square brackets what is declared for a property: identifier (its value identifies the entity), its datatype, required, and after "one of" its allowed values):
+- fessi:WasteType: fessi:name* [identifier, string, required], fessi:description [string], fessi:hazardous [boolean], fessi:note [string]
+- fessi:WasteCode: fessi:code* [identifier, string, required], fessi:designation [string], fessi:hazardous [boolean]
+- fessi:Facility: fessi:name* [identifier, string, required], fessi:address [string], fessi:openingHours [string], fessi:contact [string], fessi:additionalInfo [string], fessi:link [string], fessi:facilityType [string], fessi:operator [string]
+- fessi:ContainerType: fessi:name* [identifier, string, required], fessi:bodyColour [string], fessi:lidColour [string], fessi:emptyingInterval [string], fessi:capacity [quantity], fessi:acceptedItems [string], fessi:excludedItems [string], fessi:operator [string], fessi:orderNote [string], fessi:note [string]
+- fessi:CollectionService: fessi:name* [identifier, string, required], fessi:description [string], fessi:note [string]
+- fessi:Fee: fessi:label* [identifier, string, required], fessi:amount [quantity, required], fessi:condition [string], fessi:note [string], fessi:validFrom [date], fessi:validUntil [date]
+- fessi:Product: fessi:barcode* [identifier, string, required], fessi:productName [string], fessi:brand [string], fessi:quantity [quantity], fessi:category [string], fessi:packaging [string], fessi:label [string], fessi:imageUrl [string], fessi:sourceApi [string]
+
+Relations (5 patterns of 5 properties, as subject class, property, object class; in braces the properties a relation of that kind carries as an annotation):
+- fessi:WasteType fessi:hasDeliveryFee fessi:Fee
+- fessi:ContainerType fessi:hasFee fessi:Fee {| fessi:capacity [quantity], fessi:service [string], fessi:containerKind [string], fessi:note [string] |}
+- fessi:WasteType fessi:disposalRoute (fessi:Facility or fessi:ContainerType or fessi:CollectionService) {| fessi:scope [string], fessi:organisationUnit [string], fessi:additionalInfo [string], fessi:note [string] |}
+- fessi:WasteType fessi:hasWasteCode fessi:WasteCode
+- fessi:Fee fessi:appliesAt fessi:Facility
+A value on a relation is written as an annotation on its triple: s p o {| q v |} .
+
+Constraints:
+- Classes: closed list. An entity with a class that is not in the list above is rejected.
+- Required properties: an entity carries a value for every property of its class marked required, and a relation for every property of its pattern marked required. A write that breaks this is rejected.
+- Datatypes: the value of a property is a value of the datatype named in its brackets; a quantity is a number with a unit of measure. A write that breaks this is rejected.
+- Uniqueness: two entities of one class never share a value of a property marked *. A write that breaks this is rejected.
+- Cardinality: none declared.
+- Endpoints: closed list. A relation whose property and end classes match no line above is rejected.
+- Closed value lists: none declared.
+- Other properties: open lists. A property that is not named above is accepted.
+
+Counts: 7 classes, 5 relation properties, 5 relation patterns, 7 uniqueness constraints.

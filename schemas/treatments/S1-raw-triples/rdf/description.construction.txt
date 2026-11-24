@@ -1,0 +1,24 @@
+Schema S1 for RDF, version 0.2, as declared.
+Namespace for the IRIs of the entities you create: <https://fessi.example/data/>
+
+Classes (0):
+none declared.
+
+Properties (class, then its properties):
+none declared.
+The value that identifies an entity is its rdfs:label (<http://www.w3.org/2000/01/rdf-schema#label>).
+
+Relations (0 patterns of 0 properties, as subject class, property, object class):
+none declared.
+
+Constraints:
+- Classes: none declared.
+- Required properties: none declared.
+- Datatypes: none declared.
+- Uniqueness: none declared.
+- Cardinality: none declared.
+- Endpoints: none declared.
+- Closed value lists: none declared.
+- Other properties: nothing is declared, so any property is accepted, with a value or with another entity as its object. Give a property an IRI in the namespace for data.
+
+Counts: 0 classes, 0 relation properties, 0 relation patterns, 0 uniqueness constraints.

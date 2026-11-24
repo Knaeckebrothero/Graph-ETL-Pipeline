@@ -1,4 +1,198 @@
-# PLACEHOLDER. S2 (induced), RDF realisation.
-# The induced schema does not exist yet. The main agent model produces it once per
-# arm from the development units; the result replaces this file and is frozen.
-# Do not build on the content of this file.
+# Induced schema (S2), RDF realisation
+# Written from the reply of the schema induction, schemas/treatments/S2-induced/rdf/induction.reply.json
+# (sha256 9c8b35ad95a2f370...), by schemas/treatments/derive.py, rules 0.2.
+# Generated; do not edit by hand. The schema is the model's: nothing was renamed, dropped or added,
+# except that the identifier of a type counts as unique (see declaration.json, "induction").
+# Status: rules decided on 15 November 2026; not frozen (freeze: 23 November).
+# Enforced by the harness validator, not by the store: see declaration.json.
+
+@prefix fessi: <https://fessi.example/schema/s2#> .
+@prefix map:   <https://fessi.example/mapping#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+<https://fessi.example/schema/s2> a owl:Ontology .
+map:edgeProperty a owl:AnnotationProperty .
+map:quantity a rdfs:Datatype .        # a number with a unit of measure
+
+# Classes: one per node label
+fessi:WasteType a owl:Class .
+fessi:WasteCode a owl:Class .
+fessi:Facility a owl:Class .
+fessi:ContainerType a owl:Class .
+fessi:CollectionService a owl:Class .
+fessi:Fee a owl:Class .
+fessi:Product a owl:Class .
+
+# Datatype properties: one per property name; the domain lists the classes that carry it
+fessi:name a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:WasteType fessi:Facility fessi:ContainerType fessi:CollectionService ) ] .
+fessi:description a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:WasteType fessi:CollectionService ) ] .
+fessi:hazardous a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:WasteType fessi:WasteCode ) ] .
+fessi:note a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:WasteType fessi:ContainerType fessi:CollectionService fessi:Fee ) ] .
+fessi:code a owl:DatatypeProperty ;
+    rdfs:domain fessi:WasteCode .
+fessi:designation a owl:DatatypeProperty ;
+    rdfs:domain fessi:WasteCode .
+fessi:address a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:openingHours a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:contact a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:additionalInfo a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:link a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:facilityType a owl:DatatypeProperty ;
+    rdfs:domain fessi:Facility .
+fessi:operator a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:Facility fessi:ContainerType ) ] .
+fessi:bodyColour a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:lidColour a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:emptyingInterval a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:capacity a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:acceptedItems a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:excludedItems a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:orderNote a owl:DatatypeProperty ;
+    rdfs:domain fessi:ContainerType .
+fessi:label a owl:DatatypeProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( fessi:Fee fessi:Product ) ] .
+fessi:amount a owl:DatatypeProperty ;
+    rdfs:domain fessi:Fee .
+fessi:condition a owl:DatatypeProperty ;
+    rdfs:domain fessi:Fee .
+fessi:validFrom a owl:DatatypeProperty ;
+    rdfs:domain fessi:Fee .
+fessi:validUntil a owl:DatatypeProperty ;
+    rdfs:domain fessi:Fee .
+fessi:barcode a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:productName a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:brand a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:quantity a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:category a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:packaging a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:imageUrl a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:sourceApi a owl:DatatypeProperty ;
+    rdfs:domain fessi:Product .
+fessi:service a owl:DatatypeProperty .
+fessi:containerKind a owl:DatatypeProperty .
+fessi:scope a owl:DatatypeProperty .
+fessi:organisationUnit a owl:DatatypeProperty .
+
+# Object properties: one per relationship type; domain and range are the union over its patterns
+fessi:hasDeliveryFee a owl:ObjectProperty ;
+    rdfs:domain fessi:WasteType ;
+    rdfs:range fessi:Fee .
+fessi:hasFee a owl:ObjectProperty ;
+    rdfs:domain fessi:ContainerType ;
+    rdfs:range fessi:Fee .
+fessi:disposalRoute a owl:ObjectProperty ;
+    rdfs:domain fessi:WasteType ;
+    rdfs:range [ a owl:Class ; owl:unionOf ( fessi:Facility fessi:ContainerType fessi:CollectionService ) ] .
+fessi:hasWasteCode a owl:ObjectProperty ;
+    rdfs:domain fessi:WasteType ;
+    rdfs:range fessi:WasteCode .
+fessi:appliesAt a owl:ObjectProperty ;
+    rdfs:domain fessi:Fee ;
+    rdfs:range fessi:Facility .
+
+# Relationship properties: carried by statements of the object property.
+# In the data: an RDF 1.2 annotation on the statement, s p o {| q v |} .
+# The statement s p o itself is always asserted.
+fessi:hasFee map:edgeProperty fessi:capacity , fessi:service , fessi:containerKind , fessi:note .
+fessi:disposalRoute map:edgeProperty fessi:scope , fessi:organisationUnit , fessi:additionalInfo , fessi:note .
+# What is declared for such a property (datatype, required, allowed values), per pattern:
+#   fessi:ContainerType fessi:hasFee fessi:Fee   capacity: quantity; service: string; containerKind: string; note: string
+#   fessi:WasteType fessi:disposalRoute fessi:Facility | fessi:ContainerType | fessi:CollectionService   scope: string; organisationUnit: string; additionalInfo: string; note: string
+
+# Keys: one per uniqueness constraint
+fessi:WasteType owl:hasKey ( fessi:name ) .
+fessi:WasteCode owl:hasKey ( fessi:code ) .
+fessi:Facility owl:hasKey ( fessi:name ) .
+fessi:ContainerType owl:hasKey ( fessi:name ) .
+fessi:CollectionService owl:hasKey ( fessi:name ) .
+fessi:Fee owl:hasKey ( fessi:label ) .
+fessi:Product owl:hasKey ( fessi:barcode ) .
+
+# Shapes: the exact relationship patterns, per source class; and what is declared for a property with values
+fessi:WasteTypeShape a sh:NodeShape ;
+    sh:targetClass fessi:WasteType ;
+    sh:property [ sh:path fessi:name ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:description ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:hazardous ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path fessi:note ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:hasDeliveryFee ; sh:class fessi:Fee ] ;
+    sh:property [ sh:path fessi:disposalRoute ; sh:or ( [ sh:class fessi:Facility ] [ sh:class fessi:ContainerType ] [ sh:class fessi:CollectionService ] ) ] ;
+    sh:property [ sh:path fessi:hasWasteCode ; sh:class fessi:WasteCode ] .
+fessi:WasteCodeShape a sh:NodeShape ;
+    sh:targetClass fessi:WasteCode ;
+    sh:property [ sh:path fessi:code ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:designation ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:hazardous ; sh:datatype xsd:boolean ] .
+fessi:FacilityShape a sh:NodeShape ;
+    sh:targetClass fessi:Facility ;
+    sh:property [ sh:path fessi:name ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:address ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:openingHours ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:contact ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:additionalInfo ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:link ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:facilityType ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:operator ; sh:datatype xsd:string ] .
+fessi:ContainerTypeShape a sh:NodeShape ;
+    sh:targetClass fessi:ContainerType ;
+    sh:property [ sh:path fessi:name ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:bodyColour ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:lidColour ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:emptyingInterval ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:capacity ; sh:datatype map:quantity ] ;
+    sh:property [ sh:path fessi:acceptedItems ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:excludedItems ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:operator ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:orderNote ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:note ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:hasFee ; sh:class fessi:Fee ] .
+fessi:CollectionServiceShape a sh:NodeShape ;
+    sh:targetClass fessi:CollectionService ;
+    sh:property [ sh:path fessi:name ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:description ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:note ; sh:datatype xsd:string ] .
+fessi:FeeShape a sh:NodeShape ;
+    sh:targetClass fessi:Fee ;
+    sh:property [ sh:path fessi:label ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:amount ; sh:datatype map:quantity ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:condition ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:note ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:validFrom ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path fessi:validUntil ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path fessi:appliesAt ; sh:class fessi:Facility ] .
+fessi:ProductShape a sh:NodeShape ;
+    sh:targetClass fessi:Product ;
+    sh:property [ sh:path fessi:barcode ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path fessi:productName ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:brand ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:quantity ; sh:datatype map:quantity ] ;
+    sh:property [ sh:path fessi:category ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:packaging ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:label ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:imageUrl ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path fessi:sourceApi ; sh:datatype xsd:string ] .

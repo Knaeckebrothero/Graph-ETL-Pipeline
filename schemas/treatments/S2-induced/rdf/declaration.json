@@ -2,8 +2,461 @@
   "realisation": "S2-induced/rdf",
   "treatment": "S2",
   "arm": "rdf",
-  "status": "placeholder",
+  "status": "draft",
   "rules_version": "0.2",
   "schema_file": "schema.ttl",
-  "derived_from": null
+  "derived_from": {
+    "file": "schemas/treatments/S2-induced/rdf/induction.reply.json",
+    "sha256": "9c8b35ad95a2f37007665d93c34c48681c75fe99650c27660f30ccf0ca555c7c"
+  },
+  "induction": {
+    "in_code_fence": false,
+    "identifier_counts_as_unique": true,
+    "identifier_added_to_unique": []
+  },
+  "namespace": "https://fessi.example/schema/s2#",
+  "data_namespace": "https://fessi.example/data/",
+  "enforcement": {
+    "node_type_outside_the_list": "reject",
+    "relationship_outside_the_patterns": "reject",
+    "uniqueness_violation": "reject",
+    "undeclared_property": "accept_and_count",
+    "required_property_missing": "reject",
+    "datatype_violation": "reject",
+    "value_outside_the_list": "reject",
+    "cardinality_violation": "reject"
+  },
+  "relationship_property_form": {
+    "form": "rdf12-annotation",
+    "written_as": "s p o {| q v |} .",
+    "note": "the statement s p o itself is always asserted"
+  },
+  "counts": {
+    "node_types": 7,
+    "relationship_types": 5,
+    "relationship_patterns": 5,
+    "uniqueness_constraints": 7,
+    "indexes": 0
+  },
+  "node_types": [
+    {
+      "name": "WasteType",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "description",
+          "declared_by": "induction"
+        },
+        {
+          "name": "hazardous",
+          "declared_by": "induction"
+        },
+        {
+          "name": "note",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "description": "string",
+        "hazardous": "boolean",
+        "note": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "WasteCode",
+      "layer": null,
+      "identifier": "code",
+      "properties": [
+        {
+          "name": "code",
+          "declared_by": "induction"
+        },
+        {
+          "name": "designation",
+          "declared_by": "induction"
+        },
+        {
+          "name": "hazardous",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "code"
+      ],
+      "indexed": [],
+      "required": [
+        "code"
+      ],
+      "datatypes": {
+        "code": "string",
+        "designation": "string",
+        "hazardous": "boolean"
+      },
+      "values": {}
+    },
+    {
+      "name": "Facility",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "address",
+          "declared_by": "induction"
+        },
+        {
+          "name": "openingHours",
+          "declared_by": "induction"
+        },
+        {
+          "name": "contact",
+          "declared_by": "induction"
+        },
+        {
+          "name": "additionalInfo",
+          "declared_by": "induction"
+        },
+        {
+          "name": "link",
+          "declared_by": "induction"
+        },
+        {
+          "name": "facilityType",
+          "declared_by": "induction"
+        },
+        {
+          "name": "operator",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "address": "string",
+        "openingHours": "string",
+        "contact": "string",
+        "additionalInfo": "string",
+        "link": "string",
+        "facilityType": "string",
+        "operator": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "ContainerType",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "bodyColour",
+          "declared_by": "induction"
+        },
+        {
+          "name": "lidColour",
+          "declared_by": "induction"
+        },
+        {
+          "name": "emptyingInterval",
+          "declared_by": "induction"
+        },
+        {
+          "name": "capacity",
+          "declared_by": "induction"
+        },
+        {
+          "name": "acceptedItems",
+          "declared_by": "induction"
+        },
+        {
+          "name": "excludedItems",
+          "declared_by": "induction"
+        },
+        {
+          "name": "operator",
+          "declared_by": "induction"
+        },
+        {
+          "name": "orderNote",
+          "declared_by": "induction"
+        },
+        {
+          "name": "note",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "bodyColour": "string",
+        "lidColour": "string",
+        "emptyingInterval": "string",
+        "capacity": "quantity",
+        "acceptedItems": "string",
+        "excludedItems": "string",
+        "operator": "string",
+        "orderNote": "string",
+        "note": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "CollectionService",
+      "layer": null,
+      "identifier": "name",
+      "properties": [
+        {
+          "name": "name",
+          "declared_by": "induction"
+        },
+        {
+          "name": "description",
+          "declared_by": "induction"
+        },
+        {
+          "name": "note",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "name"
+      ],
+      "indexed": [],
+      "required": [
+        "name"
+      ],
+      "datatypes": {
+        "name": "string",
+        "description": "string",
+        "note": "string"
+      },
+      "values": {}
+    },
+    {
+      "name": "Fee",
+      "layer": null,
+      "identifier": "label",
+      "properties": [
+        {
+          "name": "label",
+          "declared_by": "induction"
+        },
+        {
+          "name": "amount",
+          "declared_by": "induction"
+        },
+        {
+          "name": "condition",
+          "declared_by": "induction"
+        },
+        {
+          "name": "note",
+          "declared_by": "induction"
+        },
+        {
+          "name": "validFrom",
+          "declared_by": "induction"
+        },
+        {
+          "name": "validUntil",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "label"
+      ],
+      "indexed": [],
+      "required": [
+        "label",
+        "amount"
+      ],
+      "datatypes": {
+        "label": "string",
+        "amount": "quantity",
+        "condition": "string",
+        "note": "string",
+        "validFrom": "date",
+        "validUntil": "date"
+      },
+      "values": {}
+    },
+    {
+      "name": "Product",
+      "layer": null,
+      "identifier": "barcode",
+      "properties": [
+        {
+          "name": "barcode",
+          "declared_by": "induction"
+        },
+        {
+          "name": "productName",
+          "declared_by": "induction"
+        },
+        {
+          "name": "brand",
+          "declared_by": "induction"
+        },
+        {
+          "name": "quantity",
+          "declared_by": "induction"
+        },
+        {
+          "name": "category",
+          "declared_by": "induction"
+        },
+        {
+          "name": "packaging",
+          "declared_by": "induction"
+        },
+        {
+          "name": "label",
+          "declared_by": "induction"
+        },
+        {
+          "name": "imageUrl",
+          "declared_by": "induction"
+        },
+        {
+          "name": "sourceApi",
+          "declared_by": "induction"
+        }
+      ],
+      "unique": [
+        "barcode"
+      ],
+      "indexed": [],
+      "required": [
+        "barcode"
+      ],
+      "datatypes": {
+        "barcode": "string",
+        "productName": "string",
+        "brand": "string",
+        "quantity": "quantity",
+        "category": "string",
+        "packaging": "string",
+        "label": "string",
+        "imageUrl": "string",
+        "sourceApi": "string"
+      },
+      "values": {}
+    }
+  ],
+  "relationship_patterns": [
+    {
+      "type": "hasDeliveryFee",
+      "from": "WasteType",
+      "to": [
+        "Fee"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "hasFee",
+      "from": "ContainerType",
+      "to": [
+        "Fee"
+      ],
+      "properties": [
+        "capacity",
+        "service",
+        "containerKind",
+        "note"
+      ],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {
+        "capacity": "quantity",
+        "service": "string",
+        "containerKind": "string",
+        "note": "string"
+      },
+      "values": {}
+    },
+    {
+      "type": "disposalRoute",
+      "from": "WasteType",
+      "to": [
+        "Facility",
+        "ContainerType",
+        "CollectionService"
+      ],
+      "properties": [
+        "scope",
+        "organisationUnit",
+        "additionalInfo",
+        "note"
+      ],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {
+        "scope": "string",
+        "organisationUnit": "string",
+        "additionalInfo": "string",
+        "note": "string"
+      },
+      "values": {}
+    },
+    {
+      "type": "hasWasteCode",
+      "from": "WasteType",
+      "to": [
+        "WasteCode"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    },
+    {
+      "type": "appliesAt",
+      "from": "Fee",
+      "to": [
+        "Facility"
+      ],
+      "properties": [],
+      "at_most_one": false,
+      "required": [],
+      "datatypes": {},
+      "values": {}
+    }
+  ]
 }

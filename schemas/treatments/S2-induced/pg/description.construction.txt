@@ -1,0 +1,45 @@
+Schema S2 for the property graph, version 0.2, as declared.
+
+Node types (12):
+Document, Section, Organisation, WasteType, WasteCode, DisposalOption, ContainerType, Fee, Product, Brand, Category, Packaging
+
+Properties (node type, then its properties; a property marked * is unique, see the constraints; in square brackets what is declared for a property: identifier (its value identifies the node), its datatype, required, and after "one of" its allowed values):
+- Document: document_id* [identifier, string, required], title [string, required], publisher [string], scope [string]
+- Section: section_id* [identifier, string, required], reference [string], heading [string], text [string]
+- Organisation: name* [identifier, string, required], address [string], contact [string], url [string]
+- WasteType: name* [identifier, string, required], avv_code [string], avv_level1 [string], avv_level2 [string], avv_level3 [string], description [string], notes [string]
+- WasteCode: code* [identifier, string, required], designation [string], hazardous [boolean], chapter [string]
+- DisposalOption: name* [identifier, string, required], kind [string], address [string], opening_hours [string], contact [string], additional_info [string], link [string]
+- ContainerType: name* [identifier, string, required], container_kind [string], volume_litres [decimal], lid_colour [string], emptying_interval [string], description [string]
+- Fee: fee_id* [identifier, string, required], amount [decimal, required], currency [string], unit [string], label [string], conditions [string], reference [string], container_volume_litres [decimal], container_kind [string], valid_from [date], valid_until [date], notes [string]
+- Product: barcode* [identifier, string, required], product_name [string], product_name_de [string], quantity [quantity], categories [string], packaging [string], labels [string], image_url [string], source_api [string], found [boolean]
+- Brand: name* [identifier, string, required]
+- Category: tag* [identifier, string, required], name [string], path [string]
+- Packaging: name* [identifier, string, required]
+
+Relationships (13 patterns of 11 types; in braces the properties a relationship of that type carries; a pattern followed by "at most one" allows a node to start only one relationship of that pattern):
+- (:Section)-[:PART_OF]->(:Document), at most one
+- (:Document)-[:PUBLISHED_BY]->(:Organisation), at most one
+- (:Fee)-[:DEFINED_IN]->(:Section), at most one
+- (:Fee)-[:APPLIES_TO]->(:WasteType)
+- (:Fee)-[:APPLIES_TO]->(:ContainerType)
+- (:Fee)-[:APPLIES_TO]->(:DisposalOption)
+- (:WasteType)-[:DISPOSED_VIA {jurisdiction [string], organisation_unit [string], location [string], contact [string], additional_info [string]}]->(:DisposalOption|ContainerType)
+- (:WasteType)-[:CLASSIFIED_AS]->(:WasteCode)
+- (:DisposalOption)-[:OPERATED_BY]->(:Organisation)
+- (:ContainerType)-[:COLLECTS]->(:WasteType)
+- (:Product)-[:IN_CATEGORY]->(:Category)
+- (:Product)-[:HAS_BRAND]->(:Brand)
+- (:Product)-[:HAS_PACKAGING]->(:Packaging)
+
+Constraints:
+- Labels and types: closed list. A node with a label that is not in the list above is rejected.
+- Required properties: a node carries a value for every property of its type marked required, and a relationship for every property of its pattern marked required. A write that breaks this is rejected.
+- Datatypes: the value of a property is a value of the datatype named in its brackets; a quantity is a number with a unit of measure. A write that breaks this is rejected.
+- Uniqueness: two nodes of one label never share a value of a property marked *. A write that breaks this is rejected.
+- Cardinality: a node starts at most one relationship of a pattern followed by "at most one". A write that breaks this is rejected.
+- Endpoints: closed list. A relationship whose type and end labels match no line above is rejected.
+- Closed value lists: none declared.
+- Other properties: open lists. A property that is not named above is accepted.
+
+Counts: 12 node types, 11 relationship types, 13 relationship patterns, 12 uniqueness constraints.

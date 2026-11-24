@@ -1,0 +1,70 @@
+Schema S4 for the property graph, version 0.2, as declared.
+
+Node types (17):
+WasteItem, WasteStream, DictionaryEntry, AVVCode, Product, PackagingComponent, Material, DisposalRule, Condition, Instruction, Tip, Container, Building, Room, Facility, Source, Location
+
+Properties (node type, then its properties; a property marked * is unique, see the constraints):
+- WasteItem: uid*, name*, synonyms
+- WasteStream: uid*, name*
+- DictionaryEntry: uid*, name*, lang, synset_id
+- AVVCode: code*, level, is_hazardous, name
+- Product: uid*, ean*, name, brand, quantity, categories_tags, labels_tags, countries_tags, packaging_tags, image_url, source_api
+- PackagingComponent: uid*, shape, weight_g, food_contact, recycling_hint
+- Material: uid*, tag*, name, name_de
+- DisposalRule: uid*
+- Condition: key*
+- Instruction: uid*
+- Tip: uid*, type, text
+- Container: uid*
+- Building: uid*
+- Room: uid*
+- Facility: uid*, name, address, opening_hours, contact_name, contact_phone, contact_email
+- Source: uid*, name, type, file_path, extraction_date, model_id
+- Location: name
+
+Relationships (33 patterns of 21 types; in braces the properties a relationship of that type carries):
+- (:Product)-[:HAS_COMPONENT {qty, weight_g}]->(:PackagingComponent)
+- (:PackagingComponent)-[:MADE_OF]->(:Material)
+- (:Material)-[:DEFAULT_STREAM]->(:WasteStream)
+- (:Material)-[:IS_A]->(:Material)
+- (:Material)-[:CLASSIFIED_AS]->(:AVVCode)
+- (:Product)-[:IS_A]->(:WasteItem)
+- (:PackagingComponent)-[:HAS_RULE]->(:DisposalRule)
+- (:Product)-[:DERIVED_FROM]->(:Source)
+- (:WasteItem)-[:HAS_RULE]->(:DisposalRule)
+- (:DisposalRule)-[:HAS_CONDITION]->(:Condition)
+- (:DisposalRule)-[:HAS_INSTRUCTION]->(:Instruction)
+- (:DisposalRule)-[:ROUTES_TO]->(:WasteStream)
+- (:Condition)-[:IF_TRUE]->(:DisposalRule|WasteStream)
+- (:Condition)-[:IF_FALSE]->(:DisposalRule|WasteStream)
+- (:WasteItem)-[:CLASSIFIED_AS]->(:AVVCode)
+- (:WasteStream)-[:REQUIRES_AVV]->(:AVVCode)
+- (:AVVCode)-[:HAS_PARENT]->(:AVVCode)
+- (:WasteStream)-[:HAS_TIP]->(:Tip)
+- (:WasteItem)-[:HAS_TIP]->(:Tip)
+- (:Container)-[:HAS_TIP]->(:Tip)
+- (:DisposalRule)-[:DERIVED_FROM]->(:Source)
+- (:Condition)-[:DERIVED_FROM]->(:Source)
+- (:Instruction)-[:DERIVED_FROM]->(:Source)
+- (:WasteItem)-[:DERIVED_FROM]->(:Source)
+- (:Tip)-[:DERIVED_FROM]->(:Source)
+- (:DictionaryEntry)-[:SYNONYM_OF]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:TRANSLATION_OF]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:IS_A]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:DERIVED_FROM]->(:Source)
+- (:WasteStream)-[:COLLECTED_IN]->(:Container)
+- (:Container)-[:LOCATED_IN]->(:Room)
+- (:Room)-[:PART_OF]->(:Building)
+- (:Container)-[:LOCATED_AT]->(:Facility)
+
+Constraints:
+- Labels and types: closed list. A node with a label that is not in the list above is rejected.
+- Required properties: none declared.
+- Datatypes: none declared.
+- Uniqueness: two nodes of one label never share a value of a property marked *. A write that breaks this is rejected.
+- Cardinality: none declared.
+- Endpoints: closed list. A relationship whose type and end labels match no line above is rejected.
+- Closed value lists: none declared.
+- Other properties: open lists. A property that is not named above is accepted.
+
+Counts: 17 node types, 21 relationship types, 33 relationship patterns, 21 uniqueness constraints.

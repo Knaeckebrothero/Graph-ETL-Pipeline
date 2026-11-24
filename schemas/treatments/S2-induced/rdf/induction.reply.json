@@ -1,0 +1,143 @@
+{
+  "classes": [
+    {
+      "name": "WasteType",
+      "identifier": "name",
+      "properties": [
+        {"name": "name", "datatype": "string", "required": true, "values": null},
+        {"name": "description", "datatype": "string", "required": false, "values": null},
+        {"name": "hazardous", "datatype": "boolean", "required": false, "values": null},
+        {"name": "note", "datatype": "string", "required": false, "values": null}
+      ],
+      "key": ["name"]
+    },
+    {
+      "name": "WasteCode",
+      "identifier": "code",
+      "properties": [
+        {"name": "code", "datatype": "string", "required": true, "values": null},
+        {"name": "designation", "datatype": "string", "required": false, "values": null},
+        {"name": "hazardous", "datatype": "boolean", "required": false, "values": null}
+      ],
+      "key": ["code"]
+    },
+    {
+      "name": "Facility",
+      "identifier": "name",
+      "properties": [
+        {"name": "name", "datatype": "string", "required": true, "values": null},
+        {"name": "address", "datatype": "string", "required": false, "values": null},
+        {"name": "openingHours", "datatype": "string", "required": false, "values": null},
+        {"name": "contact", "datatype": "string", "required": false, "values": null},
+        {"name": "additionalInfo", "datatype": "string", "required": false, "values": null},
+        {"name": "link", "datatype": "string", "required": false, "values": null},
+        {"name": "facilityType", "datatype": "string", "required": false, "values": null},
+        {"name": "operator", "datatype": "string", "required": false, "values": null}
+      ],
+      "key": ["name"]
+    },
+    {
+      "name": "ContainerType",
+      "identifier": "name",
+      "properties": [
+        {"name": "name", "datatype": "string", "required": true, "values": null},
+        {"name": "bodyColour", "datatype": "string", "required": false, "values": null},
+        {"name": "lidColour", "datatype": "string", "required": false, "values": null},
+        {"name": "emptyingInterval", "datatype": "string", "required": false, "values": null},
+        {"name": "capacity", "datatype": "quantity", "required": false, "values": null},
+        {"name": "acceptedItems", "datatype": "string", "required": false, "values": null},
+        {"name": "excludedItems", "datatype": "string", "required": false, "values": null},
+        {"name": "operator", "datatype": "string", "required": false, "values": null},
+        {"name": "orderNote", "datatype": "string", "required": false, "values": null},
+        {"name": "note", "datatype": "string", "required": false, "values": null}
+      ],
+      "key": ["name"]
+    },
+    {
+      "name": "CollectionService",
+      "identifier": "name",
+      "properties": [
+        {"name": "name", "datatype": "string", "required": true, "values": null},
+        {"name": "description", "datatype": "string", "required": false, "values": null},
+        {"name": "note", "datatype": "string", "required": false, "values": null}
+      ],
+      "key": ["name"]
+    },
+    {
+      "name": "Fee",
+      "identifier": "label",
+      "properties": [
+        {"name": "label", "datatype": "string", "required": true, "values": null},
+        {"name": "amount", "datatype": "quantity", "required": true, "values": null},
+        {"name": "condition", "datatype": "string", "required": false, "values": null},
+        {"name": "note", "datatype": "string", "required": false, "values": null},
+        {"name": "validFrom", "datatype": "date", "required": false, "values": null},
+        {"name": "validUntil", "datatype": "date", "required": false, "values": null}
+      ],
+      "key": ["label"]
+    },
+    {
+      "name": "Product",
+      "identifier": "barcode",
+      "properties": [
+        {"name": "barcode", "datatype": "string", "required": true, "values": null},
+        {"name": "productName", "datatype": "string", "required": false, "values": null},
+        {"name": "brand", "datatype": "string", "required": false, "values": null},
+        {"name": "quantity", "datatype": "quantity", "required": false, "values": null},
+        {"name": "category", "datatype": "string", "required": false, "values": null},
+        {"name": "packaging", "datatype": "string", "required": false, "values": null},
+        {"name": "label", "datatype": "string", "required": false, "values": null},
+        {"name": "imageUrl", "datatype": "string", "required": false, "values": null},
+        {"name": "sourceApi", "datatype": "string", "required": false, "values": null}
+      ],
+      "key": ["barcode"]
+    }
+  ],
+  "object_properties": [
+    {
+      "name": "hasDeliveryFee",
+      "domain": "WasteType",
+      "range": ["Fee"],
+      "at_most_one": false,
+      "annotations": []
+    },
+    {
+      "name": "hasFee",
+      "domain": "ContainerType",
+      "range": ["Fee"],
+      "at_most_one": false,
+      "annotations": [
+        {"name": "capacity", "datatype": "quantity", "required": false, "values": null},
+        {"name": "service", "datatype": "string", "required": false, "values": null},
+        {"name": "containerKind", "datatype": "string", "required": false, "values": null},
+        {"name": "note", "datatype": "string", "required": false, "values": null}
+      ]
+    },
+    {
+      "name": "disposalRoute",
+      "domain": "WasteType",
+      "range": ["Facility", "ContainerType", "CollectionService"],
+      "at_most_one": false,
+      "annotations": [
+        {"name": "scope", "datatype": "string", "required": false, "values": null},
+        {"name": "organisationUnit", "datatype": "string", "required": false, "values": null},
+        {"name": "additionalInfo", "datatype": "string", "required": false, "values": null},
+        {"name": "note", "datatype": "string", "required": false, "values": null}
+      ]
+    },
+    {
+      "name": "hasWasteCode",
+      "domain": "WasteType",
+      "range": ["WasteCode"],
+      "at_most_one": false,
+      "annotations": []
+    },
+    {
+      "name": "appliesAt",
+      "domain": "Fee",
+      "range": ["Facility"],
+      "at_most_one": false,
+      "annotations": []
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+Schema S1 for the property graph, version 0.2, as declared.
+
+Node types (2):
+Entity, Assertion
+
+Properties (node type, then its properties):
+- Entity: name
+- Assertion: predicate, value
+The value that identifies a node of the type Entity is its property name.
+
+Relationships (2 patterns of 2 types):
+- (:Assertion)-[:SUBJECT]->(:Entity)
+- (:Assertion)-[:OBJECT]->(:Entity)
+
+Constraints:
+- Labels and types: none declared.
+- Required properties: none declared.
+- Datatypes: none declared.
+- Uniqueness: none declared.
+- Cardinality: none declared.
+- Endpoints: none declared.
+- Closed value lists: none declared.
+- Other properties: none declared.
+
+Counts: 2 node types, 2 relationship types, 2 relationship patterns, 0 uniqueness constraints.

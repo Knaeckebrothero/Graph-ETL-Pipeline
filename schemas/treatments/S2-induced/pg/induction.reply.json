@@ -1,0 +1,251 @@
+{
+  "node_types": [
+    {
+      "name": "Document",
+      "identifier": "document_id",
+      "properties": [
+        { "name": "document_id", "datatype": "string", "required": true, "values": null },
+        { "name": "title", "datatype": "string", "required": true, "values": null },
+        { "name": "publisher", "datatype": "string", "required": false, "values": null },
+        { "name": "scope", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["document_id"]
+    },
+    {
+      "name": "Section",
+      "identifier": "section_id",
+      "properties": [
+        { "name": "section_id", "datatype": "string", "required": true, "values": null },
+        { "name": "reference", "datatype": "string", "required": false, "values": null },
+        { "name": "heading", "datatype": "string", "required": false, "values": null },
+        { "name": "text", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["section_id"]
+    },
+    {
+      "name": "Organisation",
+      "identifier": "name",
+      "properties": [
+        { "name": "name", "datatype": "string", "required": true, "values": null },
+        { "name": "address", "datatype": "string", "required": false, "values": null },
+        { "name": "contact", "datatype": "string", "required": false, "values": null },
+        { "name": "url", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["name"]
+    },
+    {
+      "name": "WasteType",
+      "identifier": "name",
+      "properties": [
+        { "name": "name", "datatype": "string", "required": true, "values": null },
+        { "name": "avv_code", "datatype": "string", "required": false, "values": null },
+        { "name": "avv_level1", "datatype": "string", "required": false, "values": null },
+        { "name": "avv_level2", "datatype": "string", "required": false, "values": null },
+        { "name": "avv_level3", "datatype": "string", "required": false, "values": null },
+        { "name": "description", "datatype": "string", "required": false, "values": null },
+        { "name": "notes", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["name"]
+    },
+    {
+      "name": "WasteCode",
+      "identifier": "code",
+      "properties": [
+        { "name": "code", "datatype": "string", "required": true, "values": null },
+        { "name": "designation", "datatype": "string", "required": false, "values": null },
+        { "name": "hazardous", "datatype": "boolean", "required": false, "values": null },
+        { "name": "chapter", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["code"]
+    },
+    {
+      "name": "DisposalOption",
+      "identifier": "name",
+      "properties": [
+        { "name": "name", "datatype": "string", "required": true, "values": null },
+        { "name": "kind", "datatype": "string", "required": false, "values": null },
+        { "name": "address", "datatype": "string", "required": false, "values": null },
+        { "name": "opening_hours", "datatype": "string", "required": false, "values": null },
+        { "name": "contact", "datatype": "string", "required": false, "values": null },
+        { "name": "additional_info", "datatype": "string", "required": false, "values": null },
+        { "name": "link", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["name"]
+    },
+    {
+      "name": "ContainerType",
+      "identifier": "name",
+      "properties": [
+        { "name": "name", "datatype": "string", "required": true, "values": null },
+        { "name": "container_kind", "datatype": "string", "required": false, "values": null },
+        { "name": "volume_litres", "datatype": "decimal", "required": false, "values": null },
+        { "name": "lid_colour", "datatype": "string", "required": false, "values": null },
+        { "name": "emptying_interval", "datatype": "string", "required": false, "values": null },
+        { "name": "description", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["name"]
+    },
+    {
+      "name": "Fee",
+      "identifier": "fee_id",
+      "properties": [
+        { "name": "fee_id", "datatype": "string", "required": true, "values": null },
+        { "name": "amount", "datatype": "decimal", "required": true, "values": null },
+        { "name": "currency", "datatype": "string", "required": false, "values": null },
+        { "name": "unit", "datatype": "string", "required": false, "values": null },
+        { "name": "label", "datatype": "string", "required": false, "values": null },
+        { "name": "conditions", "datatype": "string", "required": false, "values": null },
+        { "name": "reference", "datatype": "string", "required": false, "values": null },
+        { "name": "container_volume_litres", "datatype": "decimal", "required": false, "values": null },
+        { "name": "container_kind", "datatype": "string", "required": false, "values": null },
+        { "name": "valid_from", "datatype": "date", "required": false, "values": null },
+        { "name": "valid_until", "datatype": "date", "required": false, "values": null },
+        { "name": "notes", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["fee_id"]
+    },
+    {
+      "name": "Product",
+      "identifier": "barcode",
+      "properties": [
+        { "name": "barcode", "datatype": "string", "required": true, "values": null },
+        { "name": "product_name", "datatype": "string", "required": false, "values": null },
+        { "name": "product_name_de", "datatype": "string", "required": false, "values": null },
+        { "name": "quantity", "datatype": "quantity", "required": false, "values": null },
+        { "name": "categories", "datatype": "string", "required": false, "values": null },
+        { "name": "packaging", "datatype": "string", "required": false, "values": null },
+        { "name": "labels", "datatype": "string", "required": false, "values": null },
+        { "name": "image_url", "datatype": "string", "required": false, "values": null },
+        { "name": "source_api", "datatype": "string", "required": false, "values": null },
+        { "name": "found", "datatype": "boolean", "required": false, "values": null }
+      ],
+      "unique": ["barcode"]
+    },
+    {
+      "name": "Brand",
+      "identifier": "name",
+      "properties": [
+        { "name": "name", "datatype": "string", "required": true, "values": null }
+      ],
+      "unique": ["name"]
+    },
+    {
+      "name": "Category",
+      "identifier": "tag",
+      "properties": [
+        { "name": "tag", "datatype": "string", "required": true, "values": null },
+        { "name": "name", "datatype": "string", "required": false, "values": null },
+        { "name": "path", "datatype": "string", "required": false, "values": null }
+      ],
+      "unique": ["tag"]
+    },
+    {
+      "name": "Packaging",
+      "identifier": "name",
+      "properties": [
+        { "name": "name", "datatype": "string", "required": true, "values": null }
+      ],
+      "unique": ["name"]
+    }
+  ],
+  "relationship_patterns": [
+    {
+      "type": "PART_OF",
+      "from": "Section",
+      "to": ["Document"],
+      "at_most_one": true,
+      "properties": []
+    },
+    {
+      "type": "PUBLISHED_BY",
+      "from": "Document",
+      "to": ["Organisation"],
+      "at_most_one": true,
+      "properties": []
+    },
+    {
+      "type": "DEFINED_IN",
+      "from": "Fee",
+      "to": ["Section"],
+      "at_most_one": true,
+      "properties": []
+    },
+    {
+      "type": "APPLIES_TO",
+      "from": "Fee",
+      "to": ["WasteType"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "APPLIES_TO",
+      "from": "Fee",
+      "to": ["ContainerType"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "APPLIES_TO",
+      "from": "Fee",
+      "to": ["DisposalOption"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "DISPOSED_VIA",
+      "from": "WasteType",
+      "to": ["DisposalOption", "ContainerType"],
+      "at_most_one": false,
+      "properties": [
+        { "name": "jurisdiction", "datatype": "string", "required": false, "values": null },
+        { "name": "organisation_unit", "datatype": "string", "required": false, "values": null },
+        { "name": "location", "datatype": "string", "required": false, "values": null },
+        { "name": "contact", "datatype": "string", "required": false, "values": null },
+        { "name": "additional_info", "datatype": "string", "required": false, "values": null }
+      ]
+    },
+    {
+      "type": "CLASSIFIED_AS",
+      "from": "WasteType",
+      "to": ["WasteCode"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "OPERATED_BY",
+      "from": "DisposalOption",
+      "to": ["Organisation"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "COLLECTS",
+      "from": "ContainerType",
+      "to": ["WasteType"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "IN_CATEGORY",
+      "from": "Product",
+      "to": ["Category"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "HAS_BRAND",
+      "from": "Product",
+      "to": ["Brand"],
+      "at_most_one": false,
+      "properties": []
+    },
+    {
+      "type": "HAS_PACKAGING",
+      "from": "Product",
+      "to": ["Packaging"],
+      "at_most_one": false,
+      "properties": []
+    }
+  ]
+}
+

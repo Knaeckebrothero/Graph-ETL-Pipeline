@@ -1,0 +1,67 @@
+Schema S3 for RDF, version 0.2, as declared.
+Namespace of the classes and properties, written below with the prefix fessi: <https://fessi.example/schema/s3#>
+Namespace for the IRIs of the entities you create: <https://fessi.example/data/>
+
+Classes (15):
+fessi:AVVCode, fessi:Building, fessi:Container, fessi:DictionaryEntry, fessi:Facility, fessi:Instruction, fessi:Location, fessi:Material, fessi:PackagingComponent, fessi:Product, fessi:Room, fessi:Source, fessi:Tip, fessi:WasteItem, fessi:WasteStream
+
+Properties (class, then its properties; a property marked * is unique, see the constraints):
+- fessi:AVVCode: fessi:code*, fessi:level, fessi:is_hazardous, fessi:name
+- fessi:Building: fessi:uid*
+- fessi:Container: fessi:uid*
+- fessi:DictionaryEntry: fessi:uid*, fessi:name*, fessi:lang, fessi:synset_id
+- fessi:Facility: fessi:uid*, fessi:name, fessi:address, fessi:opening_hours, fessi:contact_name, fessi:contact_phone, fessi:contact_email
+- fessi:Instruction: fessi:uid*
+- fessi:Location: fessi:name
+- fessi:Material: fessi:uid*, fessi:tag*, fessi:name, fessi:name_de
+- fessi:PackagingComponent: fessi:uid*, fessi:shape, fessi:weight_g, fessi:food_contact, fessi:recycling_hint
+- fessi:Product: fessi:uid*, fessi:ean*, fessi:name, fessi:brand, fessi:quantity, fessi:categories_tags, fessi:labels_tags, fessi:countries_tags, fessi:packaging_tags, fessi:image_url, fessi:source_api
+- fessi:Room: fessi:uid*
+- fessi:Source: fessi:uid*, fessi:name, fessi:type, fessi:file_path, fessi:extraction_date, fessi:model_id
+- fessi:Tip: fessi:uid*, fessi:type, fessi:text
+- fessi:WasteItem: fessi:uid*, fessi:name*, fessi:synonyms
+- fessi:WasteStream: fessi:uid*, fessi:name*
+
+Relations (29 patterns of 17 properties, as subject class, property, object class; in braces the properties a relation of that kind carries as an annotation):
+- fessi:AVVCode fessi:HAS_PARENT fessi:AVVCode
+- fessi:Container fessi:HAS_TIP fessi:Tip
+- fessi:Container fessi:LOCATED_AT fessi:Facility
+- fessi:Container fessi:LOCATED_IN fessi:Room
+- fessi:DictionaryEntry fessi:DERIVED_FROM fessi:Source
+- fessi:DictionaryEntry fessi:IS_A fessi:DictionaryEntry
+- fessi:DictionaryEntry fessi:SYNONYM_OF fessi:DictionaryEntry
+- fessi:DictionaryEntry fessi:TRANSLATION_OF fessi:DictionaryEntry
+- fessi:Instruction fessi:DERIVED_FROM fessi:Source
+- fessi:Material fessi:CLASSIFIED_AS fessi:AVVCode
+- fessi:Material fessi:DEFAULT_STREAM fessi:WasteStream
+- fessi:Material fessi:IS_A fessi:Material
+- fessi:PackagingComponent fessi:DERIVED_FROM fessi:Source
+- fessi:PackagingComponent fessi:HAS_INSTRUCTION fessi:Instruction
+- fessi:PackagingComponent fessi:MADE_OF fessi:Material
+- fessi:PackagingComponent fessi:ROUTES_TO fessi:WasteStream
+- fessi:Product fessi:DERIVED_FROM fessi:Source
+- fessi:Product fessi:HAS_COMPONENT fessi:PackagingComponent {| fessi:qty, fessi:weight_g |}
+- fessi:Product fessi:IS_A fessi:WasteItem
+- fessi:Room fessi:PART_OF fessi:Building
+- fessi:Tip fessi:DERIVED_FROM fessi:Source
+- fessi:WasteItem fessi:CLASSIFIED_AS fessi:AVVCode
+- fessi:WasteItem fessi:DERIVED_FROM fessi:Source
+- fessi:WasteItem fessi:HAS_INSTRUCTION fessi:Instruction
+- fessi:WasteItem fessi:HAS_TIP fessi:Tip
+- fessi:WasteItem fessi:ROUTES_TO fessi:WasteStream
+- fessi:WasteStream fessi:COLLECTED_IN fessi:Container
+- fessi:WasteStream fessi:HAS_TIP fessi:Tip
+- fessi:WasteStream fessi:REQUIRES_AVV fessi:AVVCode
+A value on a relation is written as an annotation on its triple: s p o {| q v |} .
+
+Constraints:
+- Classes: closed list. An entity with a class that is not in the list above is rejected.
+- Required properties: none declared.
+- Datatypes: none declared.
+- Uniqueness: two entities of one class never share a value of a property marked *. A write that breaks this is rejected.
+- Cardinality: none declared.
+- Endpoints: closed list. A relation whose property and end classes match no line above is rejected.
+- Closed value lists: none declared.
+- Other properties: open lists. A property that is not named above is accepted.
+
+Counts: 15 classes, 17 relation properties, 29 relation patterns, 19 uniqueness constraints.

@@ -6,6 +6,7 @@
   "rules_version": "0.2",
   "schema_file": null,
   "derived_from": null,
+  "data_namespace": "https://fessi.example/data/",
   "enforcement": {
     "node_type_outside_the_list": "nothing_declared",
     "relationship_outside_the_patterns": "nothing_declared",

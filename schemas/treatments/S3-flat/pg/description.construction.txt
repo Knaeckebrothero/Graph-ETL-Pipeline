@@ -1,0 +1,64 @@
+Schema S3 for the property graph, version 0.2, as declared.
+
+Node types (15):
+AVVCode, Building, Container, DictionaryEntry, Facility, Instruction, Location, Material, PackagingComponent, Product, Room, Source, Tip, WasteItem, WasteStream
+
+Properties (node type, then its properties; a property marked * is unique, see the constraints):
+- AVVCode: code*, level, is_hazardous, name
+- Building: uid*
+- Container: uid*
+- DictionaryEntry: uid*, name*, lang, synset_id
+- Facility: uid*, name, address, opening_hours, contact_name, contact_phone, contact_email
+- Instruction: uid*
+- Location: name
+- Material: uid*, tag*, name, name_de
+- PackagingComponent: uid*, shape, weight_g, food_contact, recycling_hint
+- Product: uid*, ean*, name, brand, quantity, categories_tags, labels_tags, countries_tags, packaging_tags, image_url, source_api
+- Room: uid*
+- Source: uid*, name, type, file_path, extraction_date, model_id
+- Tip: uid*, type, text
+- WasteItem: uid*, name*, synonyms
+- WasteStream: uid*, name*
+
+Relationships (29 patterns of 17 types; in braces the properties a relationship of that type carries):
+- (:AVVCode)-[:HAS_PARENT]->(:AVVCode)
+- (:Container)-[:HAS_TIP]->(:Tip)
+- (:Container)-[:LOCATED_AT]->(:Facility)
+- (:Container)-[:LOCATED_IN]->(:Room)
+- (:DictionaryEntry)-[:DERIVED_FROM]->(:Source)
+- (:DictionaryEntry)-[:IS_A]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:SYNONYM_OF]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:TRANSLATION_OF]->(:DictionaryEntry)
+- (:Instruction)-[:DERIVED_FROM]->(:Source)
+- (:Material)-[:CLASSIFIED_AS]->(:AVVCode)
+- (:Material)-[:DEFAULT_STREAM]->(:WasteStream)
+- (:Material)-[:IS_A]->(:Material)
+- (:PackagingComponent)-[:DERIVED_FROM]->(:Source)
+- (:PackagingComponent)-[:HAS_INSTRUCTION]->(:Instruction)
+- (:PackagingComponent)-[:MADE_OF]->(:Material)
+- (:PackagingComponent)-[:ROUTES_TO]->(:WasteStream)
+- (:Product)-[:DERIVED_FROM]->(:Source)
+- (:Product)-[:HAS_COMPONENT {qty, weight_g}]->(:PackagingComponent)
+- (:Product)-[:IS_A]->(:WasteItem)
+- (:Room)-[:PART_OF]->(:Building)
+- (:Tip)-[:DERIVED_FROM]->(:Source)
+- (:WasteItem)-[:CLASSIFIED_AS]->(:AVVCode)
+- (:WasteItem)-[:DERIVED_FROM]->(:Source)
+- (:WasteItem)-[:HAS_INSTRUCTION]->(:Instruction)
+- (:WasteItem)-[:HAS_TIP]->(:Tip)
+- (:WasteItem)-[:ROUTES_TO]->(:WasteStream)
+- (:WasteStream)-[:COLLECTED_IN]->(:Container)
+- (:WasteStream)-[:HAS_TIP]->(:Tip)
+- (:WasteStream)-[:REQUIRES_AVV]->(:AVVCode)
+
+Constraints:
+- Labels and types: closed list. A node with a label that is not in the list above is rejected.
+- Required properties: none declared.
+- Datatypes: none declared.
+- Uniqueness: two nodes of one label never share a value of a property marked *. A write that breaks this is rejected.
+- Cardinality: none declared.
+- Endpoints: closed list. A relationship whose type and end labels match no line above is rejected.
+- Closed value lists: none declared.
+- Other properties: open lists. A property that is not named above is accepted.
+
+Counts: 15 node types, 17 relationship types, 29 relationship patterns, 19 uniqueness constraints.

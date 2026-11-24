@@ -1,0 +1,73 @@
+Schema S4 for RDF, version 0.2, as declared.
+Namespace of the classes and properties, written below with the prefix fessi: <https://fessi.example/schema/s4#>
+Namespace for the IRIs of the entities you create: <https://fessi.example/data/>
+
+Classes (17):
+fessi:WasteItem, fessi:WasteStream, fessi:DictionaryEntry, fessi:AVVCode, fessi:Product, fessi:PackagingComponent, fessi:Material, fessi:DisposalRule, fessi:Condition, fessi:Instruction, fessi:Tip, fessi:Container, fessi:Building, fessi:Room, fessi:Facility, fessi:Source, fessi:Location
+
+Properties (class, then its properties; a property marked * is unique, see the constraints):
+- fessi:WasteItem: fessi:uid*, fessi:name*, fessi:synonyms
+- fessi:WasteStream: fessi:uid*, fessi:name*
+- fessi:DictionaryEntry: fessi:uid*, fessi:name*, fessi:lang, fessi:synset_id
+- fessi:AVVCode: fessi:code*, fessi:level, fessi:is_hazardous, fessi:name
+- fessi:Product: fessi:uid*, fessi:ean*, fessi:name, fessi:brand, fessi:quantity, fessi:categories_tags, fessi:labels_tags, fessi:countries_tags, fessi:packaging_tags, fessi:image_url, fessi:source_api
+- fessi:PackagingComponent: fessi:uid*, fessi:shape, fessi:weight_g, fessi:food_contact, fessi:recycling_hint
+- fessi:Material: fessi:uid*, fessi:tag*, fessi:name, fessi:name_de
+- fessi:DisposalRule: fessi:uid*
+- fessi:Condition: fessi:key*
+- fessi:Instruction: fessi:uid*
+- fessi:Tip: fessi:uid*, fessi:type, fessi:text
+- fessi:Container: fessi:uid*
+- fessi:Building: fessi:uid*
+- fessi:Room: fessi:uid*
+- fessi:Facility: fessi:uid*, fessi:name, fessi:address, fessi:opening_hours, fessi:contact_name, fessi:contact_phone, fessi:contact_email
+- fessi:Source: fessi:uid*, fessi:name, fessi:type, fessi:file_path, fessi:extraction_date, fessi:model_id
+- fessi:Location: fessi:name
+
+Relations (33 patterns of 21 properties, as subject class, property, object class; in braces the properties a relation of that kind carries as an annotation):
+- fessi:Product fessi:HAS_COMPONENT fessi:PackagingComponent {| fessi:qty, fessi:weight_g |}
+- fessi:PackagingComponent fessi:MADE_OF fessi:Material
+- fessi:Material fessi:DEFAULT_STREAM fessi:WasteStream
+- fessi:Material fessi:IS_A fessi:Material
+- fessi:Material fessi:CLASSIFIED_AS fessi:AVVCode
+- fessi:Product fessi:IS_A fessi:WasteItem
+- fessi:PackagingComponent fessi:HAS_RULE fessi:DisposalRule
+- fessi:Product fessi:DERIVED_FROM fessi:Source
+- fessi:WasteItem fessi:HAS_RULE fessi:DisposalRule
+- fessi:DisposalRule fessi:HAS_CONDITION fessi:Condition
+- fessi:DisposalRule fessi:HAS_INSTRUCTION fessi:Instruction
+- fessi:DisposalRule fessi:ROUTES_TO fessi:WasteStream
+- fessi:Condition fessi:IF_TRUE (fessi:DisposalRule or fessi:WasteStream)
+- fessi:Condition fessi:IF_FALSE (fessi:DisposalRule or fessi:WasteStream)
+- fessi:WasteItem fessi:CLASSIFIED_AS fessi:AVVCode
+- fessi:WasteStream fessi:REQUIRES_AVV fessi:AVVCode
+- fessi:AVVCode fessi:HAS_PARENT fessi:AVVCode
+- fessi:WasteStream fessi:HAS_TIP fessi:Tip
+- fessi:WasteItem fessi:HAS_TIP fessi:Tip
+- fessi:Container fessi:HAS_TIP fessi:Tip
+- fessi:DisposalRule fessi:DERIVED_FROM fessi:Source
+- fessi:Condition fessi:DERIVED_FROM fessi:Source
+- fessi:Instruction fessi:DERIVED_FROM fessi:Source
+- fessi:WasteItem fessi:DERIVED_FROM fessi:Source
+- fessi:Tip fessi:DERIVED_FROM fessi:Source
+- fessi:DictionaryEntry fessi:SYNONYM_OF fessi:DictionaryEntry
+- fessi:DictionaryEntry fessi:TRANSLATION_OF fessi:DictionaryEntry
+- fessi:DictionaryEntry fessi:IS_A fessi:DictionaryEntry
+- fessi:DictionaryEntry fessi:DERIVED_FROM fessi:Source
+- fessi:WasteStream fessi:COLLECTED_IN fessi:Container
+- fessi:Container fessi:LOCATED_IN fessi:Room
+- fessi:Room fessi:PART_OF fessi:Building
+- fessi:Container fessi:LOCATED_AT fessi:Facility
+A value on a relation is written as an annotation on its triple: s p o {| q v |} .
+
+Constraints:
+- Classes: closed list. An entity with a class that is not in the list above is rejected.
+- Required properties: none declared.
+- Datatypes: none declared.
+- Uniqueness: two entities of one class never share a value of a property marked *. A write that breaks this is rejected.
+- Cardinality: none declared.
+- Endpoints: closed list. A relation whose property and end classes match no line above is rejected.
+- Closed value lists: none declared.
+- Other properties: open lists. A property that is not named above is accepted.
+
+Counts: 17 classes, 21 relation properties, 33 relation patterns, 21 uniqueness constraints.
