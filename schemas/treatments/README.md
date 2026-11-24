@@ -2,7 +2,7 @@
 
 The four schema variants of Thesis A, each for the property graph (`pg`, Neo4j) and for RDF (`rdf`, Fuseki): eight realisations.
 
-**Status: version 0.2 of 15 November 2026. Not frozen.** The author decided rules 1 to 5 below on 15 November. They can change until the freeze on 23 November; a change is an edit of the script and a new run. Rule 6 (how an induced schema is read) was written on 23 November and the author has not confirmed it yet. What is still open is listed at the end.
+**Status: version 0.2 of 15 November 2026. Not frozen.** The author decided rules 1 to 5 below on 15 November. They can change until the freeze; a change is an edit of the script and a new run. Rule 6 (how an induced schema is read) was written on 23 November and the author has not confirmed it yet. The sentence for a schema that declares nothing was added on 24 November after the pilot, and the author confirmed it. What is still open is listed at the end.
 
 Every file in the four folders is written by [`derive.py`](derive.py) from the curated schema [`../v5.0/schema.cql`](../v5.0/schema.cql) and, for S2, from the reply of the induction (Rule 6). Do not edit them by hand; change the script and run it again.
 

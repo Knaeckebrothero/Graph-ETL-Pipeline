@@ -2,7 +2,7 @@
 
 Everything the agent framework needs on the database side of a run, for both arms: property-graph cells on Neo4j and RDF cells on Fuseki. One command starts it on any machine with `podman-compose` or `docker compose`.
 
-**Status: 22 November 2026. Runs and passes its smoke test on the development machine with six cells, three per arm, and with either arm alone. Run with Podman only; no agent has written through an RDF cell yet.**
+**Status: 24 November 2026. Carried the pilot of 23 and 24 November on the development machine: eight cells, the four schema variants on both arms, about 280 jobs. Run with Podman only, and not yet beside a cluster on another machine.**
 
 ```bash
 deploy/pilot/start.sh                 # build the image if the code changed, start, wait until ready, print the addresses
@@ -35,7 +35,7 @@ Cells today, from [`cells.json`](cells.json):
 | `pilot-s3-rdf` | flat | Fuseki | `sparql` | 28112 |
 | `pilot-s1-rdf` | raw triples | Fuseki | `sparql` | 28113 |
 
-`pilot-s2-pg` and `pilot-s2-rdf` (induced, ports 28104 and 28114) are listed and switched off.
+`pilot-s2-pg` and `pilot-s2-rdf` (induced, ports 28104 and 28114) are switched on since 24 November and run on the rehearsal schemas of the pilot.
 
 The stores sit on an inner network and reach the tool by its name; nothing but the tool reaches a store. The image `localhost/pilot-dbtool:<hash>` holds a copy of the tool, the wrapper, the validator and the declarations of the moment it was built, so a running pilot does not change when a file changes. `run/BUILD_INFO.json` (also beside the records, and `<engine> run --rm <image> info`) names the commits and the hash of every file.
 
