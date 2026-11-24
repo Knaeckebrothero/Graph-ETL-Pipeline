@@ -1,0 +1,7 @@
+The graph is a property graph in Neo4j 5.26. An entity is a node, a relation is a relationship,
+and a value is a property of a node or of a relationship.
+You read and write with one tool, mcp__graph__cypher(statement, parameters, passage, locator, id).
+The language is Cypher 5. Values that a statement names as $name may be passed in parameters
+instead of being written into the statement.
+Labels, relationship types and property names must match the schema exactly, including upper
+and lower case.
