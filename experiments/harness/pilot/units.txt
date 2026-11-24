@@ -1,0 +1,17 @@
+# The 12 units of bucket 'pilot' in the order of a cell. Written by make_units.py; do not edit.
+# From development-pilot.csv, sha256 f9bda60a8bc4208abd36d1c56d610e808813c9a1151e75f88eff39176a8aca49.
+# Order: the run design asks for a seeded order identical across all cells and names no seed and no method.
+# Used here, until the freeze fixes it: ascending SHA-256 of "<seed>:<unit_id>", seed 20261113.
+# Columns, tab-separated: unit_id, source_id, stratum (what the tool is told when the unit is opened).
+u1e59d6d1f8ef	fes-sorting-flyer	free text
+ueb38a2974c63	muenchen-gebuehrensatzung-272	numeric tabular
+u85cf3ca96d7d	muenchen-gartenabfallgebuehren-276	numeric tabular
+u2f2858e3d9b4	bund-avv	free text
+u74afcb23e981	frankfurt-zero-waste-city	free text
+u96165d81c563	group3-abfall-abc-csv	tabular-categorical
+ud57c876777fb	fes-facility-map	tabular-categorical
+u693e09aaefc7	fes-abfall-abc	tabular-categorical
+ubfeb32bf0978	open-beauty-facts	catalogue
+u8496930633aa	open-beauty-facts	catalogue
+u626cb06f1652	berlin-abfallgebuehrensatzung-2025	numeric tabular
+uff614425c1ae	open-beauty-facts	catalogue

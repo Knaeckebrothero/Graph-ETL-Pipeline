@@ -1,0 +1,25 @@
+{
+  "neo4j_image": "docker.io/library/neo4j:5.26.21-community",
+  "python_image": "docker.io/library/python:3.12-slim",
+  "neo4j_heap": "1G",
+  "neo4j_pagecache": "512M",
+  "fuseki_image": "localhost/fuseki:6.2.0",
+  "fuseki_context": "../local/fuseki",
+  "jena_version": "6.2.0",
+  "fuseki_heap": "1g",
+  "validator_checkout": "../Graph-ETL-Pipeline-thesis-b",
+  "checker": "validator.checker:checker",
+  "warn_deleted": 25,
+  "bind": "0.0.0.0",
+  "tool_port": 28080,
+  "cells": [
+    {"id": "pilot-s4-pg", "arm": "pg", "realisation": "S4-curated/pg", "mcp_port": 28101, "enabled": true},
+    {"id": "pilot-s3-pg", "arm": "pg", "realisation": "S3-flat/pg", "mcp_port": 28102, "enabled": true},
+    {"id": "pilot-s1-pg", "arm": "pg", "realisation": "S1-raw-triples/pg", "mcp_port": 28103, "enabled": true},
+    {"id": "pilot-s2-pg", "arm": "pg", "realisation": "S2-induced/pg", "mcp_port": 28104, "enabled": true},
+    {"id": "pilot-s4-rdf", "arm": "rdf", "realisation": "S4-curated/rdf", "mcp_port": 28111, "enabled": true},
+    {"id": "pilot-s3-rdf", "arm": "rdf", "realisation": "S3-flat/rdf", "mcp_port": 28112, "enabled": true},
+    {"id": "pilot-s1-rdf", "arm": "rdf", "realisation": "S1-raw-triples/rdf", "mcp_port": 28113, "enabled": true},
+    {"id": "pilot-s2-rdf", "arm": "rdf", "realisation": "S2-induced/rdf", "mcp_port": 28114, "enabled": true}
+  ]
+}
