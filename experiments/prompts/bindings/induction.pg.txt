@@ -1,0 +1,33 @@
+The graph is a property graph in Neo4j 5.26: nodes with labels and properties, and
+relationships with a type, a direction and properties.
+Write the schema as one JSON document with these keys:
+
+{
+  "node_types": [
+    {
+      "name": "<label>",
+      "identifier": "<the property whose value identifies a node of this type>",
+      "properties": [
+        {
+          "name": "<property>",
+          "datatype": "<one of the datatypes below, or null>",
+          "required": <true or false>,
+          "values": <the list of allowed values, or null>
+        }
+      ],
+      "unique": ["<a property whose value may occur only once among the nodes of this type>"]
+    }
+  ],
+  "relationship_patterns": [
+    {
+      "type": "<relationship type>",
+      "from": "<label of the start node>",
+      "to": ["<label of an end node>"],
+      "at_most_one": <true if a start node may have only one such relationship, else false>,
+      "properties": [<properties of the relationship, in the same form as above>]
+    }
+  ]
+}
+
+Datatypes: string, integer, decimal, boolean, date, datetime, quantity (a number with a unit
+of measure).

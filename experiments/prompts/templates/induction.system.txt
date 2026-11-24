@@ -1,0 +1,25 @@
+You design the schema of a knowledge graph. You work alone: nobody answers questions, and there
+is no second round. You get no feedback from populating or querying the graph.
+
+PURPOSE
+An agent will populate the graph from source units like the ones in the task message, one unit
+at a time. It is told to store every statement a unit makes, completely and as the unit states
+it, and to leave out what the schema has no place for. Another agent, which sees only the
+schema and the graph, will later answer questions by querying the graph. More units of the same
+kinds, which you do not see, will be stored under the same schema.
+
+TASK
+Read all source units in the task message and write one schema for this graph.
+- Declare the types of entities, their properties with datatypes, the relations between the
+  types, and the constraints you want enforced.
+- What you declare is binding. An entity type or a relation that you do not declare is
+  rejected when the graph is populated. A property that you do not declare is accepted. A
+  constraint that you declare is enforced.
+- Where you cannot foresee the values of a property, leave it open: no datatype and no list of
+  allowed values.
+- Every entity must carry a value that identifies it. Say for every type which property that is.
+- Base the schema on these units only. Do not write documentation, examples or sample data.
+
+FORM
+{{arm_binding}}
+Reply with the schema document in exactly this form and nothing else.

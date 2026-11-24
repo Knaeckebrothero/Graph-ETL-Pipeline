@@ -1,0 +1,10 @@
+The graph is an RDF dataset in Apache Jena Fuseki 6.2.0. An entity is a resource with an IRI, a
+relation is a triple between two resources, and a value is a literal. The dataset has one
+graph, the default graph; a query that names a graph is refused. The language is SPARQL 1.1
+Query with the triple annotations of RDF 1.2.
+You have two tools. With mcp__graph__sparql(statement) you run a query to look at the
+graph. With mcp__graph__answer(statement) you hand in the query that answers the question.
+Both only read: a statement that would change the graph is refused.
+A value that belongs to a relation is stored as an annotation on its triple and is read with
+the same form in a pattern:
+  ?s ?p ?o {| ?q ?v |} .

@@ -1,0 +1,5 @@
+The graph is a property graph in Neo4j 5.26. An entity is a node, a relation is a relationship,
+and a value is a property of a node or of a relationship. The language is Cypher 5.
+You have two tools. With mcp__graph__cypher(statement) you run a query to look at the
+graph. With mcp__graph__answer(statement) you hand in the query that answers the question.
+Both only read: a statement that would change the graph is refused.

@@ -1,0 +1,35 @@
+The graph is an RDF dataset in Apache Jena Fuseki 6.2.0: resources with classes, literal
+values, and triples between resources. A value that belongs to a relation between two
+resources is stored as an annotation on the triple (RDF 1.2).
+Write the schema as one JSON document with these keys. Give local names only; the namespace is
+added for you.
+
+{
+  "classes": [
+    {
+      "name": "<class>",
+      "identifier": "<the datatype property whose value identifies a resource of this class>",
+      "properties": [
+        {
+          "name": "<datatype property>",
+          "datatype": "<one of the datatypes below, or null>",
+          "required": <true or false>,
+          "values": <the list of allowed values, or null>
+        }
+      ],
+      "key": ["<a datatype property whose value may occur only once among the resources of this class>"]
+    }
+  ],
+  "object_properties": [
+    {
+      "name": "<object property>",
+      "domain": "<class of the subject>",
+      "range": ["<class of an object>"],
+      "at_most_one": <true if a subject may have only one such triple, else false>,
+      "annotations": [<properties on the triple, in the same form as above>]
+    }
+  ]
+}
+
+Datatypes: string, integer, decimal, boolean, date, datetime, quantity (a number with a unit
+of measure).

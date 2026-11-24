@@ -1,0 +1,13 @@
+The graph is an RDF dataset in Apache Jena Fuseki 6.2.0. An entity is a resource with an IRI, a
+relation is a triple between two resources, and a value is a literal.
+You read and write with one tool, mcp__graph__sparql(statement, passage, locator, id). The
+language is SPARQL 1.1 Query and Update with the triple annotations of RDF 1.2.
+Classes and properties must use the IRIs of the schema exactly. Give every entity an IRI in the
+namespace the schema names for data, and write no blank nodes.
+The dataset has one graph, the default graph. Read from it and write into it; a statement that
+names a graph is refused.
+A value that belongs to a relation is written, and read, as an annotation on its triple:
+  s p o {| q v |} .
+The store keeps such an annotation on a blank node of its own. That is expected and is not a
+blank node you wrote.
+Do not write it as << s p o >> q v . alone: that form does not store the relation itself.
