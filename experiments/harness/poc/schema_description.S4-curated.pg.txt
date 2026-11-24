@@ -1,0 +1,60 @@
+Node types (label, then its properties; a property marked * identifies the node and has one
+value per node of that label):
+- WasteItem: uid*, name*, synonyms
+- WasteStream: uid*, name*
+- DictionaryEntry: uid*, name*, lang, synset_id
+- AVVCode: code*, level, is_hazardous, name
+- Product: uid*, ean*, name, brand, quantity, categories_tags, labels_tags, countries_tags, packaging_tags, image_url, source_api
+- PackagingComponent: uid*, shape, weight_g, food_contact, recycling_hint
+- Material: uid*, tag*, name, name_de
+- DisposalRule: uid*
+- Condition: key*
+- Instruction: uid*
+- Tip: uid*, type, text
+- Container: uid*
+- Building: uid*
+- Room: uid*
+- Facility: uid*, name, address, opening_hours, contact_name, contact_phone, contact_email
+- Source: uid*, name, type, file_path, extraction_date, model_id
+- Location: name
+
+Relationships (from, type, to; in braces the properties a relationship of that type may carry):
+- (:Product)-[:HAS_COMPONENT {qty, weight_g}]->(:PackagingComponent)
+- (:PackagingComponent)-[:MADE_OF]->(:Material)
+- (:Material)-[:DEFAULT_STREAM]->(:WasteStream)
+- (:Material)-[:IS_A]->(:Material)
+- (:Material)-[:CLASSIFIED_AS]->(:AVVCode)
+- (:Product)-[:IS_A]->(:WasteItem)
+- (:PackagingComponent)-[:HAS_RULE]->(:DisposalRule)
+- (:Product)-[:DERIVED_FROM]->(:Source)
+- (:WasteItem)-[:HAS_RULE]->(:DisposalRule)
+- (:DisposalRule)-[:HAS_CONDITION]->(:Condition)
+- (:DisposalRule)-[:HAS_INSTRUCTION]->(:Instruction)
+- (:DisposalRule)-[:ROUTES_TO]->(:WasteStream)
+- (:Condition)-[:IF_TRUE]->(:DisposalRule)
+- (:Condition)-[:IF_TRUE]->(:WasteStream)
+- (:Condition)-[:IF_FALSE]->(:DisposalRule)
+- (:Condition)-[:IF_FALSE]->(:WasteStream)
+- (:WasteItem)-[:CLASSIFIED_AS]->(:AVVCode)
+- (:WasteStream)-[:REQUIRES_AVV]->(:AVVCode)
+- (:AVVCode)-[:HAS_PARENT]->(:AVVCode)
+- (:WasteStream)-[:HAS_TIP]->(:Tip)
+- (:WasteItem)-[:HAS_TIP]->(:Tip)
+- (:Container)-[:HAS_TIP]->(:Tip)
+- (:DisposalRule)-[:DERIVED_FROM]->(:Source)
+- (:Condition)-[:DERIVED_FROM]->(:Source)
+- (:Instruction)-[:DERIVED_FROM]->(:Source)
+- (:WasteItem)-[:DERIVED_FROM]->(:Source)
+- (:Tip)-[:DERIVED_FROM]->(:Source)
+- (:DictionaryEntry)-[:SYNONYM_OF]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:TRANSLATION_OF]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:IS_A]->(:DictionaryEntry)
+- (:DictionaryEntry)-[:DERIVED_FROM]->(:Source)
+- (:WasteStream)-[:COLLECTED_IN]->(:Container)
+- (:Container)-[:LOCATED_IN]->(:Room)
+- (:Room)-[:PART_OF]->(:Building)
+- (:Container)-[:LOCATED_AT]->(:Facility)
+
+Both lists are closed: a node with a label outside the first list and a relationship outside the
+second list are rejected. Two nodes of one label never share a value marked *.
+The lists of properties are open: a property not named here is accepted.

@@ -1,0 +1,20 @@
+{
+  "listen": "0.0.0.0:18080",
+  "control_key_env": "DBTOOL_CONTROL_KEY",
+  "log_dir": "records",
+  "checker": "validator.checker:checker",
+  "warn_deleted": 25,
+  "remove_hooks_on_stop": true,
+  "cells": {
+    "poc-pg": {
+      "arm": "pg",
+      "uri": "bolt://127.0.0.1:17687",
+      "user": "neo4j",
+      "password_env": "HARNESS_NEO4J_PASSWORD",
+      "database": "neo4j",
+      "realisation": "S4-curated/pg",
+      "tool_key_env": "DBTOOL_KEY_POC_PG",
+      "mode": "reject"
+    }
+  }
+}
