@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kgbench.local/spec/dbtool-changes.schema.json",
+  "title": "`changes` of Thesis A's database tool, as handed to the checker (experiments/harness/dbtool/checker.py, 15 Nov 2026)",
+  "description": "Thesis B's machine-readable reading of the docstring of checker.py: what one statement changed, in its state after the statement. The validator's write-time check reads exactly this. Thesis A owns the shape; this file is for tests and for the record. Additional fields are allowed everywhere.",
+  "type": "object",
+  "required": ["nodes", "relationships", "ends", "deleted"],
+  "properties": {
+    "cell_id": {"type": ["string", "null"]},
+    "arm": {"enum": ["pg", "rdf", null]},
+    "realisation": {"type": ["string", "null"], "description": "schemas/treatments/<realisation>, e.g. S4-curated/pg; the checker loads its declaration.json"},
+    "unit_id": {"type": ["string", "null"], "description": "added by the harness, never by the model"},
+    "item_id": {"type": ["string", "null"], "description": "the agent's name for the fact (shared-minimum-log/1 item_id)"},
+    "evidence": {"type": ["string", "null"], "description": "the passage the agent named; kept in the record, never a reason for a rejection"},
+    "statement": {"type": ["string", "null"], "description": "the agent's Cypher or SPARQL, as run"},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "labels", "properties", "change"],
+        "properties": {
+          "key": {"type": "string", "description": "element id"},
+          "labels": {"type": "array", "items": {"type": "string"}},
+          "properties": {"type": "object"},
+          "change": {"enum": ["created", "changed"]},
+          "changed_properties": {"type": "object", "additionalProperties": {"type": "object", "properties": {"old": {}, "new": {}}}},
+          "added_labels": {"type": "array", "items": {"type": "string"}},
+          "removed_labels": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "type", "from", "to", "properties", "change"],
+        "properties": {
+          "key": {"type": "string"},
+          "type": {"type": "string"},
+          "from": {"type": "string", "description": "element id of the start node; described under ends"},
+          "to": {"type": "string"},
+          "properties": {"type": "object"},
+          "change": {"enum": ["created", "changed"]},
+          "changed_properties": {"type": "object"}
+        }
+      }
+    },
+    "ends": {
+      "type": "object",
+      "description": "every node a listed relationship touches, created by the statement or there before: labels and properties; RDF cells add exists (24 Nov 2026)",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["labels"],
+        "properties": {"labels": {"type": "array", "items": {"type": "string"}}, "properties": {"type": "object"},
+                       "exists": {"type": ["boolean", "integer"], "description": "whether this end is a node of the graph, counting what the statement adds; read for CS3 before lookup.entity_exists is asked"}}
+      }
+    },
+    "deleted": {
+      "type": "object",
+      "required": ["nodes", "relationships"],
+      "properties": {"nodes": {"type": "array", "items": {"type": "string"}}, "relationships": {"type": "array", "items": {"type": "string"}}}
+    }
+  }
+}
