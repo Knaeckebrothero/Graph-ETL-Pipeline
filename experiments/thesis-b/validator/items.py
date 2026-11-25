@@ -57,6 +57,7 @@ class EndRef:
     ref: str | None                      # element id (pg) or IRI (rdf); None when missing
     types: list[str] = field(default_factory=list)
     in_diff: bool = False                # the entity is created in the same write
+    exists: bool | None = None           # the tool's own answer (`ends[..].exists`, RDF cells); None when it gave none
 
 
 @dataclass
@@ -134,19 +135,32 @@ def value_datatype(v: Any) -> str | None:
 
 
 def _attribute(name: str, v: Any) -> Attribute:
+    """One attribute from a stored value: a driver-typed value, the explicit form `{"value", "datatype", "unit"}` (a typed
+    RDF literal as Thesis A's tool hands it over), or a list of either (a property with several values). A list keeps
+    its values unwrapped; its datatype is the one every value shares, else none (text)."""
     if isinstance(v, dict) and "value" in v:                 # explicit form {"value": ..., "datatype": ..., "unit": ...}
         return Attribute(name, v.get("value"), v.get("datatype"), v.get("unit"))
+    if isinstance(v, (list, tuple)):
+        parts = [_attribute(name, x) for x in v]
+        dts = {p.datatype for p in parts}
+        units = {p.unit for p in parts}
+        return Attribute(name, [p.value for p in parts], dts.pop() if len(dts) == 1 else None, units.pop() if len(units) == 1 else None)
     return Attribute(name, v, value_datatype(v))
 
 
-def pick_identifier(types: list[str], attributes: list[Attribute], unique_by_type: dict[str, set[str]] | None) -> tuple[Any, str | None]:
-    """Identifying value: a declared unique property of one of the item's types (treatment scope), else the first of
-    IDENTIFYING_PROPERTIES that is present, else None."""
+def pick_identifier(types: list[str], attributes: list[Attribute], unique_by_type: dict[str, set[str]] | None,
+                    identifier_by_type: dict[str, str] | None = None) -> tuple[Any, str | None]:
+    """Identifying value: the declared identifier of one of the item's types (S2, Rule 6), else a declared unique property
+    of one of them (treatment scope), else the first of IDENTIFYING_PROPERTIES that is present, else None."""
     by_name = {a.name: a for a in attributes}
 
     def usable(a: Attribute | None) -> bool:
         return a is not None and a.value is not None and not (isinstance(a.value, str) and a.value.strip() == "")
 
+    for t in types:
+        prop = (identifier_by_type or {}).get(t)
+        if prop and usable(by_name.get(prop)):
+            return by_name[prop].value, prop
     for t in types:
         for prop in sorted((unique_by_type or {}).get(t, ())):
             if usable(by_name.get(prop)):
@@ -211,17 +225,18 @@ def is_changes(obj: Any) -> bool:
 
 
 def diff_from_changes(changes: dict, *, unique_by_type: dict[str, set[str]] | None = None,
-                      identifying: dict[str, str] | None = None) -> Diff:
+                      identifying: dict[str, str] | None = None, identifier_by_type: dict[str, str] | None = None) -> Diff:
     """Items from the `changes` of Thesis A's database tool (checker.py, 15 Nov 2026): the nodes and relationships
     the statement created or changed, in their state after the statement; every node a relationship touches under
-    `ends`; the ids of what was deleted. `identifying` maps a node type to the property that identifies it when the
-    realisation says so (declaration.json `identifying_value`, S1: Entity.name)."""
+    `ends` (with `exists` on the RDF side, 24 Nov 2026); the ids of what was deleted. `identifying` maps a node type to
+    the property that identifies it when the realisation says so (declaration.json `identifying_value`, S1:
+    Entity.name); `identifier_by_type` is the declared identifier of an induced type (Rule 6)."""
     ents: list[EntityItem] = []
     changed: set[str] = set()
     for n in changes.get("nodes") or []:
         labels = list(n.get("labels") or [])
         attrs = [_attribute(k, v) for k, v in (n.get("properties") or {}).items()]
-        ident, src = pick_identifier(labels, attrs, unique_by_type)
+        ident, src = pick_identifier(labels, attrs, unique_by_type, identifier_by_type)
         if ident is None and identifying:
             for t in labels:
                 prop = identifying.get(t)
@@ -236,11 +251,15 @@ def diff_from_changes(changes: dict, *, unique_by_type: dict[str, set[str]] | No
     in_diff = {e.ref for e in ents}
     ends = changes.get("ends") or {}
     rels: list[RelationItem] = []
+    def end(ref: Any) -> EndRef:
+        e = ends.get(ref) or {}
+        ex = e.get("exists")
+        return EndRef(ref=str(ref) if ref is not None else None, types=list(e.get("labels") or []), in_diff=str(ref) in in_diff,
+                      exists=bool(ex) if isinstance(ex, (bool, int)) else None)
+
     for r in changes.get("relationships") or []:
-        f, t = r.get("from"), r.get("to")
         rels.append(RelationItem(ref=str(r.get("key")) if r.get("key") is not None else None, type=str(r.get("type") or ""),
-                                 start=EndRef(ref=str(f) if f is not None else None, types=list((ends.get(f) or {}).get("labels") or []), in_diff=str(f) in in_diff),
-                                 end=EndRef(ref=str(t) if t is not None else None, types=list((ends.get(t) or {}).get("labels") or []), in_diff=str(t) in in_diff),
+                                 start=end(r.get("from")), end=end(r.get("to")),
                                  attributes=[_attribute(k, v) for k, v in (r.get("properties") or {}).items()]))
         if r.get("change") == "changed" and r.get("key") is not None:
             changed.add(str(r["key"]))
@@ -305,7 +324,7 @@ def _local(iri: str) -> str:
 
 def diff_from_ntriples(text: str, *, query: str | None = None, existing_ids: Iterable[str] | None = None,
                        unit_id: str | None = None, unique_by_type: dict[str, set[str]] | None = None,
-                       type_names: str = "local") -> Diff:
+                       type_names: str = "local", identifier_by_type: dict[str, str] | None = None) -> Diff:
     """Items from inserted triples. Subjects with literal objects or rdf:type become entity items (types = classes,
     attributes = literal-valued predicates); triples with an IRI object other than rdf:type become relation items;
     triple-term statements become attributes of the relation they are about. `type_names`: "local" shortens class and
@@ -334,7 +353,7 @@ def diff_from_ntriples(text: str, *, query: str | None = None, existing_ids: Ite
             rel_rows.append(r)
     ents: list[EntityItem] = []
     for s in list(types):
-        ident, src = pick_identifier(types[s], attrs.get(s, []), unique_by_type)
+        ident, src = pick_identifier(types[s], attrs.get(s, []), unique_by_type, identifier_by_type)
         if ident is None:
             for a in attrs.get(s, []):
                 if a.name in [_local(p) for p in LABEL_PREDICATES] and a.value not in (None, ""):

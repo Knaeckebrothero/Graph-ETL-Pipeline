@@ -47,11 +47,12 @@
     },
     "ends": {
       "type": "object",
-      "description": "every node a listed relationship touches, created by the statement or there before: labels and properties",
+      "description": "every node a listed relationship touches, created by the statement or there before: labels and properties; RDF cells add exists (24 Nov 2026)",
       "additionalProperties": {
         "type": "object",
         "required": ["labels"],
-        "properties": {"labels": {"type": "array", "items": {"type": "string"}}, "properties": {"type": "object"}}
+        "properties": {"labels": {"type": "array", "items": {"type": "string"}}, "properties": {"type": "object"},
+                       "exists": {"type": ["boolean", "integer"], "description": "whether this end is a node of the graph, counting what the statement adds; read for CS3 before lookup.entity_exists is asked"}}
       }
     },
     "deleted": {

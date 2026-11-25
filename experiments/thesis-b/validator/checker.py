@@ -3,7 +3,8 @@
 Thesis A's tool (`experiments/harness/dbtool`, 15 Nov 2026) runs the agent's statement, gets from the store what it
 changed, and hands that to a checker while the transaction is open. The checker returns one entry per fault with the
 four agreed fields `rule_id`, `element`, `expected`, `found`; an empty list means pass. It changes nothing and talks to
-the store only through `lookup.find(label, property, value)`. The tool itself answers "already present" for a statement
+the store only through `lookup`: `find(label, property, value)` on both cells, `entity_exists(key)` on the RDF cell
+(24 Nov 2026), `relation_count(key, type)` once Thesis A adds it. The tool itself answers "already present" for a statement
 that changed nothing, reports CS0 for a statement the store cannot run, assembles the message, applies the mode
 (reject or log_only) and writes the record. So this object holds the rules and nothing else.
 
@@ -62,7 +63,9 @@ class Checker:
     def check(self, changes: dict, lookup: Any = None) -> list[dict]:
         decl = self.declaration(changes.get("realisation"))
         v = Validator(mode=self.mode, formats=self.formats, declaration=decl)
-        ctx = WriteContext(formats=self.formats, lookup=lookup)
+        # everything the cell's lookup offers is passed on: find (both cells), entity_exists (RDF, for CS3 on an end
+        # outside the write), relation_count (asked of Thesis A for TS-cardinality); a missing one leaves its rule not_checkable
+        ctx = WriteContext.from_lookup(lookup, self.formats)
         res = v.check_write(changes, ctx)
         self.last = res
         for o in res.observations:

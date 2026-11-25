@@ -34,8 +34,8 @@ from .rules_treatment import Declaration
 from .rules_write import TREATMENT_RULE_IDS, WRITE_COMMON_RULES, Observation, WriteContext, diff_level, item_key, run_treatment_items, run_write_common
 from .vocabulary import EquivalenceTable, FormatTable
 
-VALIDATOR_VERSION = "0.2.0"
-RULES_VERSION = "common-scope-rules v0.2 (15 Nov 2026) + treatment scope from declaration.json draft-0.1"
+VALIDATOR_VERSION = "0.3.0"
+RULES_VERSION = "common-scope-rules v0.2 (15 Nov 2026) + treatment scope from declaration.json v0.2 with Rule 6 (induced schema, 23 Nov 2026)"
 HERE = Path(__file__).parent
 CANONICAL_SCHEMA_PATH = HERE / "canonical.schema.json"
 CHANGES_SCHEMA_PATH = HERE / "changes.schema.json"
@@ -148,7 +148,8 @@ class Validator:
         try:
             d = self._as_diff(diff, query=query, unit_id=unit_id, existing_ids=existing_ids,
                               unique_by_type=self.declaration.unique_by_type if self.declaration else None,
-                              identifying=self.declaration.identifying if self.declaration else None)
+                              identifying=self.declaration.identifying if self.declaration else None,
+                              identifier_by_type=self.declaration.identifier_by_type if self.declaration else None)
         except (ValueError, TypeError, KeyError, AttributeError) as e:
             return self.unreadable(str(e))
         rules = list(WRITE_COMMON_RULES) + (TREATMENT_RULE_IDS if self.declaration and not self.declaration.declares_nothing else [])
@@ -186,7 +187,8 @@ class Validator:
 
     @staticmethod
     def _as_diff(diff: Diff | str | dict, *, query: str | None, unit_id: str | None, existing_ids: Iterable[str] | None,
-                 unique_by_type: dict[str, set[str]] | None = None, identifying: dict[str, str] | None = None) -> Diff:
+                 unique_by_type: dict[str, set[str]] | None = None, identifying: dict[str, str] | None = None,
+                 identifier_by_type: dict[str, str] | None = None) -> Diff:
         if isinstance(diff, Diff):
             if query and not diff.query:
                 diff.query = query
@@ -196,9 +198,10 @@ class Validator:
                 diff.existing_ids = list(existing_ids)
             return diff
         if is_changes(diff):
-            return diff_from_changes(diff, unique_by_type=unique_by_type, identifying=identifying)
+            return diff_from_changes(diff, unique_by_type=unique_by_type, identifying=identifying, identifier_by_type=identifier_by_type)
         if isinstance(diff, str):
-            return diff_from_ntriples(diff, query=query, unit_id=unit_id, existing_ids=existing_ids, unique_by_type=unique_by_type)
+            return diff_from_ntriples(diff, query=query, unit_id=unit_id, existing_ids=existing_ids, unique_by_type=unique_by_type,
+                                      identifier_by_type=identifier_by_type)
         if isinstance(diff, dict):
             return diff_from_neo4j(diff.get("nodes") or [], diff.get("relationships") or [], query=query or diff.get("query"),
                                    unit_id=unit_id or diff.get("unit_id"), existing_ids=existing_ids or diff.get("existing_ids"),

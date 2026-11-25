@@ -238,10 +238,31 @@ def changes(realisation="T/pg", nodes=(), relationships=(), ends=None, statement
             "ends": {k: v for k, v in ends.items() if k in used}, "deleted": {"nodes": [], "relationships": []}, **more}
 
 
+# An induced declaration in the form of Thesis A's Rule 6 (23 Nov 2026): identifier, required, datatypes and values per
+# node type; at_most_one and the same three keys per pattern; the four further kinds of enforcement.
+S2_DECL = {
+    "realisation": "S2x/pg", "treatment": "S2", "arm": "pg", "status": "draft", "rules_version": "0.2",
+    "enforcement": {**DECL["enforcement"], "required_property_missing": "reject", "datatype_violation": "reject",
+                    "value_outside_the_list": "reject", "cardinality_violation": "reject"},
+    "node_types": [
+        {"name": "Container", "identifier": "code", "properties": [{"name": "code"}, {"name": "volume_litres"}, {"name": "since"},
+                                                                   {"name": "colour"}, {"name": "hazardous"}, {"name": "tags"}],
+         "unique": ["code"], "required": ["code"],
+         "datatypes": {"code": "string", "volume_litres": "decimal", "since": "date", "hazardous": "boolean"},
+         "values": {"colour": ["blue", "brown", "yellow"], "tags": ["glass", "paper"]}},
+        {"name": "Stream", "identifier": "name", "properties": [{"name": "name"}, {"name": "level"}, {"name": "fee"}],
+         "unique": ["name"], "required": [], "datatypes": {"level": "integer", "fee": "quantity"}, "values": {"level": [1, 2, 3]}}],
+    "relationship_patterns": [
+        {"type": "GOES_TO", "from": "Container", "to": ["Stream"], "properties": [{"name": "since"}, {"name": "role"}],
+         "at_most_one": True, "required": ["since"], "datatypes": {"since": "date"}, "values": {"role": ["main", "backup"]}},
+        {"type": "NEAR", "from": "Container", "to": ["Container"], "properties": [], "at_most_one": False}],
+}
+
+
 @pytest.fixture
 def root(tmp_path):
     """A repository root with declarations: the synthetic ones, plus Thesis A's real files when the branch has them."""
-    for name, d in (("T/pg", DECL), ("S1/pg", S1_DECL)):
+    for name, d in (("T/pg", DECL), ("S1/pg", S1_DECL), ("S2x/pg", S2_DECL)):
         p = tmp_path / "schemas" / "treatments" / name
         p.mkdir(parents=True)
         (p / "declaration.json").write_text(json.dumps(d))
@@ -405,6 +426,159 @@ def test_checker_factory_and_root_from_environment(root, monkeypatch):
     monkeypatch.setenv("KG_VALIDATOR_ROOT", str(root))
     c = factory()
     assert c.check(changes(nodes=[node("n11", ["Forbidden"], {"x": 1})]), Lookup())[0]["rule_id"] == "CS1"
+
+
+# ============================================================================= 0.3.0: Thesis A's five points from the pilot (24/25 Nov 2026)
+S2X = "S2x/pg"
+ENDS2 = {"c1": {"labels": ["Container"], "properties": {"code": "c-1"}}, "s1": {"labels": ["Stream"], "properties": {"name": "Bio"}},
+         "s2": {"labels": ["Stream"], "properties": {"name": "Rest"}}}
+
+
+def rules(checker, nodes=(), relationships=(), lookup=None, **more):
+    ch = changes(realisation=S2X, nodes=nodes, relationships=relationships, ends=ENDS2 if relationships else None, **more)
+    checker.observations.clear()
+    return [(f["rule_id"], f["element"].split("/")[-1]) for f in checker.check(ch, lookup or Lookup())]
+
+
+def test_point_1_the_graph_lookup_is_passed_on_for_cs3_on_rdf(checker):
+    """RDF: an end outside the write with no class. 0.2.0 said not_checkable and the write was stored (56 to 83 per run
+    in the pilot). The tool's `entity_exists` and `ends[..].exists` are now read: 1 -> pass, 0 -> CS3."""
+    class RdfLookup(Lookup):
+        def __init__(self, exists):
+            super().__init__(); self.exists = exists; self.asked = []
+        def entity_exists(self, key):
+            self.asked.append(key); return self.exists
+    rel = {"key": "<d:dr-1> <s:ROUTES_TO> <d:nowhere> .", "type": "ROUTES_TO", "from": "d:dr-1", "to": "d:nowhere", "properties": {}, "change": "created", "changed_properties": {}}
+    ch = changes(arm="rdf", relationships=[rel], ends={"d:dr-1": {"labels": ["DisposalRule"], "properties": {}}, "d:nowhere": {"labels": [], "properties": {}}})
+    lk = RdfLookup(0)
+    assert [f["rule_id"] for f in checker.check(ch, lk)] == ["CS3"] and lk.asked == ["d:nowhere"]
+    assert checker.check(ch, RdfLookup(1)) == [] and checker.not_checkable() == ["TS-endpoint"]   # it exists; without a class its pattern stays open
+    assert checker.check(ch, Lookup()) == [] and checker.not_checkable() == ["CS3", "TS-endpoint"]   # a lookup without entity_exists: as before
+    ch["ends"]["d:nowhere"]["exists"] = False                                                   # the tool's own answer wins, no call
+    lk = RdfLookup(1)
+    assert [f["rule_id"] for f in checker.check(ch, lk)] == ["CS3"] and lk.asked == []
+    ch["ends"]["d:nowhere"]["exists"] = True
+    assert checker.check(ch, RdfLookup(0)) == []
+
+
+def test_point_2_a_whole_number_is_a_decimal_and_a_number_is_a_quantity(checker):
+    """volume_litres: 120 was rejected, 120.0 accepted (17 of 21 rejection reasons on the induced Neo4j cell)."""
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "volume_litres": 120})]) == []
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "volume_litres": 120.0})]) == []
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "fee": 5})]) == []
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "fee": 2.5})]) == []
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "fee": "5 kg"})]) == []
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "level": 2.0})]) == [("TS-datatype", "attribute:level")]   # a decimal is no integer
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": 7})]) == [("TS-datatype", "attribute:code")]                   # a number is no string
+
+
+def test_point_2_text_is_parsed_against_the_declared_datatype(checker):
+    """0.2.0 let text pass any declared datatype; in the property graph every date arrives as text. Now the format table
+    decides (provisional formats until Thesis A's table)."""
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "since": "2024-01-01", "volume_litres": "120", "hazardous": "no"})]) == []
+    faults = rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "since": "next week", "volume_litres": "many", "hazardous": "perhaps"})])
+    assert faults == [("TS-datatype", "attribute:volume_litres"), ("TS-datatype", "attribute:since"), ("TS-datatype", "attribute:hazardous")]
+    f = checker.check(changes(realisation=S2X, nodes=[node("c1", ["Container"], {"code": "c-1", "since": "next week"})]), Lookup())[0]
+    assert f["expected"] == "date (ISO 8601 date (YYYY-MM-DD))" and f["found"] == "next week"
+    # a typed value of the wrong datatype is CS4 first (common scope), and the item is then not tested against the schema
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "since": {"value": "2024-13-01", "datatype": "date"}})]) == [("CS4", "attribute:since")]
+
+
+def test_point_3_at_most_one_needs_the_relationship_count_of_the_tool(checker):
+    class Counting(Lookup):
+        def __init__(self, n):
+            super().__init__(); self.n = n; self.asked = []
+        def relation_count(self, key, typ):
+            self.asked.append((key, typ)); return self.n
+    one = [rel("r1", "GOES_TO", "c1", "s1", {"since": "2024-01-01"})]
+    two = one + [rel("r2", "GOES_TO", "c1", "s2", {"since": "2024-01-01"})]
+    assert rules(checker, relationships=one) == [] and checker.not_checkable() == ["TS-cardinality"]       # no count from the tool
+    assert rules(checker, relationships=two) == [("TS-cardinality", "cardinality")] * 2                    # two in one write need no tool
+    lk = Counting(0)
+    assert rules(checker, relationships=one, lookup=lk) == [] and checker.not_checkable() == [] and lk.asked == [("c1", "GOES_TO")]
+    assert rules(checker, relationships=one, lookup=Counting(1)) == [("TS-cardinality", "cardinality")]
+    f = checker.check(changes(realisation=S2X, relationships=one, ends=ENDS2), Counting(1))[0]
+    assert f["found"] == "2 (1 in the graph, 1 in this write)" and "at most one GOES_TO" in f["expected"]
+    # a changed relationship is already in the count; NEAR has no at_most_one
+    changed = [rel("r1", "GOES_TO", "c1", "s1", {"since": "2024-01-01"}, change="changed")]
+    assert rules(checker, relationships=changed, lookup=Counting(1)) == []
+    assert rules(checker, relationships=[rel("n", "NEAR", "c1", "c1")] * 2, lookup=Counting(5)) == []
+
+
+def test_point_4_constraints_on_the_properties_of_a_relationship(checker):
+    ok = rel("r", "GOES_TO", "c1", "s1", {"since": "2024-01-01", "role": "main"})
+    assert rules(checker, relationships=[ok], lookup=_count0()) == []
+    assert rules(checker, relationships=[rel("r", "GOES_TO", "c1", "s1", {})], lookup=_count0()) == [("TS-required", "attribute:since")]
+    assert rules(checker, relationships=[rel("r", "GOES_TO", "c1", "s1", {"since": 5})], lookup=_count0()) == [("TS-datatype", "attribute:since")]
+    assert rules(checker, relationships=[rel("r", "GOES_TO", "c1", "s1", {"since": "2024-01-01", "role": "boss"})], lookup=_count0()) == [("TS-valuelist", "attribute:role")]
+    # an undeclared relationship property is still counted, not rejected
+    assert rules(checker, relationships=[rel("r", "GOES_TO", "c1", "s1", {"since": "2024-01-01", "note": "x"})], lookup=_count0()) == []
+    assert [o["found"] for o in checker.observations] == ["note"]
+
+
+def _count0():
+    class L(Lookup):
+        def relation_count(self, key, typ):
+            return 0
+    return L()
+
+
+def test_point_5_value_lists_with_several_values_and_with_typed_numbers(checker):
+    """a) several values no longer raise TypeError: every value must be in the list; b) a typed RDF number in its
+    written form matches a number in the list."""
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "tags": ["glass", "paper"]})]) == []
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "tags": ["glass", "metal"]})]) == [("TS-valuelist", "attribute:tags")]
+    f = checker.check(changes(realisation=S2X, nodes=[node("c1", ["Container"], {"code": "c-1", "tags": ["glass", "metal", "wood"]})]), Lookup())[0]
+    assert f["found"] == ["metal", "wood"]
+    typed = {"value": "2", "datatype": "integer", "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"}
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "level": typed})], arm="rdf") == []
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "level": {**typed, "value": "9"}})], arm="rdf") == [("TS-valuelist", "attribute:level")]
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"name": "Bio", "level": [{**typed, "value": "1"}, {**typed, "value": "3"}]})], arm="rdf") == []
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "colour": "blue"})]) == []
+    assert rules(checker, nodes=[node("c1", ["Container"], {"code": "c-1", "colour": "Blue"})]) == [("TS-valuelist", "attribute:colour")]   # text is exact
+
+
+def test_the_declared_identifier_itself_must_be_there(checker):
+    """Thesis A's FYI: 0.2.0 took any unique or naming property. Now the declared identifier is required (TS-required,
+    once), and it is preferred as the identifying value."""
+    assert rules(checker, nodes=[node("s1", ["Stream"], {"level": 2, "fee": 1})]) == [("CS1", "identifier")]                           # nothing identifies it at all: common scope first
+    assert rules(checker, nodes=[node("c1", ["Container"], {"colour": "blue", "name": "a bin"})]) == [("TS-required", "attribute:code")]  # name is a naming property, code is the identifier
+    checker.check(changes(realisation=S2X, nodes=[node("c1", ["Container"], {"code": "c-1", "name": "a bin"})]), Lookup())
+    ent = checker.last.items[0]
+    assert ent.rejections == []
+    d = Declaration.load(checker.root / "schemas" / "treatments" / S2X)
+    assert d.identifier_by_type == {"Container": "code", "Stream": "name"} and d.unique_by_type == {"Container": {"code"}, "Stream": {"name"}}
+
+
+def test_the_loader_reads_rule_6_and_counts_it(root):
+    d = Declaration.load(root / "schemas" / "treatments" / S2X)
+    inv = d.constraint_inventory()
+    assert inv["cardinality"] == 1 and inv["identifier"] == 2 and inv["required_property"] == 1 and inv["datatype"] == 6 and inv["closed_value_list"] == 3
+    assert inv["relationship_property_required"] == 1 and inv["relationship_property_datatype"] == 1 and inv["relationship_property_value_list"] == 1
+    assert d.pattern_rules[("GOES_TO", "Container", "Stream")]["at_most_one"] is True and d.patterns[("GOES_TO", "Container", "Stream")] == {"since", "role"}
+    assert all(d.rejects(k) for k in ("required_property_missing", "datatype_violation", "value_outside_the_list", "cardinality_violation"))
+    # S3/S4 declarations without the new keys: nothing changes for them
+    d4 = Declaration.load(root / "schemas" / "treatments" / "T/pg")
+    assert d4.constraint_inventory()["cardinality"] == 0 and d4.identifier_by_type == {} and d4.pattern_rules[("HAS_COMPONENT", "Product", "PackagingComponent")]["at_most_one"] is False
+
+
+def test_enforcement_accept_and_count_turns_rule_6_faults_into_observations(root):
+    weak = copy.deepcopy(S2_DECL)
+    weak["realisation"] = "S2w/pg"
+    weak["enforcement"].update({"required_property_missing": "accept_and_count", "datatype_violation": "accept_and_count",
+                                "value_outside_the_list": "accept_and_count", "cardinality_violation": "accept_and_count"})
+    p = root / "schemas" / "treatments" / "S2w/pg"
+    p.mkdir(parents=True)
+    (p / "declaration.json").write_text(json.dumps(weak))
+    c = Checker(root=root)
+    ch = changes(realisation="S2w/pg", nodes=[node("c1", ["Container"], {"code": "c-1", "since": "next week", "colour": "pink"})])
+    assert c.check(ch, Lookup()) == []
+    assert sorted(o["kind"] for o in c.observations) == ["TS-datatype", "TS-valuelist"]
+
+
+def test_version_0_3_0():
+    from validator.validator import VALIDATOR_VERSION
+    assert VALIDATOR_VERSION == "0.3.0"
 
 
 # ============================================================================= write side: RDF (N-Triples adapter)
